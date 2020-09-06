@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Culture buddies</title>
     <!-- Required meta tags -->
@@ -9,7 +10,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="../static/style/style.css">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
 </head>
 <body>
 <div class="container">
@@ -18,7 +19,7 @@
         <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
-                <img class="logo" src="../static/pictures/logo1.png" alt="logo">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
                 <div class="col-sm-4"></div>
             </div>
         </div>
@@ -66,7 +67,7 @@
                     <div class="card-header">
                         <h4>You don't have an account yet? </h4></div>
                         <div class="center">
-                        <button type="submit" id="register" class="btn-info"><a href="register.html" class="link">register</a></button>
+                        <button type="submit" id="register" class="btn-info"><a href="#" class="link">register</a></button>
                         </div>
                 </div>
             </div>
@@ -78,12 +79,12 @@
             <div class="col-sm-12">
                 <span class="images-references">Background photos by
                     <span> <a
-                            href="https://unsplash.com/@all_who_wander?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kinga Cichewicz</a>
-                        on <a href="https://unsplash.com/s/photos/books-and-friends?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                            th:href="@{https://unsplash.com/@all_who_wander?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Kinga Cichewicz</a>
+                        on <a th:href="@{https://unsplash.com/s/photos/books-and-friends?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">
                             Unsplash</a></span></span> and
                 <span> by <a
-                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
-                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+                        th:href="@{https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Yvette de Wit</a>
+                    on <a th:href="@{https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Unsplash</a></span>
             </div>
         </div>
     </footer>

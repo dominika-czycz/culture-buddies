@@ -12,5 +12,4 @@ class CultureBuddiesApplicationTest {
     @Test
     public void contextLoad() {
     }
-
 }
