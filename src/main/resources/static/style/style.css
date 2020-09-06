@@ -1,0 +1,364 @@
+body {
+    background-color: rgb(45, 39, 39);
+    color: burlywood;
+}
+
+.noTopBorder {
+    border-style: none;
+
+}
+
+.link {
+    text-decoration: none;
+    color: black;
+}
+
+.link:hover {
+    color: #393737;
+    text-decoration: none;
+}
+
+.lighter-link {
+    text-decoration: none;
+    color: wheat;
+}
+
+.lighter-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.yellow-link {
+    text-decoration: none;
+    color: darkgoldenrod;
+}
+
+.yellow-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.important-link {
+    text-decoration: none;
+    color: gold;
+}
+
+.important-link:hover {
+    color: yellow;
+    text-decoration: none;
+}
+
+.red-link {
+    text-decoration: none;
+    color: darkred;
+}
+
+.red-link:hover {
+    color: red;
+    text-decoration: none;
+}
+
+.nav-item {
+    display: inline;
+    left: auto;
+    padding: 5px;
+}
+
+.profile-picture-card {
+    height: 50px;
+}
+
+
+.header-background-img {
+    background-image: url(../pictures/yvette-de-wit-NYrVisodQ2M-unsplash.jpg);
+    /*background-position: right bottom, left top;*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 200px;
+}
+
+
+
+.article-background-img {
+    background-image: url(../pictures/kinga-cichewicz-s4aOPAJ4v0E-unsplash.jpg);
+    background-position: right bottom, left top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 800px;
+}
+
+.article-background-imgRegister {
+    background-image: url(../pictures/kinga-cichewicz-aHu_xuRvsZ4-unsplash.jpg);
+    background-position: right bottom, left top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 800px;
+}
+
+.article-background-imgBooks {
+    background-image: url(../pictures/janko-ferlic-sfL_QOnmy00-unsplash.jpg);
+    background-position: right bottom, left top;
+    background-repeat: repeat;
+    background-size: cover;
+    height: 800px;
+}
+.article-background-imgProfile {
+    background-image: url(../pictures/nathan-dumlao--ATjYS7nk3Y-unsplash.jpg);
+    background-position: top;
+    background-repeat: repeat;
+    background-size: cover;
+    height: 750px;
+}
+.article-background-imgNoResults {
+    background-image: url(../pictures/charles-deluvio-K4mSJ7kc0As-unsplash.jpg);
+    background-position: top;
+    background-repeat: repeat;
+    background-size: cover;
+    height: 800px;
+}
+
+.table-background {
+    background-image: url(../pictures/annie-spratt-PKq3htZdTto-unsplash.jpg);
+    background-position: top;
+    background-repeat: repeat;
+    background-size: cover;
+    height: 597px;
+}
+.table-backgroundProfile {
+    background-image: url(../pictures/peter-gargiulo-cGNCepznaV8-unsplash.jpg);
+    background-position: top left;
+    background-repeat: repeat;
+    background-size: auto;
+    height: 700px;
+}
+/*FRAME AND PROFILE PICTURE*/
+.box {
+    width: 100%;
+    height: 200px;
+    border: 5px;
+}
+
+.profile-img {
+    border: 20px groove #67310b;
+    max-height: 100%;
+    max-width: 100%;}
+
+
+.book-img {
+    border: 10px rgb(45, 39, 39);
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.lighter {
+    background-color: rgba(169, 169, 169, 0.62);
+}
+
+.lighter-yellow {
+    background-color: rgba(238, 175, 76, 0.29);
+}
+
+.lighter-green {
+    background-color: rgba(128, 128, 0, 0.66);
+}
+
+.main-font {
+    font-style: italic;
+    font-family: "Bitstream Vera Serif", serif;
+    font-weight: bolder;
+    color: burlywood;
+    text-decoration: burlywood underline;
+}
+
+.cookie-font {
+    font: 400 130px/0.8rem 'Cookie', Helvetica, sans-serif;
+    color: black;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.title-font {
+    font-style: italic;
+    font-family: "Bitstream Vera Serif", serif;
+    font-weight: bolder;
+    color: black;
+    text-transform: uppercase;
+}
+.list-font {
+    font-style: italic;
+    font-family: "Bitstream Vera Serif", serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.medium-font {
+    font-size: 1.2rem;
+}
+
+.smaller-font {
+    font-size: 0.6rem;
+}
+
+.bigger-font {
+    font-size: 2rem;
+}
+
+.center {
+    text-align: center;
+}
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.bold-font {
+    font-weight: bold;
+}
+
+.info-font {
+    font-family: "Source Code Pro", serif;
+    color: black;
+    font-style: italic;
+    text-align: center;
+}
+
+.other-font {
+    font-family: "Source Code Pro", serif;
+    color: black;
+}
+
+.light-font {
+    color: wheat;
+}
+.error{
+    color: darkred;
+}
+
+
+.jumbotron {
+    background-color: darkslategrey;
+}
+
+small {
+    color: black;
+}
+
+.card {
+    background-color: rgba(33, 31, 31, 0.5);
+    color: wheat;
+}
+
+.darker {
+    background-color: rgba(33, 31, 31, 0.5);
+}
+
+.form-group input {
+    background-color: darkgrey;
+    color: black;
+}
+
+.margin-top-bottom {
+    margin-bottom: 100px;
+    margin-top: 50px;
+}
+
+.margin-top {
+    margin-top: 100px;
+}
+
+.small-margin-bottom {
+    margin-bottom: 20px;
+}
+
+.margin-bottom {
+    margin-bottom: 20px;
+}
+.small-margin-around {
+    margin: -50px 20px 4px 10px;
+}
+
+.very-small-margin-bottom {
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: auto;
+    height: 8rem;
+    margin: 0 0 0 100px;
+}
+
+.margin-left {
+    margin-left: 20px;
+}
+.no-margin{
+    margin: 0 0 0 0;
+}
+
+.padding {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.around-padding {
+    padding: 50px 50px 50px 50px;
+}
+
+.small-padding {
+    padding: 10px 10px 10px 10px;
+}
+
+.border {
+    border: 30px groove;
+    border-radius: 40px 40px 40px 40px;
+}
+
+.btn-danger {
+    background-color: rgb(122, 2, 40);
+    color: wheat;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-warning {
+    background-color: #084424;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-info {
+    background-color: darkgoldenrod;
+    border: goldenrod;
+    color: wheat;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-info:hover {
+    background-color: goldenrod;
+    border: darkgoldenrod;
+    color: wheat;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-success {
+    background-color: olive;
+    color: wheat;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.images-references {
+    font-style: italic;
+}
+
+.narrow {
+    width: 50px;
+}
+
+.green-font {
+    color: darkred;
+}
