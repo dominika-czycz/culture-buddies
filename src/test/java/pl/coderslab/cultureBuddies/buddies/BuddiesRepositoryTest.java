@@ -22,6 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 //@ActiveProfiles("test")
 class BuddiesRepositoryTest {
     private Buddy validTestBuddy;
+    @Autowired
+    private TestEntityManager testEm;
+    @Autowired
+    private BuddiesRepository buddiesRepository;
 
     @BeforeEach
     public void beforeEachTests() {
@@ -31,13 +35,9 @@ class BuddiesRepositoryTest {
                 .name("Anna")
                 .lastName("Kowalska")
                 .password("annaKowalska")
+                .city("Wrocław")
                 .build();
     }
-
-    @Autowired
-    private TestEntityManager testEm;
-    @Autowired
-    private BuddiesRepository buddiesRepository;
 
     @Test
     public void whenFindByUsername_thenReturnBuddy() {

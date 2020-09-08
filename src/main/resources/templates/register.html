@@ -1,0 +1,144 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+</head>
+<body>
+<div class="container">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-background-imgRegister">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-4">
+                <h3 class="info-font lighter small-padding">Join and experience cultural events with new buddies!</h3>
+                <div class="info-font medium-font">
+                    <div>Meet at concerts, museums, cinemas, theaters... Talk about books, music, art. Get discounts
+                        only for culture buddies!
+                    </div>
+                    <div class="bold-font">This page is just the beginning. Get out of the internet and live for real!
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-5">
+                <form th:action="@{/register}" method="POST" th:object="${buddy}" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center other-font light-font">Register</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="form-group">
+                                <label for="name"></label>
+                                <input type="text" id="name" th:field="*{name}"
+                                       class="form-control"
+                                       placeholder="name..."/>
+                                <small id="helpName" th:class="${#fields.hasErrors('name')}? 'error' : 'light-font'">name</small>
+                                <small th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')}"
+                                       class="error">error</small>
+
+                                <label for="lastName"></label>
+                                <input type="text" id="lastName" th:field="*{lastName} "
+                                       class="form-control"
+                                       placeholder="last name..."/>
+                                <small id="helpLastName" class="light-font">last name</small>
+
+
+                                <label for="username"></label>
+                                <input type="text" id="username" th:field="*{username}"
+                                       class="form-control"
+                                       placeholder="username..."/>
+                                <small id="helpUsername" class="light-font">username</small>
+
+                                <label for="email"></label>
+                                <input type="email" id="email" th:field="*{email}"
+                                       class="form-control"
+                                       placeholder="email..."/>
+                                <small id="helpEmail" class="light-font">email</small>
+
+                                <label for="city"></label>
+                                <select id="city" th:field="*{city}" class="lighter form-control">
+                                    <option th:value="Wrocław">Wrocław</option>
+                                    <option th:value="Warszawa">Warszwa</option>
+                                </select>
+                                <small id="helpCity" class="light-font">city of culture</small>
+
+                                <label for="password"></label>
+                                <input type="password" id="password" th:field="*{password}"
+                                       class="form-control"
+                                       placeholder="password..."/>
+                                <small id="helpPassword" class="light-font">password</small>
+
+                                <label for="repeatPassword"></label>
+                                <input type="password" id="repeatPassword"
+                                       class="form-control"
+                                       placeholder="password..."/>
+                                <small id="helpRepeatPassword" class="light-font">repeat password</small>
+                            </div>
+
+                            <div class="small-margin-bottom">
+                                <div class="info-font lighter small-padding very-small-margin-bottom">
+                                    ...and maybe would you like to add a photo?
+                                </div>
+                                <label for="profilePicture"></label><small class="light-font">
+                                <input type="file" name="profilePicture" accept="image/gif,image/png, image/jpeg"
+                                       id="profilePicture"/></small>
+                            </div>
+                            <div></div>
+                            <div class="btn-group" role="group">
+                                <input type="submit">
+                                <button type="submit" id="login" class="btn btn-success">join
+                                </button>
+                                <button type="reset" class="btn btn-warning">reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="card">
+                    <div class="card-header">
+                        <div>Don't you want to join us yet? Maybe later ...
+                            <button type="submit" id="register" class="btn-info"><a href="home.html" class="link">
+                                &#8617;</a></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span> <a
+                            href="https://unsplash.com/@all_who_wander?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kinga Cichewicz</a>
+                        on <a href="https://unsplash.com/s/photos/books-and-friends?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                            Unsplash</a></span></span> and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

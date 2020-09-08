@@ -40,7 +40,7 @@
             </div>
             <div class="col-sm-1"></div>
             <div class="col-sm-4">
-                <form>
+                <form method="post" >
                     <div class="card">
                         <div class="card-header">
                             <h2 class="text-center other-font light-font">Login</h2>
@@ -67,7 +67,7 @@
                     <div class="card-header">
                         <h4>You don't have an account yet? </h4></div>
                         <div class="center">
-                        <button type="submit" id="register" class="btn-info"><a href="#" class="link">register</a></button>
+                        <button type="submit" id="register" class="btn-info"><a th:href="@{/register}" class="link">register</a></button>
                         </div>
                 </div>
             </div>
@@ -79,12 +79,12 @@
             <div class="col-sm-12">
                 <span class="images-references">Background photos by
                     <span> <a
-                            th:href="@{https://unsplash.com/@all_who_wander?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Kinga Cichewicz</a>
-                        on <a th:href="@{https://unsplash.com/s/photos/books-and-friends?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">
+                            href="https://unsplash.com/@all_who_wander?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kinga Cichewicz</a>
+                        on <a href="https://unsplash.com/s/photos/books-and-friends?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
                             Unsplash</a></span></span> and
                 <span> by <a
-                        th:href="@{https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Yvette de Wit</a>
-                    on <a th:href="@{https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText}">Unsplash</a></span>
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
             </div>
         </div>
     </footer>

@@ -29,7 +29,10 @@ public class Buddy {
     private String username;
     @NotBlank
     private String password;
+    @NotBlank
     @Email
     private String email;
     private String pictureUrl;
+    @NotBlank
+    private String city;
 }
