@@ -31,20 +31,26 @@ public class RegisterController {
     }
 
     @PostMapping
-    public String processRegister(@RequestParam(name = "profilePicture", required = false) MultipartFile profilePicture, @Valid Buddy buddy,
+    public String processRegister(@RequestParam(name = "profilePicture", required = false) MultipartFile profilePicture,
+                                  @Valid Buddy buddy,
                                   BindingResult result,
-                                  RedirectAttributes model) throws IOException {
+                                  RedirectAttributes redirectAttributes,
+                                  Model model) throws IOException {
         log.debug("Entity to save {}", buddy);
         if (result.hasErrors()) {
-            log.warn("Entity {} fails validation", buddy);
-            return "/register";
+            log.warn("Entity {} fails validation. Return to register view.", buddy);
+            return "register";
         }
-        buddyService.save(profilePicture, buddy);
-        model.addAttribute("username", buddy.getUsername());
-        return "redirect:/app/{username}";
+        final boolean isSavedUniqueBuddy = buddyService.save(profilePicture, buddy);
+        if (isSavedUniqueBuddy) {
+            redirectAttributes.addAttribute("username", buddy.getUsername());
+            log.debug("Redirect to :/app/{}", buddy.getUsername());
+            return "redirect:/app/{username}";
+        }
+        log.debug("Entity {} is not unique. Return to register view.", buddy);
+        model.addAttribute("errorMessage", "Username is not unique.");
+        return "register";
     }
-
-
 }
 
 

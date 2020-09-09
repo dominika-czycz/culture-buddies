@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.buddies;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class ProfilePictureServiceImplTest {
+class ProfilePictureServiceTest {
     @Autowired
-    PictureService testObj;
+    private PictureService testObj;
+    private Buddy buddyToSave;
 
-    @Test
-    public void whenPictureSaved_thenPicturedUrlSavedToBuddy() throws IOException {
-        //given
-        Buddy buddy = Buddy.builder()
+    @BeforeEach
+    public void setup() {
+        buddyToSave = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")
                 .name("Anna")
@@ -29,11 +29,26 @@ class ProfilePictureServiceImplTest {
                 .password("annaKowalska")
                 .city("Wrocław")
                 .build();
-        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+    }
+
+    @Test
+    public void whenPictureSaved_thenPicturedUrlSavedToBuddy() throws IOException {
+        //given
+        MockMultipartFile mockProfilePicture = new MockMultipartFile(
                 "picture", "profilePic.jpg", "text/jpeg", "test file".getBytes());
         //when
-        testObj.savePicture(mockMultipartFile, buddy);
+        final boolean isSaved = testObj.save(mockProfilePicture, buddyToSave);
         //then
-        assertThat(buddy.getPictureUrl(), is(mockMultipartFile.getOriginalFilename()));
+        assertTrue(isSaved);
+        assertNotNull(buddyToSave.getPictureUrl());
+    }
+
+    @Test
+    public void whenPictureIsNull_thenPictureNotSaved() throws IOException {
+        //when
+        final boolean isSaved = testObj.save(null, buddyToSave);
+        //then
+        assertFalse(isSaved);
+        assertNull(buddyToSave.getPictureUrl());
     }
 }

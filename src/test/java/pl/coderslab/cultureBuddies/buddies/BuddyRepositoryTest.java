@@ -44,7 +44,7 @@ class BuddyRepositoryTest {
         testEm.persist(validTestBuddy);
         testEm.flush();
         //when
-        final Optional<Buddy> found = testObject.findByUsername(validTestBuddy.getUsername());
+        final Optional<Buddy> found = testObject.findFirstByUsernameIgnoringCase(validTestBuddy.getUsername());
         //then
         assertThat(found.get().getUsername(), is(validTestBuddy.getUsername()));
     }

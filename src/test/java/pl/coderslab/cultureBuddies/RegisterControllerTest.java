@@ -24,7 +24,7 @@ class RegisterControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private BuddyService buddyService;
+    private BuddyService buddyServiceMock;
 
 
     @BeforeEach
@@ -51,6 +51,7 @@ class RegisterControllerTest {
     @Test
     public void whenPostValidBuddy_thenSaved() throws Exception {
         //when, then
+        when(buddyServiceMock.save(null, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(post("/register")
                 .param("name", unsavedBuddy.getName())
                 .param("email", unsavedBuddy.getEmail())
@@ -59,7 +60,7 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
-        verify(buddyService, atLeastOnce()).save(null, unsavedBuddy);
+        verify(buddyServiceMock, atLeastOnce()).save(null, unsavedBuddy);
     }
 
     @Test
@@ -73,7 +74,7 @@ class RegisterControllerTest {
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "name", "lastName", "email", "username",
                         "password", "city"));
-        verify(buddyService, atMost(0)).save(null, emptyBuddy);
+        verify(buddyServiceMock, atMost(0)).save(null, emptyBuddy);
     }
 
     @Test
@@ -92,7 +93,7 @@ class RegisterControllerTest {
                 .andExpect(model().errorCount(1))
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "email"));
-        verify(buddyService, atMost(0)).save(null, unsavedWithInvalidEmail);
+        verify(buddyServiceMock, atMost(0)).save(null, unsavedWithInvalidEmail);
     }
 
     @Test
@@ -100,6 +101,7 @@ class RegisterControllerTest {
         //given
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
         //when, then
+        when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(multipart("/register")
                 .file(profilePicture)
                 .param("name", unsavedBuddy.getName())
@@ -109,6 +111,23 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
-        verify(buddyService, atLeastOnce()).save(profilePicture, unsavedBuddy);
+        verify(buddyServiceMock, atLeastOnce()).save(profilePicture, unsavedBuddy);
+    }
+
+    @Test
+    public void whenNotUniqueUsername_thenErrorMessageInModel() throws Exception {
+        String notUniqueUsername = "notUniqueUsername";
+        final Buddy notUniqueBuddy = unsavedBuddy.toBuilder().username(notUniqueUsername).build();
+        when(buddyServiceMock.save(null, notUniqueBuddy)).thenReturn(false);
+        mockMvc.perform(post("/register")
+                .param("name", notUniqueBuddy.getName())
+                .param("email", notUniqueBuddy.getEmail())
+                .param("lastName", notUniqueBuddy.getLastName())
+                .param("city", notUniqueBuddy.getCity())
+                .param("username", notUniqueBuddy.getUsername())
+                .param("password", notUniqueBuddy.getPassword()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register"))
+                .andExpect(model().attribute("errorMessage", "Username is not unique."));
     }
 }

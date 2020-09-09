@@ -10,7 +10,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -21,7 +24,7 @@ class BuddyServiceTest {
     @MockBean
     private PictureService pictureService;
     @Autowired
-    BuddyService testObject;
+    private BuddyService testObject;
     private Buddy unsavedBuddy;
 
     @BeforeEach
@@ -40,19 +43,37 @@ class BuddyServiceTest {
     public void whenSavingBuddyAndPicture_thenBuddyAndPictureSaved() throws IOException {
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
         //when
-        testObject.save(profilePicture, unsavedBuddy);
+        final boolean isSaved = testObject.save(profilePicture, unsavedBuddy);
         //then
         verify(buddyRepository, atLeastOnce()).save(unsavedBuddy);
-        verify(pictureService, atLeastOnce()).savePicture(profilePicture, unsavedBuddy);
+        verify(pictureService, atLeastOnce()).save(profilePicture, unsavedBuddy);
+        assertTrue(isSaved);
     }
 
     @Test
     public void whenSavingBuddyWithoutPicture_thenBuddySaved() throws IOException {
         //when
-        testObject.save(null, unsavedBuddy);
+        final boolean isSaved = testObject.save(null, unsavedBuddy);
         //then
         verify(buddyRepository, atLeastOnce()).save(unsavedBuddy);
-        verify(pictureService, atMost(0)).savePicture(null, unsavedBuddy);
+        verify(pictureService, atLeastOnce()).save(null, unsavedBuddy);
+        assertTrue(isSaved);
+    }
+
+    @Test
+    public void whenNonUniqueUsername_thenBuddyNotSaved() throws IOException {
+        //given
+        final Buddy nonUnique = unsavedBuddy.toBuilder().build();
+        final Buddy savedBuddy = unsavedBuddy.toBuilder().id(10L).build();
+        //when
+        when(buddyRepository.save(unsavedBuddy)).thenReturn(savedBuddy);
+        final boolean isSavedUniqueBuddy = testObject.save(null, unsavedBuddy);
+        when(buddyRepository.findFirstByUsernameIgnoringCase(nonUnique.getUsername())).thenReturn(Optional.of(savedBuddy));
+        final boolean isSavedDuplicatedBuddy = testObject.save(null, nonUnique);
+        //then
+        verify(buddyRepository, atMost(1)).save(unsavedBuddy);
+        assertTrue(isSavedUniqueBuddy);
+        assertFalse(isSavedDuplicatedBuddy);
     }
 
 }

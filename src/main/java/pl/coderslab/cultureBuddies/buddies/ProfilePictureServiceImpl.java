@@ -2,6 +2,7 @@ package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,25 +19,39 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class ProfilePictureServiceImpl implements PictureService {
+    private static final String RESOURCE_NAME = "buddyPictures";
+
     @Override
-    public String savePicture(MultipartFile profilePicture, Buddy buddy) throws IOException {
-        log.info("Saving profile picture");
+    public boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException {
+        if (profilePicture == null) {
+            return false;
+        }
+        String fileName = savePicture(profilePicture, buddy);
+        buddy.setPictureUrl(fileName);
+        return true;
+    }
 
+    private String savePicture(MultipartFile profilePicture, Buddy buddy) throws IOException {
+        log.info("Preparing to save profile picture...");
+        final String extension = FilenameUtils.getExtension(profilePicture.getOriginalFilename());
+        Path pathToPicture = getPathToPicture(buddy, extension);
+        String fileName = StringUtils.cleanPath(buddy.getUsername() + "." + extension);
+        log.debug("Profile picture path: {}", pathToPicture);
+
+        log.info("Saving profile picture...");
+        Files.copy(profilePicture.getInputStream(), pathToPicture, StandardCopyOption.REPLACE_EXISTING);
+        log.debug("Picture {} has been saved", fileName);
+        return fileName;
+    }
+
+    private Path getPathToPicture(Buddy buddy, String extension) {
         String dir = getPathToDirectory();
-        String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(profilePicture.getOriginalFilename()));
-        Path path = Paths.get(dir + "/" + originalFilename);
-        Files.copy(profilePicture.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        log.debug("Profile picture path: {}", path);
-
-        buddy.setPictureUrl(originalFilename);
-        log.debug("Picture {} saved", originalFilename);
-        return originalFilename;
+        return Paths.get(dir + "/" + buddy.getUsername() + "." + extension);
     }
 
     private String getPathToDirectory() {
         ClassLoader classLoader = getClass().getClassLoader();
-        String resourceName = "buddyPictures";
-        File file = new File(Objects.requireNonNull(classLoader.getResource(resourceName)).getFile());
+        File file = new File(Objects.requireNonNull(classLoader.getResource(RESOURCE_NAME)).getFile());
         return file.getAbsolutePath();
     }
 }
