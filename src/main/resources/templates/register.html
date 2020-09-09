@@ -27,7 +27,7 @@
     <article class="article-background-imgRegister">
         <div class="row padding">
             <div class="col-sm-1"></div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 margin-top">
                 <h3 class="info-font lighter small-padding">Join and experience cultural events with new buddies!</h3>
                 <div class="info-font medium-font">
                     <div>Meet at concerts, museums, cinemas, theaters... Talk about books, music, art. Get discounts
@@ -46,45 +46,68 @@
                         </div>
                         <div class="card-body text-center">
                             <div class="form-group">
-                                <label for="name"></label>
-                                <input type="text" id="name" th:field="*{name}"
-                                       class="form-control"
-                                       placeholder="name..."/>
-                                <small id="helpName" th:class="${#fields.hasErrors('name')}? 'error' : 'light-font'">name</small>
-                                <small th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')}"
-                                       class="error">error</small>
 
-                                <label for="lastName"></label>
-                                <input type="text" id="lastName" th:field="*{lastName} "
-                                       class="form-control"
-                                       placeholder="last name..."/>
-                                <small id="helpLastName" class="light-font">last name</small>
+                                <div th:class="${#fields.hasErrors('name')}? 'errorInput'">
+                                    <label for="name"></label>
+                                    <input type="text" id="name" th:field="*{name}"
+                                           placeholder="name..." class="form-control"/>
+                                    <small id="helpName" class="light-font">name</small>
+                                    <small th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')}"
+                                           class="light-font">error</small>
+                                </div>
+
+                                <div th:class="${#fields.hasErrors('lastName')}? 'errorInput'">
+                                    <label for="lastName"></label>
+                                    <input type="text" id="lastName" th:field="*{lastName} "
+                                           class="form-control" placeholder="last name..."/>
+                                    <small id="helpLastName" class="light-font">last name</small>
+                                    <small th:if="${#fields.hasErrors('lastName')}"
+                                           th:text="${#fields.errors('lastName')}"
+                                           class="light-font">error</small>
+                                </div>
 
 
-                                <label for="username"></label>
-                                <input type="text" id="username" th:field="*{username}"
-                                       class="form-control"
-                                       placeholder="username..."/>
-                                <small id="helpUsername" class="light-font">username</small>
+                                <div th:class="${#fields.hasErrors('username')}? 'errorInput'">
+                                    <label for="username"></label>
+                                    <input type="text" id="username" th:field="*{username}"
+                                           class="form-control"
+                                           placeholder="username..."/>
+                                    <small id="helpUsername" class="light-font">username</small>
+                                    <small th:if="${#fields.hasErrors('username')}"
+                                           th:text="${#fields.errors('username')}"
+                                           class="light-font">error</small>
+                                </div>
 
-                                <label for="email"></label>
-                                <input type="email" id="email" th:field="*{email}"
-                                       class="form-control"
-                                       placeholder="email..."/>
-                                <small id="helpEmail" class="light-font">email</small>
+                                <div th:class="${#fields.hasErrors('email')}? 'errorInput'">
+                                    <label for="email"></label>
+                                    <input type="email" id="email" th:field="*{email}"
+                                           class="form-control"
+                                           placeholder="email..."/>
+                                    <small id="helpEmail" class="light-font">email</small>
+                                    <small th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')}"
+                                           class="light-font">error</small>
+                                </div>
 
-                                <label for="city"></label>
-                                <select id="city" th:field="*{city}" class="lighter form-control">
-                                    <option th:value="Wrocław">Wrocław</option>
-                                    <option th:value="Warszawa">Warszwa</option>
-                                </select>
-                                <small id="helpCity" class="light-font">city of culture</small>
+                                <div th:class="${#fields.hasErrors('city')}? 'errorInput'">
+                                    <label for="city"></label>
+                                    <select id="city" th:field="*{city}" class="lighter form-control">
+                                        <option th:value="Wrocław">Wrocław</option>
+                                        <option th:value="Warszawa">Warszwa</option>
+                                    </select>
+                                    <small id="helpCity" class="light-font">city of culture</small>
+                                    <small th:if="${#fields.hasErrors('city')}" th:text="${#fields.errors('city')}"
+                                           class="light-font">error</small>
+                                </div>
 
-                                <label for="password"></label>
-                                <input type="password" id="password" th:field="*{password}"
-                                       class="form-control"
-                                       placeholder="password..."/>
-                                <small id="helpPassword" class="light-font">password</small>
+                                <div th:class="${#fields.hasErrors('password')}? 'errorInput'">
+                                    <label for="password"></label>
+                                    <input type="password" id="password" th:field="*{password}"
+                                           class="form-control"
+                                           placeholder="password..."/>
+                                    <small id="helpPassword" class="light-font">password</small>
+                                    <small th:if="${#fields.hasErrors('password')}" th:text="${#fields.errors('password')}"
+                                           class="light-font">error</small>
+                                </div>
 
                                 <label for="repeatPassword"></label>
                                 <input type="password" id="repeatPassword"
@@ -114,7 +137,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div>Don't you want to join us yet? Maybe later ...
-                            <button type="submit" id="register" class="btn-info"><a href="home.html" class="link">
+                            <button type="submit" id="register" class="btn-info"><a th:href="@{/}" class="link">
                                 &#8617;</a></button>
                         </div>
                     </div>

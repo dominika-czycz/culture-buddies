@@ -89,10 +89,10 @@ body {
 
 .article-background-imgRegister {
     background-image: url(../pictures/kinga-cichewicz-aHu_xuRvsZ4-unsplash.jpg);
-    background-position: right bottom, left top;
+    background-position: right top, left bottom;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 800px;
+    height: 900px;
 }
 
 .article-background-imgBooks {
@@ -153,6 +153,11 @@ body {
 .lighter {
     background-color: rgba(169, 169, 169, 0.62);
 }
+
+.errorInput {
+    background-color: rgba(246, 0, 0, 0.37);
+}
+
 
 .lighter-yellow {
     background-color: rgba(238, 175, 76, 0.29);
