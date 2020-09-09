@@ -1,9 +1,11 @@
 package pl.coderslab.cultureBuddies.buddies;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
@@ -11,6 +13,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 class ProfilePictureServiceImplTest {
     @Autowired
     PictureService testObj;
@@ -33,6 +36,4 @@ class ProfilePictureServiceImplTest {
         //then
         assertThat(buddy.getPictureUrl(), is(mockMultipartFile.getOriginalFilename()));
     }
-
-
 }

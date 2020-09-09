@@ -9,9 +9,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.coderslab.cultureBuddies.buddies.BuddiesRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddies.PictureService;
+import pl.coderslab.cultureBuddies.buddies.BuddyService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -25,9 +24,7 @@ class RegisterControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private BuddiesRepository buddiesRepository;
-    @MockBean
-    private PictureService pictureService;
+    private BuddyService buddyService;
 
 
     @BeforeEach
@@ -44,6 +41,7 @@ class RegisterControllerTest {
 
     @Test
     public void whenRegisterUrl_thenRegisterView() throws Exception {
+        //when, then
         mockMvc.perform(get("/register"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
@@ -52,9 +50,6 @@ class RegisterControllerTest {
 
     @Test
     public void whenPostValidBuddy_thenSaved() throws Exception {
-        //given
-        Buddy savedBuddy = unsavedBuddy.toBuilder().id(10L).build();
-        when(buddiesRepository.save(unsavedBuddy)).thenReturn(savedBuddy);
         //when, then
         mockMvc.perform(post("/register")
                 .param("name", unsavedBuddy.getName())
@@ -64,32 +59,28 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
-        verify(buddiesRepository, atLeastOnce()).save(unsavedBuddy);
+        verify(buddyService, atLeastOnce()).save(null, unsavedBuddy);
     }
 
     @Test
     public void whenPostEmptyBuddy_thenValidationFails() throws Exception {
         //given
         final Buddy emptyBuddy = new Buddy();
-        final Buddy savedEmptyBuddy = emptyBuddy.toBuilder().id(10L).build();
         //when, then
-        when(buddiesRepository.save(emptyBuddy)).thenReturn(savedEmptyBuddy);
         mockMvc.perform(post("/register"))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(6))
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "name", "lastName", "email", "username",
                         "password", "city"));
-        verify(buddiesRepository, atMost(0)).save(emptyBuddy);
+        verify(buddyService, atMost(0)).save(null, emptyBuddy);
     }
 
     @Test
     public void whenPostBuddyWithInvalidEmail_thenValidationFails() throws Exception {
         //given
         final Buddy unsavedWithInvalidEmail = unsavedBuddy.toBuilder().email("nonExistingEmail").build();
-        final Buddy savedBuddy = unsavedWithInvalidEmail.toBuilder().id(10L).build();
         //when, then
-        when(buddiesRepository.save(unsavedWithInvalidEmail)).thenReturn(savedBuddy);
         mockMvc.perform(post("/register")
                 .param("name", unsavedWithInvalidEmail.getName())
                 .param("email", unsavedWithInvalidEmail.getEmail())
@@ -101,16 +92,13 @@ class RegisterControllerTest {
                 .andExpect(model().errorCount(1))
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "email"));
-        verify(buddiesRepository, atMost(0)).save(unsavedWithInvalidEmail);
+        verify(buddyService, atMost(0)).save(null, unsavedWithInvalidEmail);
     }
 
     @Test
-    public void whenPostProfilePicture_thenProfilePictureUrlSavedToBuddy() throws Exception {
+    public void whenPostProfilePicture_thenBuddyWithProfilePictureSaved() throws Exception {
         //given
-        Buddy savedBuddy = unsavedBuddy.toBuilder().id(10L).build();
-        when(buddiesRepository.save(unsavedBuddy)).thenReturn(savedBuddy);
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
-        when(pictureService.savePicture(profilePicture, unsavedBuddy)).thenReturn(profilePicture.getOriginalFilename());
         //when, then
         mockMvc.perform(multipart("/register")
                 .file(profilePicture)
@@ -121,8 +109,6 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
-        verify(buddiesRepository, atLeastOnce()).save(unsavedBuddy);
-        verify(pictureService, atLeastOnce()).savePicture(profilePicture, unsavedBuddy);
-
+        verify(buddyService, atLeastOnce()).save(profilePicture, unsavedBuddy);
     }
 }

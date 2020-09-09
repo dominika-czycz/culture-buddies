@@ -26,6 +26,7 @@ public class ProfilePictureServiceImpl implements PictureService {
         String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(profilePicture.getOriginalFilename()));
         Path path = Paths.get(dir + "/" + originalFilename);
         Files.copy(profilePicture.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        log.debug("Profile picture path: {}", path);
 
         buddy.setPictureUrl(originalFilename);
         log.debug("Picture {} saved", originalFilename);

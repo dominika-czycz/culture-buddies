@@ -19,16 +19,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@ActiveProfiles("test")
-class BuddiesRepositoryTest {
+class BuddyRepositoryTest {
     private Buddy validTestBuddy;
     @Autowired
     private TestEntityManager testEm;
     @Autowired
-    private BuddiesRepository buddiesRepository;
+    private BuddyRepository testObject;
 
     @BeforeEach
-    public void beforeEachTests() {
+    public void setup() {
         validTestBuddy = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")
@@ -45,7 +44,7 @@ class BuddiesRepositoryTest {
         testEm.persist(validTestBuddy);
         testEm.flush();
         //when
-        final Optional<Buddy> found = buddiesRepository.findByUsername(validTestBuddy.getUsername());
+        final Optional<Buddy> found = testObject.findByUsername(validTestBuddy.getUsername());
         //then
         assertThat(found.get().getUsername(), is(validTestBuddy.getUsername()));
     }
@@ -55,7 +54,7 @@ class BuddiesRepositoryTest {
         //given
         final Buddy emptyBuddy = Buddy.builder().build();
         //when, then
-        assertThrows(ConstraintViolationException.class, () -> buddiesRepository.save(emptyBuddy));
+        assertThrows(ConstraintViolationException.class, () -> testObject.save(emptyBuddy));
         assertNull(emptyBuddy.getId());
     }
 
@@ -64,13 +63,13 @@ class BuddiesRepositoryTest {
         //given
         final Buddy buddyWithInvalidEmail = validTestBuddy.toBuilder().email("la").build();
         //when, then
-        assertThrows(ConstraintViolationException.class, () -> buddiesRepository.save(buddyWithInvalidEmail));
+        assertThrows(ConstraintViolationException.class, () -> testObject.save(buddyWithInvalidEmail));
     }
 
     @Test
-    void whenSavingValidBuddy_thenSaved() {
+    void whenSavingValidBuddy_thenSavedAndIdNotNull() {
         //when
-        final Buddy save = buddiesRepository.save(validTestBuddy);
+        final Buddy save = testObject.save(validTestBuddy);
         //then
         assertNotNull(save.getId());
     }
