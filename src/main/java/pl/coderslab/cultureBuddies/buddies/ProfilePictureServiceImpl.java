@@ -19,11 +19,11 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class ProfilePictureServiceImpl implements PictureService {
-    private static final String RESOURCE_NAME = "buddyPictures";
+    private static final String RESOURCE_NAME = "static/pictures/buddyPictures";
 
     @Override
     public boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException {
-        if (profilePicture == null) {
+        if (profilePicture == null || profilePicture.isEmpty()) {
             return false;
         }
         String fileName = savePicture(profilePicture, buddy);
@@ -35,18 +35,22 @@ public class ProfilePictureServiceImpl implements PictureService {
         log.info("Preparing to save profile picture...");
         final String extension = FilenameUtils.getExtension(profilePicture.getOriginalFilename());
         Path pathToPicture = getPathToPicture(buddy, extension);
-        String fileName = StringUtils.cleanPath(buddy.getUsername() + "." + extension);
         log.debug("Profile picture path: {}", pathToPicture);
-
         log.info("Saving profile picture...");
         Files.copy(profilePicture.getInputStream(), pathToPicture, StandardCopyOption.REPLACE_EXISTING);
+        String fileName = getFileName(buddy, extension);
         log.debug("Picture {} has been saved", fileName);
         return fileName;
     }
 
     private Path getPathToPicture(Buddy buddy, String extension) {
         String dir = getPathToDirectory();
-        return Paths.get(dir + "/" + buddy.getUsername() + "." + extension);
+        String fileName = getFileName(buddy, extension);
+        return Paths.get(dir + "/" + fileName);
+    }
+
+    private String getFileName(Buddy buddy, String extension) {
+        return StringUtils.cleanPath(buddy.getUsername() + "." + extension);
     }
 
     private String getPathToDirectory() {

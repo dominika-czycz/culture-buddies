@@ -8,8 +8,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -50,7 +52,7 @@ class BuddyRepositoryTest {
     }
 
     @Test
-    void whenSaveEmptyBuddy_thenConstraintViolationException() {
+    public void whenSaveEmptyBuddy_thenConstraintViolationException() {
         //given
         final Buddy emptyBuddy = Buddy.builder().build();
         //when, then
@@ -59,7 +61,7 @@ class BuddyRepositoryTest {
     }
 
     @Test
-    void whenEmailIsInvalid_thenConstraintViolationException() {
+    public void whenEmailIsInvalid_thenConstraintViolationException() {
         //given
         final Buddy buddyWithInvalidEmail = validTestBuddy.toBuilder().email("la").build();
         //when, then
@@ -67,10 +69,21 @@ class BuddyRepositoryTest {
     }
 
     @Test
-    void whenSavingValidBuddy_thenSavedAndIdNotNull() {
+    public void whenSavingValidBuddy_thenSavedAndIdNotNull() {
         //when
         final Buddy save = testObject.save(validTestBuddy);
         //then
         assertNotNull(save.getId());
+    }
+
+    @Test
+    public void whenSavingBuddyWithRoleThenRoleAdded() {
+        //given
+        final Role roleUser = Role.builder().id(1L).name("ROLE_USER").build();
+        validTestBuddy.addRole(roleUser);
+        //when
+        final Buddy savedBuddy = testObject.save(validTestBuddy);
+        //then
+        assertThat(savedBuddy.getRoles(), is(validTestBuddy.getRoles()));
     }
 }

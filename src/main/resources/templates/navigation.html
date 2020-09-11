@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="pl">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+</head>
+<body>
+<div th:fragment="dashboard">
+    <ul class="lighter-green medium-font cookie-font">
+        <li class="nav-item">
+            <a class="lighter-link" href="#">
+                <h3 class="nav-item">my profile</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="lighter-link" href="#">
+                <h3 class="nav-item">my books</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="lighter-link" href="#">
+                <h3 class="nav-item">my buddies</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="lighter-link" href="#">
+                <h3 class="nav-item">my films</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="lighter-link" href="#">
+                <h3 class="nav-item">my music</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="important-link" href="#">
+                <h2 class="nav-item">events</h2>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="link" href="#">
+                <h3 class="nav-item">change password</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="link" href="#">
+                <h3 class="nav-item">change city</h3>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="yellow-link" href="#">
+                <h3 class="nav-item">log out</h3>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

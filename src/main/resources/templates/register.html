@@ -39,7 +39,7 @@
             </div>
             <div class="col-sm-1"></div>
             <div class="col-sm-5">
-                <form th:action="@{/register}" method="POST" th:object="${buddy}" enctype="multipart/form-data">
+                <form th:action="@{/register}" method="POST" th:modelAttribute="registrationData" th:object="${buddy}" enctype="multipart/form-data">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="text-center other-font light-font">Register</h3>

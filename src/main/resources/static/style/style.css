@@ -78,7 +78,6 @@ body {
 }
 
 
-
 .article-background-img {
     background-image: url(../pictures/kinga-cichewicz-s4aOPAJ4v0E-unsplash.jpg);
     background-position: right bottom, left top;
@@ -102,13 +101,15 @@ body {
     background-size: cover;
     height: 800px;
 }
+
 .article-background-imgProfile {
     background-image: url(../pictures/nathan-dumlao--ATjYS7nk3Y-unsplash.jpg);
-    background-position: top;
+    background-position:  left top;
     background-repeat: repeat;
     background-size: cover;
     height: 750px;
 }
+
 .article-background-imgNoResults {
     background-image: url(../pictures/charles-deluvio-K4mSJ7kc0As-unsplash.jpg);
     background-position: top;
@@ -124,6 +125,7 @@ body {
     background-size: cover;
     height: 597px;
 }
+
 .table-backgroundProfile {
     background-image: url(../pictures/peter-gargiulo-cGNCepznaV8-unsplash.jpg);
     background-position: top left;
@@ -131,6 +133,7 @@ body {
     background-size: auto;
     height: 700px;
 }
+
 /*FRAME AND PROFILE PICTURE*/
 .box {
     width: 100%;
@@ -140,8 +143,9 @@ body {
 
 .profile-img {
     border: 20px groove #67310b;
-    max-height: 100%;
-    max-width: 100%;}
+    max-height: 300px;
+    max-width: 100%;
+}
 
 
 .book-img {
@@ -188,6 +192,7 @@ body {
     color: black;
     text-transform: uppercase;
 }
+
 .list-font {
     font-style: italic;
     font-family: "Bitstream Vera Serif", serif;
@@ -210,6 +215,7 @@ body {
 .center {
     text-align: center;
 }
+
 .left {
     text-align: left;
 }
@@ -237,7 +243,8 @@ body {
 .light-font {
     color: wheat;
 }
-.error{
+
+.error {
     color: darkred;
 }
 
@@ -268,6 +275,9 @@ small {
     margin-bottom: 100px;
     margin-top: 50px;
 }
+.small-margin-top{
+    margin-top: 30px;
+}
 
 .margin-top {
     margin-top: 100px;
@@ -280,6 +290,7 @@ small {
 .margin-bottom {
     margin-bottom: 20px;
 }
+
 .small-margin-around {
     margin: -50px 20px 4px 10px;
 }
@@ -297,7 +308,8 @@ small {
 .margin-left {
     margin-left: 20px;
 }
-.no-margin{
+
+.no-margin {
     margin: 0 0 0 0;
 }
 

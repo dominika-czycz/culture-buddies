@@ -1,10 +1,13 @@
 package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.*;
+import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "buddies")
@@ -35,4 +38,21 @@ public class Buddy {
     private String pictureUrl;
     @NotBlank
     private String city;
+    private Boolean enabled;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        enabled = true;
+    }
+
+    public void addRole(Role role) {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+        if (role != null) {
+            roles.add(role);
+        }
+    }
 }

@@ -40,23 +40,23 @@
             </div>
             <div class="col-sm-1"></div>
             <div class="col-sm-4">
-                <form method="post" >
+                <form  method="post" th:action="@{/login}">
                     <div class="card">
                         <div class="card-header">
                             <h2 class="text-center other-font light-font">Login</h2>
                         </div>
                         <div class="card-body text-center">
                             <div class="form-group">
-                                <label for="username"></label><input type="text" id="username" class="form-control"
+                                <label for="username"></label><input type="text" name="username" id="username" class="form-control"
                                                                      placeholder="username..."/>
                                 <small id="helpUsername" class="light-font">username</small>
-                                <label for="password"></label><input type="text" id="password"
+                                <label for="password"></label><input type="password" name="password" id="password"
                                                                      class="form-control"
                                                                      placeholder="password..."/>
                                 <small id="helpPassword" class="light-font">password</small>
                             </div>
                             <div class="btn-group" role="group">
-                                <button type="button" id="login" class="btn btn-success">log in
+                                <button type="submit" id="login" class="btn btn-success">log in
                                 </button>
                                 <button type="reset" class="btn btn-warning">reset</button>
                             </div>

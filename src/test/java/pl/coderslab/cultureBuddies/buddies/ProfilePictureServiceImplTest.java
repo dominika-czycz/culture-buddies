@@ -51,4 +51,15 @@ class ProfilePictureServiceTest {
         assertFalse(isSaved);
         assertNull(buddyToSave.getPictureUrl());
     }
+
+    @Test
+    public void whenPictureIsEmpty_thenPictureNotSaved() throws IOException {
+        //given
+        final MockMultipartFile mockEmptyMultipartFile = new MockMultipartFile("empty", (byte[]) null);
+        //when
+        final boolean isSaved = testObj.save(mockEmptyMultipartFile, buddyToSave);
+        //then
+        assertFalse(isSaved);
+        assertNull(buddyToSave.getPictureUrl());
+    }
 }

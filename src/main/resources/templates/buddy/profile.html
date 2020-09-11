@@ -1,0 +1,102 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="container">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgProfile">
+        <div class="row padding">
+            <div class="col-sm-8">
+                <div class="table-backgroundProfile around-padding small-margin-around">
+                    <div class="small-margin-bottom">
+                        <h3 class="info-font light-font">Recently added by your buddies</h3>
+                        <div class="center cookie-font">
+                            <div class="btn-group margin-left" role="group">
+                                <button type="button" class="btn"><a href="#"
+                                                                     class="important-link bigger-font">events</a>
+                                </button>
+                                <button type="button" class="btn"><a href="#" class="red-link bigger-font">books</a>
+                                </button>
+                                <button type="button" class="btn"><a href="#" class="red-link bigger-font">music</a>
+                                </button>
+                                <button type="button" class="btn"><a href="#" class="red-link bigger-font">films</a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center cookie-font bigger-font small-margin-bottom light-font small-padding">5
+                        recently events
+                    </div>
+                    <table class="table borderless">
+                        <tbody>
+                        <tr class="info-font light-font medium-font">
+                            <td colspan="4" class="center link"><a href="#">Pixies</a></td>
+                            <td>concert</td>
+                            <td>by Jaskółka</td>
+                            <td>Wrocław</td>
+                            <td>21-09-12</td>
+                            <td class="right">
+                                <button type="button" class="btn btn-success">Join &#129304;</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="box">
+                    <div class="frame">
+                        <img class="profile-img" th:if="${buddy.getPictureUrl()!= null}"
+                             th:src="@{${profilePictureDir + buddy.pictureUrl}}" alt="profile picture">
+                        <img class="profile-img" th:if="${buddy.getPictureUrl() == null}"
+                             th:src="@{${profilePictureDir + defaultPicture}}" alt="profile picture">
+                    </div>
+                    <h4 th:text="${buddy.username}" class="cookie-font bigger-font small-margin-top">username</h4>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </article>
+
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                   <span>Photo by <a
+                           href="https://unsplash.com/@nate_dumlao?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                       Nathan Dumlao</a> on <a
+                           href="https://unsplash.com/s/photos/art-gallery?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                       Unsplash</a></span></span>
+                <span>Photo by <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
