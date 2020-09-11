@@ -1,4 +1,4 @@
-package pl.coderslab.cultureBuddies;
+package pl.coderslab.cultureBuddies.security;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +15,9 @@ import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(RegisterController.class)
@@ -55,7 +55,7 @@ class RegisterControllerTest {
     public void whenPostValidBuddy_thenSaved() throws Exception {
         //when, then
         when(buddyServiceMock.save(null, unsavedBuddy)).thenReturn(true);
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                 .param("name", unsavedBuddy.getName())
                 .param("email", unsavedBuddy.getEmail())
                 .param("lastName", unsavedBuddy.getLastName())
@@ -71,7 +71,7 @@ class RegisterControllerTest {
         //given
         final Buddy emptyBuddy = new Buddy();
         //when, then
-        mockMvc.perform(post("/register"))
+        mockMvc.perform(post("/register").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(6))
                 .andExpect(model().attributeHasFieldErrors("buddy",
@@ -85,7 +85,7 @@ class RegisterControllerTest {
         //given
         final Buddy unsavedWithInvalidEmail = unsavedBuddy.toBuilder().email("nonExistingEmail").build();
         //when, then
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                 .param("name", unsavedWithInvalidEmail.getName())
                 .param("email", unsavedWithInvalidEmail.getEmail())
                 .param("lastName", unsavedWithInvalidEmail.getLastName())
@@ -106,7 +106,7 @@ class RegisterControllerTest {
         //when, then
         when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(multipart("/register")
-                .file(profilePicture)
+                .file(profilePicture).with(csrf())
                 .param("name", unsavedBuddy.getName())
                 .param("email", unsavedBuddy.getEmail())
                 .param("lastName", unsavedBuddy.getLastName())
@@ -122,7 +122,7 @@ class RegisterControllerTest {
         String notUniqueUsername = "notUniqueUsername";
         final Buddy notUniqueBuddy = unsavedBuddy.toBuilder().username(notUniqueUsername).build();
         when(buddyServiceMock.save(null, notUniqueBuddy)).thenReturn(false);
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                 .param("name", notUniqueBuddy.getName())
                 .param("email", notUniqueBuddy.getEmail())
                 .param("lastName", notUniqueBuddy.getLastName())

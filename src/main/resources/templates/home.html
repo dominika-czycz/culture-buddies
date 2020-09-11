@@ -44,6 +44,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h2 class="text-center other-font light-font">Login</h2>
+                            <p th:if="${#request.getParameter('error')}" class="light-font other-font">Wrong username or password</p>
                         </div>
                         <div class="card-body text-center">
                             <div class="form-group">

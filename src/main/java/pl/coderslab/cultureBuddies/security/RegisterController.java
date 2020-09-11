@@ -1,4 +1,4 @@
-package pl.coderslab.cultureBuddies;
+package pl.coderslab.cultureBuddies.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 
@@ -25,7 +24,8 @@ public class RegisterController {
     private final BuddyService buddyService;
 
     @GetMapping
-    public String register(Model model) {
+    public String prepareRegisterPage(Model model) {
+        log.info("Preparing to register");
         model.addAttribute(new Buddy());
         return "register";
     }
@@ -34,7 +34,6 @@ public class RegisterController {
     public String processRegister(@RequestParam(name = "profilePicture", required = false) MultipartFile profilePicture,
                                   @Valid Buddy buddy,
                                   BindingResult result,
-                                  RedirectAttributes redirectAttributes,
                                   Model model) throws IOException {
         log.debug("Entity to save {}", buddy);
         if (result.hasErrors()) {
