@@ -62,7 +62,7 @@ class RegisterControllerTest {
                 .param("city", unsavedBuddy.getCity())
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
-                .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
+                .andExpect(redirectedUrl("/"));
         verify(buddyServiceMock, atLeastOnce()).save(null, unsavedBuddy);
     }
 
@@ -113,7 +113,7 @@ class RegisterControllerTest {
                 .param("city", unsavedBuddy.getCity())
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
-                .andExpect(redirectedUrl("/app/" + unsavedBuddy.getUsername()));
+                .andExpect(redirectedUrl("/"));
         verify(buddyServiceMock, atLeastOnce()).save(profilePicture, unsavedBuddy);
     }
 

@@ -43,9 +43,7 @@ public class RegisterController {
         }
         final boolean isSavedUniqueBuddy = buddyService.save(profilePicture, buddy);
         if (isSavedUniqueBuddy) {
-            redirectAttributes.addAttribute("username", buddy.getUsername());
-            log.debug("Redirect to :/app/{}", buddy.getUsername());
-            return "redirect:/app/{username}";
+            return "redirect:/";
         }
         log.debug("Entity {} is not unique. Return to register view.", buddy);
         model.addAttribute("errorMessage", "Username is not unique.");
