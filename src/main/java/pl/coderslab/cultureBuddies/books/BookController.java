@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
@@ -27,5 +28,10 @@ public class BookController {
         final Set<Author> authors = buddy.getAuthors();
         model.addAttribute("authors", authors);
         return "/books/myBooks";
+    }
+
+    @GetMapping("/{authorId}")
+    public String prepareMyBooksAuthorPage(Model model, @PathVariable Long authorId){
+        return "/books/author";
     }
 }

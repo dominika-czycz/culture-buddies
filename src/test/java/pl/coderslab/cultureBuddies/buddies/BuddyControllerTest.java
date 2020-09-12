@@ -39,13 +39,15 @@ class BuddyControllerTest {
         buddy.setUsername(username);
         buddy.setPictureUrl(username + ".jpg");
         buddy.setEmail("test@test");
-        //when,then
         when(buddyServiceMock.findByUsername(username)).thenReturn(buddy);
+
+        //when
         mockMvc.perform(get("/app/" + username))
                 .andExpect(status().isOk())
                 .andExpect(view().name("buddy/profile"))
                 .andExpect(model().attribute("buddy", buddy));
-        verify(buddyServiceMock, atLeastOnce()).findByUsername(username);
+        //then
+        verify(buddyServiceMock).findByUsername(username);
         verify(emailServiceMock, atLeastOnce()).sendHTMLEmail(buddy.getName(), buddy.getEmail());
     }
 

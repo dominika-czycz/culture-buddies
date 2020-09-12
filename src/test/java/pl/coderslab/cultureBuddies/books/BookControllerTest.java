@@ -46,4 +46,12 @@ class BookControllerTest {
                 .andExpect(model().attribute("authors", buddy.getAuthors()))
                 .andExpect(view().name("/books/myBooks"));
     }
+
+    @Test
+    void whenAppMyBookAuthorUrl_thenMyBookAuthorView() throws Exception {
+        Long authorId = 10L;
+        mockMvc.perform(get("/app/myBooks/"+ authorId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/books/author"));
+    }
 }
