@@ -2,6 +2,8 @@ package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +37,30 @@ public class BuddyServiceImpl implements BuddyService {
     @Override
     public Buddy findByUsername(String username) throws NonExistingNameException {
         return buddyRepository.findFirstByUsernameIgnoringCase(username)
-                .orElseThrow(new NonExistingNameException("Buddy with username" + username + " does not exist in database"));
+                .orElseThrow(new NonExistingNameException("Buddy with username " + username + " does not exist in database"));
+    }
+
+    @Override
+    public String getPrincipalUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
+    }
+
+    @Override
+    public Buddy findBuddyByUsernameWithAuthors(String username) throws NonExistingNameException {
+        final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameIgnoringCase(username);
+        return buddy.orElseThrow(new NonExistingNameException("Buddy with username does not exist in database!"));
+    }
+
+    @Override
+    public Buddy findAuthenticatedBuddyWithAuthors() throws NonExistingNameException {
+        return findBuddyByUsernameWithAuthors(getPrincipalUsername());
     }
 
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {

@@ -1,0 +1,87 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgBooks">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-7">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Authors of my books: </div>
+                    <div class="center cookie-font medium-font small-margin-bottom ">(select to see the list of books)</div>
+                    <table class="table borderless">
+                        <tbody>
+                        <tr th:each="author: ${authors}" class="info-font medium-font">
+                            <td colspan="4" class="center link"><a   th:text="${author.getFullName()}" href="#">Nabokov</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <form th:action="@{/}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="text-center other-font light-font">Add new book</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="form-group">
+                                <label for="title"></label><input type="text" id="title" class="form-control"
+                                                                  placeholder="title..."/>
+                                <small id="helpTitle" class="light-font">title</small>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="submit" id="add" class="btn btn-success">add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-1"></div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span><a
+                            href="https://unsplash.com/@charlesdeluvio?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Charles Deluvio</a> on <a
+                            href="https://unsplash.com/s/photos/sad?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>,
+                <span>, <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+                </span></div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

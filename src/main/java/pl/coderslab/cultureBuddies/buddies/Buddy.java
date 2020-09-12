@@ -1,6 +1,8 @@
 package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.*;
+import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
@@ -41,6 +43,14 @@ public class Buddy {
     private Boolean enabled;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
+    @ManyToMany
+    private Set<Author> authors = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "buddy_books",
+            joinColumns = @JoinColumn(name = "buddy_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private Set<Book> books = new HashSet<>();
 
     @PrePersist
     public void prePersist() {
@@ -54,5 +64,32 @@ public class Buddy {
         if (role != null) {
             roles.add(role);
         }
+    }
+
+    public void addBook(Book book) {
+        if (books == null) {
+            books = new HashSet<>();
+        }
+        if (book != null) {
+            books.add(book);
+        }
+    }
+
+    public Buddy addAuthor(Author author) {
+        if (authors == null) {
+            authors = new HashSet<>();
+        }
+        if (author != null) {
+            authors.add(author);
+        }
+        return this;
+    }
+
+
+    public boolean removeBook(Book book) {
+        if (books != null && book != null) {
+            return books.remove(book);
+        }
+        return false;
     }
 }

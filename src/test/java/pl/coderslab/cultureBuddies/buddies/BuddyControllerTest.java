@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,11 +50,10 @@ class BuddyControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUsername")
     public void whenAppProfileUrl_thenRedirectAppUsernameUrl() throws Exception {
+        when(buddyServiceMock.getPrincipalUsername()).thenReturn("testUsername");
         mockMvc.perform(get("/app/profile"))
                 .andExpect(status().is(302))
                 .andExpect(redirectedUrl("/app/" + username));
-
     }
 }

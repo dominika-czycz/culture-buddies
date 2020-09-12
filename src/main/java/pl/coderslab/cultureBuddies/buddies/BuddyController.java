@@ -2,8 +2,6 @@ package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,20 +33,9 @@ public class BuddyController {
 
     @GetMapping("profile")
     public String redirectProfile(RedirectAttributes redirectAttributes) {
-        String username = getUsername();
+        String username = buddyService.getPrincipalUsername();
         redirectAttributes.addAttribute("username", username);
         return "redirect:/app/{username}";
-    }
-
-    private String getUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        return username;
     }
 
     @ModelAttribute("profilePictureDir")

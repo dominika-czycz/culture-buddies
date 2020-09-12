@@ -31,7 +31,7 @@ class RegisterControllerTest {
     private BuddyService buddyServiceMock;
 
     @BeforeEach
-    public void beforeEachTests() {
+    public void setUp() {
         unsavedBuddy = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")

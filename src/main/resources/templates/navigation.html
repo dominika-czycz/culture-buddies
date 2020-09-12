@@ -14,14 +14,14 @@
 </head>
 <body>
 <div th:fragment="dashboard">
-    <ul class="lighter-green medium-font cookie-font">
+    <ul class="lighter-green medium-font cookie-font center">
         <li class="nav-item">
-            <a class="lighter-link" href="#">
+            <a class="lighter-link" th:href="@{/app/profile}">
                 <h3 class="nav-item">my profile</h3>
             </a>
         </li>
         <li class="nav-item">
-            <a class="lighter-link" href="#">
+            <a class="lighter-link" th:href="@{/app/myBooks}">
                 <h3 class="nav-item">my books</h3>
             </a>
         </li>

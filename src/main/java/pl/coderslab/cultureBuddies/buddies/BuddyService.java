@@ -9,4 +9,10 @@ public interface BuddyService {
     boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException;
 
     Buddy findByUsername(String username) throws NonExistingNameException;
+
+    String getPrincipalUsername();
+
+    Buddy findBuddyByUsernameWithAuthors(String username) throws NonExistingNameException;
+
+    Buddy findAuthenticatedBuddyWithAuthors() throws NonExistingNameException;
 }
