@@ -13,7 +13,7 @@
     <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <header class="jumbotron darker header-background-img">
         <div class="row">
             <div class="col-sm-4"></div>
@@ -26,8 +26,9 @@
     <div th:include="navigation::dashboard"></div>
     <article class="article-background-imgProfile">
         <div class="row padding">
-            <div class="col-sm-8">
-                <div class="table-backgroundProfile around-padding small-margin-around">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-6">
+                <div class="table-backgroundProfile around-padding">
                     <div class="small-margin-bottom">
                         <h3 class="info-font light-font">Recently added by your buddies</h3>
                         <div class="center cookie-font">
@@ -63,6 +64,7 @@
                     </table>
                 </div>
             </div>
+            <div class="col-sm-1"></div>
             <div class="col-sm-3">
                 <div class="box">
                     <div class="frame">

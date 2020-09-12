@@ -54,7 +54,7 @@ public class BuddyServiceImpl implements BuddyService {
 
     @Override
     public Buddy findBuddyByUsernameWithAuthors(String username) throws NonExistingNameException {
-        final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameIgnoringCase(username);
+        final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameWithAuthors(username);
         return buddy.orElseThrow(new NonExistingNameException("Buddy with username does not exist in database!"));
     }
 

@@ -71,10 +71,10 @@ body {
 
 .header-background-img {
     background-image: url(../pictures/yvette-de-wit-NYrVisodQ2M-unsplash.jpg);
-    /*background-position: right bottom, left top;*/
+    background-position:center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 200px;
+    height: 250px;
 }
 
 
@@ -83,7 +83,7 @@ body {
     background-position: right bottom, left top;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 800px;
+    height: 1200px;
 }
 
 .article-background-imgRegister {
@@ -107,7 +107,7 @@ body {
     background-position:  left top;
     background-repeat: repeat;
     background-size: cover;
-    height: 750px;
+    height:1200px;
 }
 
 .article-background-imgNoResults {
