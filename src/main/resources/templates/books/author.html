@@ -31,11 +31,11 @@
                 <div class="table-background around-padding">
                     <div class="center cookie-font bigger-font small-margin-bottom ">My Books by Nabokov</div>
                     <table class="table striped">
-                        <tbody>
+                        <tbody th:each="book: ${books}">
                         <tr class="lighter-yellow other-font">
                             <td class="center">data</td>
 
-                            <td class="link info-font medium-font"><a href="info.html">Lolita</a>
+                            <td class="link info-font medium-font"><a href="info.html" th:text="${book.title}">Title</a>
                             </td>
                             <td class="right">
                                 <button type="reset" class="btn btn-danger"><a href="delete.html">&#x1f5d1;</a></button>

@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.coderslab.cultureBuddies.exceptions.NonExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
@@ -35,9 +35,9 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public Buddy findByUsername(String username) throws NonExistingNameException {
+    public Buddy findByUsername(String username) throws NotExistingNameException {
         return buddyRepository.findFirstByUsernameIgnoringCase(username)
-                .orElseThrow(new NonExistingNameException("Buddy with username " + username + " does not exist in database"));
+                .orElseThrow(new NotExistingNameException("Buddy with username " + username + " does not exist in database"));
     }
 
     @Override
@@ -53,13 +53,13 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public Buddy findBuddyByUsernameWithAuthors(String username) throws NonExistingNameException {
+    public Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingNameException {
         final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameWithAuthors(username);
-        return buddy.orElseThrow(new NonExistingNameException("Buddy with username does not exist in database!"));
+        return buddy.orElseThrow(new NotExistingNameException("Buddy with username does not exist in database!"));
     }
 
     @Override
-    public Buddy findAuthenticatedBuddyWithAuthors() throws NonExistingNameException {
+    public Buddy findAuthenticatedBuddyWithAuthors() throws NotExistingNameException {
         return findBuddyByUsernameWithAuthors(getPrincipalUsername());
     }
 

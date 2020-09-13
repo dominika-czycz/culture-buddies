@@ -15,6 +15,9 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,20 +30,26 @@ class BookControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private BuddyService buddyService;
+    private BuddyService buddyServiceMock;
+    @MockBean
+    private BookService bookServiceMock;
     @Spy
     private Buddy buddy;
+    private Author author;
 
     @BeforeEach
     void setUp() {
+        author = Author.builder()
+                .id(12L)
+                .firstName("Jan")
+                .lastName("Kowalski").build();
     }
 
     @Test
     void whenAppMyBookUrl_thenMyBookView() throws Exception {
-        final Author author = Author.builder().firstName("Jan").lastName("Kowalski").build();
         final Author author2 = author.toBuilder().lastName("Nowak").build();
         buddy.addAuthor(author).addAuthor(author2);
-        when(buddyService.findAuthenticatedBuddyWithAuthors()).thenReturn(buddy);
+        when(buddyServiceMock.findAuthenticatedBuddyWithAuthors()).thenReturn(buddy);
         mockMvc.perform(get("/app/myBooks"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("authors", buddy.getAuthors()))
@@ -48,10 +57,20 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testBuddy")
     void whenAppMyBookAuthorUrl_thenMyBookAuthorView() throws Exception {
-        Long authorId = 10L;
-        mockMvc.perform(get("/app/myBooks/"+ authorId))
+        //given
+        final Book book = Book.builder().title("Book").id(10L).build();
+        final Book book2 = Book.builder().title("Book 2").id(11L).build();
+        final List<Book> books = Arrays.asList(book, book2);
+        author.addBook(book)
+                .addBook(book2);
+        when(bookServiceMock.findBooksByAuthorAndPrincipalUsername(author.getId())).thenReturn(books);
+
+        //when, then
+        mockMvc.perform(get("/app/myBooks/" + author.getId()))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("books", books))
                 .andExpect(view().name("/books/author"));
     }
 }

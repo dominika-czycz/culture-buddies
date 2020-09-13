@@ -66,13 +66,14 @@ public class Buddy {
         }
     }
 
-    public void addBook(Book book) {
+    public Buddy addBook(Book book) {
         if (books == null) {
             books = new HashSet<>();
         }
         if (book != null) {
             books.add(book);
         }
+        return this;
     }
 
     public Buddy addAuthor(Author author) {

@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
-import pl.coderslab.cultureBuddies.exceptions.NonExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -20,9 +21,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BookController {
     private final BuddyService buddyService;
+    private final BookService bookService;
 
     @GetMapping
-    public String prepareMyBooksPage(Model model) throws NonExistingNameException {
+    public String prepareMyBooksPage(Model model) throws NotExistingNameException {
         log.info("Preparing myBooks page...");
         final Buddy buddy = buddyService.findAuthenticatedBuddyWithAuthors();
         final Set<Author> authors = buddy.getAuthors();
@@ -31,7 +33,10 @@ public class BookController {
     }
 
     @GetMapping("/{authorId}")
-    public String prepareMyBooksAuthorPage(Model model, @PathVariable Long authorId){
+    public String prepareMyBooksAuthorPage(Model model, @PathVariable Long authorId) throws NotExistingNameException {
+        log.info("Preparing /app/myBooks/{authorId} page...");
+        final List<Book> books = bookService.findBooksByAuthorAndPrincipalUsername(authorId);
+        model.addAttribute("books", books);
         return "/books/author";
     }
 }

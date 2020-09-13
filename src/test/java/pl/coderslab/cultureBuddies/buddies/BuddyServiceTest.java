@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import pl.coderslab.cultureBuddies.exceptions.NonExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
 import pl.coderslab.cultureBuddies.security.Role;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
@@ -113,7 +113,7 @@ class BuddyServiceTest {
     }
 
     @Test
-    public void whenFindingBuddyByUsername_thenBuddyFound() throws NonExistingNameException {
+    public void whenFindingBuddyByUsername_thenBuddyFound() throws NotExistingNameException {
         //when
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(savedBuddy.getUsername()))
                 .thenReturn(Optional.ofNullable(savedBuddy));
@@ -128,7 +128,7 @@ class BuddyServiceTest {
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(savedBuddy.getUsername()))
                 .thenReturn(Optional.empty());
         //then
-        assertThrows(NonExistingNameException.class,
+        assertThrows(NotExistingNameException.class,
                 () -> testObject.findByUsername(savedBuddy.getUsername()));
     }
 

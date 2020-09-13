@@ -34,7 +34,7 @@
                     <table class="table borderless">
                         <tbody>
                         <tr th:each="author: ${authors}" class="info-font medium-font">
-                            <td colspan="4" class="center link"><a   th:text="${author.getFullName()}" href="#">Nabokov</a></td>
+                            <td colspan="4" class="center link"><a   th:text="${author.fullName}" th:href="${'/app/myBooks/'+author.id}">Nabokov</a></td>
                         </tr>
                         </tbody>
                     </table>

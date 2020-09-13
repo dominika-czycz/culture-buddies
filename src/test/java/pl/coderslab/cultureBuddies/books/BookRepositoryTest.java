@@ -52,4 +52,15 @@ class BookRepositoryTest {
         //then
         assertNotNull(savedBook.getId());
     }
+    /* Author author = Author.builder()
+                .id(12L)
+                .firstName("Jan")
+                .lastName("Kowalski").build();
+        final Book book = Book.builder().title("Book").id(10L).build();
+        final Book book2 = Book.builder().title("Book 2").id(11L).build();
+        final List<Book> books = Arrays.asList(book, book2);
+        author.addBook(book).addBook(book2);
+        buddy.setUsername("testBuddy");
+        buddy.addBook(book).addBook(book2);
+        buddy.addAuthor(author);*/
 }

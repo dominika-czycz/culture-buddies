@@ -2,6 +2,7 @@ package pl.coderslab.cultureBuddies.books;
 
 import lombok.*;
 import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -27,6 +28,8 @@ public class Book {
     @NotEmpty
     @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new HashSet<>();
+    @ManyToMany(mappedBy = "books")
+    private Set<Buddy> buddies = new HashSet<>();
 
     public void addAuthor(Author author) {
         if (authors == null) {

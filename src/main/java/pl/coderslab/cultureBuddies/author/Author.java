@@ -5,6 +5,7 @@ import pl.coderslab.cultureBuddies.books.Book;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,10 +32,18 @@ public class Author {
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
-    private Set<Book> books;
+    private Set<Book> books = new HashSet<>();
 
 
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    public Author addBook(Book book) {
+        if (books == null) {
+            books = new HashSet<>();
+        }
+        books.add(book);
+        return this;
     }
 }
