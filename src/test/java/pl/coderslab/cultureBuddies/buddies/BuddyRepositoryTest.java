@@ -7,16 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.author.AuthorRepository;
-import pl.coderslab.cultureBuddies.books.Book;
-import pl.coderslab.cultureBuddies.books.BookRepository;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,10 +29,6 @@ class BuddyRepositoryTest {
     private TestEntityManager testEm;
     @Autowired
     private BuddyRepository testObject;
-    @MockBean
-    private BookRepository bookRepository;
-    @MockBean
-    private AuthorRepository authorRepository;
 
     @BeforeEach
     public void setup() {
@@ -46,6 +39,7 @@ class BuddyRepositoryTest {
                 .lastName("Kowalska")
                 .password("annaKowalska")
                 .city("Wrocław")
+                .books(new HashSet<>())
                 .build();
     }
 
@@ -96,30 +90,6 @@ class BuddyRepositoryTest {
         assertThat(savedBuddy.getRoles(), is(validTestBuddy.getRoles()));
     }
 
-    @Test
-    public void givenBuddyWithBooks_whenSeekingBuddyWithBooks_thenBuddyWithBooksFound() {
-        //given
-        final Author author = Author.builder()
-                .lastName("Kowalski")
-                .firstName("Jan")
-                .build();
-        final Book book = Book.builder().title("Novel").build();
-        final Book book2 = Book.builder().title("Novel2").build();
-        final Author savedAuthor = testEm.persist(author);
-        book.addAuthor(savedAuthor);
-        book2.addAuthor(savedAuthor);
-        final Book savedBook = testEm.persist(book);
-        final Book savedBook2 = testEm.persist(book2);
-        validTestBuddy.addBook(savedBook);
-        validTestBuddy.addBook(savedBook2);
-        testEm.persist(validTestBuddy);
-        testEm.flush();
-        testEm.clear();
-        final Optional<Buddy> buddyFromDb = testObject.findFirstByUsernameIgnoringCase(validTestBuddy.getUsername());
-        assertThat(buddyFromDb, is(Optional.of(validTestBuddy)));
-        assertThat(buddyFromDb.get().getBooks().size(), is(2));
-        buddyFromDb.get().getBooks().iterator().next().getTitle();
-    }
 
     @Test
     @Transactional
@@ -141,7 +111,7 @@ class BuddyRepositoryTest {
         testEm.flush();
         testEm.clear();
         //when
-        final Buddy buddyFromDb = testObject.findFirstByUsernameIgnoringCase(validTestBuddy.getUsername()).get();
+        final Buddy buddyFromDb = testObject.findFirstByUsernameWithAuthors(validTestBuddy.getUsername()).get();
         //then
         assertThat(buddyFromDb, is(validTestBuddy));
         assertThat(buddyFromDb.getAuthors().size(), is(2));

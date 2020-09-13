@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
@@ -35,9 +35,9 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public Buddy findByUsername(String username) throws NotExistingNameException {
+    public Buddy findByUsername(String username) throws NotExistingRecordException {
         return buddyRepository.findFirstByUsernameIgnoringCase(username)
-                .orElseThrow(new NotExistingNameException("Buddy with username " + username + " does not exist in database"));
+                .orElseThrow(new NotExistingRecordException("Buddy with username " + username + " does not exist in database"));
     }
 
     @Override
@@ -53,14 +53,20 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingNameException {
+    public Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingRecordException {
         final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameWithAuthors(username);
-        return buddy.orElseThrow(new NotExistingNameException("Buddy with username does not exist in database!"));
+        return buddy.orElseThrow(new NotExistingRecordException("Buddy with" + username + " username does not exist in database!"));
     }
 
     @Override
-    public Buddy findAuthenticatedBuddyWithAuthors() throws NotExistingNameException {
+    public Buddy findAuthenticatedBuddyWithAuthors() throws NotExistingRecordException {
         return findBuddyByUsernameWithAuthors(getPrincipalUsername());
+    }
+
+    @Override
+    public Buddy findById(Long id) throws NotExistingRecordException {
+        final Optional<Buddy> buddy = buddyRepository.findById(id);
+        return buddy.orElseThrow(new NotExistingRecordException("Buddy with" + id + " id does not exist in database!"));
     }
 
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {

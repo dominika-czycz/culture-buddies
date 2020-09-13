@@ -1,11 +1,11 @@
 package pl.coderslab.cultureBuddies.books;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.buddies.Buddy;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    List<Book> findByAuthorsAndBuddies(Author author, Buddy buddy);
+    @Query(nativeQuery = true, value = "SELECT b.* FROM books b JOIN author_book ab on b.id = ab.book_id JOIN buddies_books bb on b.id = bb.book_id where author_id = :authorId AND  bb.buddy_id=:buddyId")
+    List<Book> findByAuthorIdAndBookId(Long authorId, Long buddyId);
 }

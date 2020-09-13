@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@ToString
+@ToString(exclude = {"books"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
@@ -22,10 +22,10 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
     @NotBlank
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     @ManyToMany
     @JoinTable(name = "author_book",

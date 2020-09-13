@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.email.EmailService;
-import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import javax.mail.MessagingException;
 
@@ -24,7 +24,7 @@ public class BuddyController {
 
 
     @GetMapping("{username}")
-    public String prepareProfile(@PathVariable String username, Model model) throws NotExistingNameException, MessagingException {
+    public String prepareProfile(@PathVariable String username, Model model) throws NotExistingRecordException, MessagingException {
         final Buddy buddy = buddyService.findByUsername(username);
         model.addAttribute(buddy);
         emailService.sendHTMLEmail(buddy.getName(), buddy.getEmail());

@@ -31,23 +31,24 @@
                 <div class="table-background around-padding">
                     <div class="center cookie-font bigger-font small-margin-bottom ">My Books by Nabokov</div>
                     <table class="table striped">
-                        <tbody th:each="book: ${books}">
-                        <tr class="lighter-yellow other-font">
+                        <tbody>
+                        <div th:each="bookWithOpinion: ${booksRatingList}">
+                        <tr  class="lighter-yellow other-font">
                             <td class="center">data</td>
-
-                            <td class="link info-font medium-font"><a href="info.html" th:text="${book.title}">Title</a>
+                            <td class="link info-font medium-font"><a href="info.html" th:text="${bookWithOpinion.book.title}">Title</a>
                             </td>
                             <td class="right">
                                 <button type="reset" class="btn btn-danger"><a href="delete.html">&#x1f5d1;</a></button>
                             </td>
                         </tr>
                         <tr>
-                            <td class="center title-font">10 <span class="bigger-font">&#129304;</span></td>
-                            <td class="info-font right medium-font">Love it! absolutely gorgeous</td>
+                            <td class="center title-font" th:text="${bookWithOpinion.rate}">rate <span class="bigger-font">&#129304;</span></td>
+                            <td class="info-font right medium-font" th:text="${bookWithOpinion.comment}">comment</td>
                             <td class="right">
                                 <button type="button" class="btn btn-success"><a href="rate.html"> &#128221;</a></button>
                             </td>
                         </tr>
+                        </div>
                         </tbody>
                     </table>
                 </div>

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -19,38 +20,51 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString
-
+@ToString(exclude = {"roles", "authors", "books"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     private String name;
+
     @NotBlank
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+
     @NotBlank
+    @Column(nullable = false)
     private String username;
+
     @NotBlank
+    @Column(nullable = false)
     private String password;
+
     @NotBlank
     @Email
+    @Column(nullable = false)
     private String email;
+
     private String pictureUrl;
+
     @NotBlank
     private String city;
+
+    @Column(nullable = false)
     private Boolean enabled;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
+
     @ManyToMany
     private Set<Author> authors = new HashSet<>();
-    @ManyToMany
-    @JoinTable(name = "buddy_books",
-            joinColumns = @JoinColumn(name = "buddy_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private Set<Book> books = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "buddy",
+//            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<BuddyBook> books = new HashSet<>();
 
     @PrePersist
     public void prePersist() {
@@ -67,11 +81,21 @@ public class Buddy {
     }
 
     public Buddy addBook(Book book) {
-        if (books == null) {
-            books = new HashSet<>();
-        }
-        if (book != null) {
-            books.add(book);
+        BuddyBook buddyBook = new BuddyBook(this, book);
+        books.add(buddyBook);
+        book.getBuddies().add(buddyBook);
+        return this;
+    }
+
+    public Buddy removeBook(Book book) {
+        for (Iterator<BuddyBook> iterator = books.iterator(); iterator.hasNext(); ) {
+            final BuddyBook buddyBook = iterator.next();
+            if (buddyBook.getBuddy().equals(this) && buddyBook.getBook().equals(book)) {
+                iterator.remove();
+                buddyBook.getBook().getBuddies().remove(buddyBook);
+                buddyBook.setBook(null);
+                buddyBook.setBuddy(null);
+            }
         }
         return this;
     }
@@ -84,13 +108,5 @@ public class Buddy {
             authors.add(author);
         }
         return this;
-    }
-
-
-    public boolean removeBook(Book book) {
-        if (books != null && book != null) {
-            return books.remove(book);
-        }
-        return false;
     }
 }

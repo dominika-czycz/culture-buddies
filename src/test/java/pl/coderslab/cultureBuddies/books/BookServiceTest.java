@@ -1,6 +1,5 @@
 package pl.coderslab.cultureBuddies.books;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -12,7 +11,7 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
-import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.Optional;
 
@@ -35,13 +34,8 @@ class BookServiceTest {
     @Spy
     private Author author;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-
     @Test
-    public void givenBuddyAndAuthor_whenSearchingBuddyBookListByAuthor_thenBooksListBeingSearched() throws NotExistingNameException {
+    public void givenBuddyAndAuthor_whenSearchingBuddyBookListByAuthor_thenBooksListBeingSearched() throws NotExistingRecordException {
         //given
         buddy.setUsername("testBuddy");
         author.setId(10L);
@@ -50,8 +44,6 @@ class BookServiceTest {
         //when
         testObj.findBooksByAuthorAndUsername(buddy.getUsername(), author.getId());
         //then
-        verify(bookRepository).findByAuthorsAndBuddies(author, buddy);
+        verify(bookRepository).findByAuthorIdAndBookId(author.getId(), buddy.getId());
     }
-
-
 }

@@ -3,6 +3,7 @@ package pl.coderslab.cultureBuddies.books;
 import lombok.*;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
+import pl.coderslab.cultureBuddies.buddies.BuddyBook;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,19 +18,22 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = "authors")
+@ToString(exclude = {"authors", "buddies"})
 @Builder
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
+    @Column(nullable = false)
     private String title;
     @NotEmpty
     @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new HashSet<>();
-    @ManyToMany(mappedBy = "books")
-    private Set<Buddy> buddies = new HashSet<>();
+    @OneToMany(mappedBy = "book",
+//            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<BuddyBook> buddies = new HashSet<>();
 
     public void addAuthor(Author author) {
         if (authors == null) {

@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
+import pl.coderslab.cultureBuddies.buddies.BuddyBook;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
-import pl.coderslab.cultureBuddies.exceptions.NotExistingNameException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public String prepareMyBooksPage(Model model) throws NotExistingNameException {
+    public String prepareMyBooksPage(Model model) throws NotExistingRecordException {
         log.info("Preparing myBooks page...");
         final Buddy buddy = buddyService.findAuthenticatedBuddyWithAuthors();
         final Set<Author> authors = buddy.getAuthors();
@@ -33,10 +34,13 @@ public class BookController {
     }
 
     @GetMapping("/{authorId}")
-    public String prepareMyBooksAuthorPage(Model model, @PathVariable Long authorId) throws NotExistingNameException {
+    public String prepareMyBooksAuthorPage(Model model, @PathVariable Long authorId) throws NotExistingRecordException {
         log.info("Preparing /app/myBooks/{authorId} page...");
         final List<Book> books = bookService.findBooksByAuthorAndPrincipalUsername(authorId);
+        final List<BuddyBook> booksRating = bookService.findBooksRateOfPrincipalByAuthorId(authorId);
         model.addAttribute("books", books);
+        model.addAttribute("booksRatingList", booksRating);
         return "/books/author";
     }
+
 }
