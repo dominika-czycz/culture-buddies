@@ -9,18 +9,13 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "buddies_books")
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
-@AllArgsConstructor
-@Builder(toBuilder = true)
-@EqualsAndHashCode(of = "id")
-@ToString
 public class BuddyBook {
     @EmbeddedId
-    private BuddyBookId id;
+    private BuddyBookId id = new BuddyBookId();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("buddyId")
     private Buddy buddy;
 
@@ -28,7 +23,6 @@ public class BuddyBook {
     @MapsId("bookId")
     private Book book;
     private String comment;
-    @NotNull
     @Range(min = 0, max = 10)
     private Integer rate;
 

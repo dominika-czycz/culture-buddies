@@ -12,6 +12,8 @@ import pl.coderslab.cultureBuddies.author.Author;
 
 import javax.validation.ConstraintViolationException;
 
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -31,6 +33,7 @@ class BookRepositoryTest {
                 .lastName("Kowalski")
                 .id(10L).build();
         validBook = Book.builder()
+                .authors(new HashSet<>())
                 .title("Novel").build();
         validBook.addAuthor(author);
     }
@@ -52,15 +55,4 @@ class BookRepositoryTest {
         //then
         assertNotNull(savedBook.getId());
     }
-    /* Author author = Author.builder()
-                .id(12L)
-                .firstName("Jan")
-                .lastName("Kowalski").build();
-        final Book book = Book.builder().title("Book").id(10L).build();
-        final Book book2 = Book.builder().title("Book 2").id(11L).build();
-        final List<Book> books = Arrays.asList(book, book2);
-        author.addBook(book).addBook(book2);
-        buddy.setUsername("testBuddy");
-        buddy.addBook(book).addBook(book2);
-        buddy.addAuthor(author);*/
 }

@@ -62,7 +62,7 @@ public class Buddy {
 
     @OneToMany(
             mappedBy = "buddy",
-//            cascade = CascadeType.ALL,
+            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<BuddyBook> books = new HashSet<>();
 

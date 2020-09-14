@@ -2,7 +2,6 @@ package pl.coderslab.cultureBuddies.books;
 
 import lombok.*;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyBook;
 
 import javax.persistence.*;
@@ -31,14 +30,11 @@ public class Book {
     @ManyToMany(mappedBy = "books")
     private Set<Author> authors = new HashSet<>();
     @OneToMany(mappedBy = "book",
-//            cascade = CascadeType.ALL,
+            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<BuddyBook> buddies = new HashSet<>();
 
     public void addAuthor(Author author) {
-        if (authors == null) {
-            authors = new HashSet<>();
-        }
         if (author != null) {
             authors.add(author);
         }

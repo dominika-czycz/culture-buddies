@@ -2,9 +2,7 @@ package pl.coderslab.cultureBuddies.books;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
@@ -39,24 +37,25 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyId(Long authorId, String username) throws NotExistingRecordException {
+    public List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException {
         checkIfAuthorExists(authorId);
         final Buddy buddy = buddyService.findByUsername(username);
-        return buddyBookRepository.findBooksWhereAuthorIdAndBuddyId(authorId, buddy.getId());
+        return buddyBookRepository.findBookRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
     }
 
 
     @Override
     public List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException {
         final String principalUsername = buddyService.getPrincipalUsername();
-        return findBooksRateWhereAuthorIdAndBuddyId(authorId, principalUsername);
+        return findBooksRateWhereAuthorIdAndBuddyUsername(authorId, principalUsername);
     }
 
-    private void checkIfAuthorExists(Long authorId) throws NotExistingRecordException {
+    private boolean checkIfAuthorExists(Long authorId) throws NotExistingRecordException {
         final Optional<Author> author = authorRepository.findById(authorId);
         if (author.isEmpty()) {
             throw new NotExistingRecordException("Author with id " + authorId + " does not exist");
         }
+        return true;
     }
 
 }

@@ -8,6 +8,6 @@ import java.util.List;
 public interface BookService {
     List<Book> findBooksByAuthorAndUsername(String username, Long authorId) throws NotExistingRecordException;
     List<Book> findBooksByAuthorAndPrincipalUsername(Long authorId) throws NotExistingRecordException;
-    List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyId(Long authorId, String username) throws NotExistingRecordException;
+    List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException;
     List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException;
 }
