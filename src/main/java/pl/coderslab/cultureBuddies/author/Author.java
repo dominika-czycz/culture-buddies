@@ -27,11 +27,7 @@ public class Author {
     @NotBlank
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @ManyToMany
-    @JoinTable(name = "author_book",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToMany(mappedBy = "authors")
     private Set<Book> books = new HashSet<>();
 
 

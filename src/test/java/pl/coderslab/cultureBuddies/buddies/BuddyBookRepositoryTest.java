@@ -12,10 +12,10 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -34,7 +34,10 @@ class BuddyBookRepositoryTest {
                 .lastName("Kowalski")
                 .build();
         Book book = Book.builder()
-                .title("Novel").buddies(new HashSet<>()).authors(new HashSet<>()).build();
+                .title("Novel")
+                .isbn("8381258162")
+                .buddies(new HashSet<>())
+                .authors(new HashSet<>()).build();
         Buddy buddy = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")
@@ -45,20 +48,15 @@ class BuddyBookRepositoryTest {
                 .books(new HashSet<>())
                 .build();
         final Author savedAuthor = testEm.persist(author);
-        testEm.flush();
-        testEm.clear();
-        final Buddy savedBuddy = testEm.persist(buddy);
-        testEm.flush();
-        testEm.clear();
+        testEm.persist(buddy);
         book.addAuthor(savedAuthor);
-        final Book savedBook = testEm.persist(book);
+        testEm.persist(book);
+        final BuddyBook expected = buddy.addBook(book);
+        testEm.persist(expected);
+        testEm.merge(buddy);
         testEm.flush();
-        testEm.clear();
-        buddy.addBook(savedBook);
-        final Buddy mergedBuddy = testEm.merge(savedBuddy);
-        testEm.flush();
-        testEm.clear();
-        final List<BuddyBook> bookRating =
-                testObject.findBookRatingWhereAuthorIdAndBuddyId(savedAuthor.getId(), mergedBuddy.getId());
+        final Optional<BuddyBook> actual = testObject.findByBookAndBuddy(book, buddy);
+        assertThat(actual.get(), is(expected));
+
     }
 }

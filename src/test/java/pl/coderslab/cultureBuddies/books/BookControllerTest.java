@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,8 @@ class BookControllerTest {
     private BuddyService buddyServiceMock;
     @MockBean
     private BookService bookServiceMock;
+    @MockBean
+    private RestBooksService restBooksServiceMock;
     @Spy
     private Buddy buddy;
     private Author author;

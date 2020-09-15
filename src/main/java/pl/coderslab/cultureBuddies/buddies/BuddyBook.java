@@ -2,6 +2,7 @@ package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.stereotype.Service;
 import pl.coderslab.cultureBuddies.books.Book;
 
 import javax.persistence.*;
@@ -9,8 +10,12 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "buddies_books")
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
+@Builder
 public class BuddyBook {
     @EmbeddedId
     private BuddyBookId id = new BuddyBookId();

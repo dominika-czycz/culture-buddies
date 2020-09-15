@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class BookFromGoogle {
-    private String id;
-    private VolumeInfo volumeInfo;
+@NoArgsConstructor
+@Builder
+public class IndustryIdentifier {
+    private String type;
+    private String identifier;
+
 }

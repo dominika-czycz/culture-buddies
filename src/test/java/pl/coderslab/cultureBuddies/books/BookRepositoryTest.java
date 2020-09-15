@@ -33,6 +33,7 @@ class BookRepositoryTest {
                 .lastName("Kowalski")
                 .id(10L).build();
         validBook = Book.builder()
+                .isbn("8381258162")
                 .authors(new HashSet<>())
                 .title("Novel").build();
         validBook.addAuthor(author);

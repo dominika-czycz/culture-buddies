@@ -6,12 +6,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -21,7 +26,29 @@ public class BuddyServiceImpl implements BuddyService {
     private final PictureService pictureService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final BuddyBookRepository buddyBookRepository;
 
+    @Transactional
+    @Override
+    public boolean addBook(Book book) throws NotExistingRecordException {
+        final Buddy buddy = findByUsername(getPrincipalUsername());
+        if (buddyBookRepository.findByBookAndBuddy(book, buddy).isPresent()) {
+            return false;
+        }
+        final BuddyBook buddyBook = buddy.addBook(book);
+        addAuthors(book, buddy);
+        buddyBookRepository.save(buddyBook);
+        return true;
+    }
+
+    private void addAuthors(Book book, Buddy buddy) {
+        final Set<Author> authors = book.getAuthors();
+        for (Author author : authors) {
+            buddy.addAuthor(author);
+        }
+    }
+
+    @Transactional
     @Override
     public boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException {
         if (isDuplicate(buddy)) {

@@ -62,7 +62,6 @@ public class Buddy {
 
     @OneToMany(
             mappedBy = "buddy",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Set<BuddyBook> books = new HashSet<>();
 
@@ -80,11 +79,11 @@ public class Buddy {
         }
     }
 
-    public Buddy addBook(Book book) {
+    public BuddyBook addBook(Book book) {
         BuddyBook buddyBook = new BuddyBook(this, book);
         books.add(buddyBook);
         book.getBuddies().add(buddyBook);
-        return this;
+        return buddyBook;
     }
 
     public Buddy removeBook(Book book) {

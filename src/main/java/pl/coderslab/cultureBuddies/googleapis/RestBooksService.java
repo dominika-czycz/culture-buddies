@@ -1,8 +1,13 @@
 package pl.coderslab.cultureBuddies.googleapis;
 
-import pl.coderslab.cultureBuddies.googleapis.restModel.GoogleLibrarySearchResults;
-import pl.coderslab.cultureBuddies.googleapis.restModel.RestLibrarySearchResults;
+import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
+import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
-public interface RestBooksService<T extends RestLibrarySearchResults> {
-    public T getSearchResults(String title);
+import java.util.List;
+
+public interface RestBooksService {
+    List<BookFromGoogle> getGoogleBooksListByTitle(String title) throws NotExistingRecordException;
+
+    BookFromGoogle getGoogleBookByIsbn(String googleId) throws NotExistingRecordException, InvalidDataFromExternalRestApiException;
 }

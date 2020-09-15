@@ -1,0 +1,81 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgBooks">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-7">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Choose from the list:</div>
+                    <table class="table">
+                        <tr th:each="gBook: ${gBooks}">
+                            <td class="medium-font left">
+                                <span class="bold-font" th:text="${gBook.volumeInfo.title}">title</span> by:
+                                <span th:each="author: ${gBook.volumeInfo.authors}" th:text="${author}"><span>, </span></span>
+                            </td>
+                            <td>
+                                <form th:action="@{/app/myBooks/add}" method="post">
+                                    <input type="text" th:hidden="hidden" th:name="isbn" th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
+                                    <button type="submit" class="btn btn-success">add</button>a
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="center">
+                        <button type="button" class="btn btn-info"><a th:href="@{/app/myBooks}"
+                                                                      class="lighter-link">return</a></button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-1"></div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span><span> <a
+                            href="https://unsplash.com/@itfeelslikefilm?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">🇸🇮 Janko Ferlič</a> on <a
+                            href="https://unsplash.com/s/photos/library?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a>
+                    </span></span></span>,
+                <span>Photo by <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

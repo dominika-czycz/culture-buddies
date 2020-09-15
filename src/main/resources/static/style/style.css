@@ -99,7 +99,8 @@ body {
     background-position: right bottom, left top;
     background-repeat: repeat;
     background-size: cover;
-    height: 800px;
+    height: auto;
+    min-height: 800px;
 }
 
 .article-background-imgProfile {
@@ -123,7 +124,7 @@ body {
     background-position: top;
     background-repeat: repeat;
     background-size: cover;
-    height: 597px;
+    height: auto;
 }
 
 .table-backgroundProfile {
@@ -217,7 +218,8 @@ body {
 }
 
 .left {
-    text-align: left;
+   text-align: left ;
+
 }
 
 .right {
@@ -247,7 +249,9 @@ body {
 .error {
     color: darkred;
 }
-
+.light-error {
+    color: lightcoral;
+}
 
 .jumbotron {
     background-color: darkslategrey;
