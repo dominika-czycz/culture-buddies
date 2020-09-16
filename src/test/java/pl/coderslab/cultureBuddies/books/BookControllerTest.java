@@ -47,10 +47,11 @@ class BookControllerTest {
     private RestBooksService restBooksServiceMock;
     @Spy
     private Buddy buddy;
+    @Spy
+    private Book book;
     private Author author;
     private BookFromGoogle bookFromGoogle;
     private final String title = "title";
-    private final String isbn = "8374955422";
 
     @BeforeEach
     void setUp() {
@@ -59,7 +60,8 @@ class BookControllerTest {
                 .firstName("Jan")
                 .lastName("Kowalski").build();
         final IndustryIdentifier industryIdentifier = new IndustryIdentifier();
-        industryIdentifier.setIdentifier(isbn);
+        industryIdentifier.setIdentifier("8374955422");
+
         final IndustryIdentifier[] industryIdentifiers = {industryIdentifier};
         final VolumeInfo volumeInfo = VolumeInfo.builder()
                 .industryIdentifiers(industryIdentifiers).title(title)
@@ -69,25 +71,21 @@ class BookControllerTest {
     }
 
     @Test
-    public void givenNewBookFromGoogle_whenPostToAdd_thenBookIsAddedToBuddy() throws Exception {
-        when(restBooksServiceMock.getGoogleBookByIdentifierOrTitle(isbn, title)).thenReturn(bookFromGoogle);
-        when(bookServiceMock.addBookToBuddy(bookFromGoogle)).thenReturn(true);
+    public void givenBook_whenPostToAdd_thenBookIsAddedToBuddy() throws Exception {
+        when(bookServiceMock.addBookToBuddy(book)).thenReturn(true);
         mockMvc.perform(post("/app/myBooks/add").with(csrf())
-                .param("isbn", isbn)
-                .param("title", title))
+                .flashAttr("book", book))
                 .andExpect(status().is(302))
                 .andExpect(redirectedUrl("/app/myBooks"));
-        verify(bookServiceMock).addBookToBuddy(bookFromGoogle);
+        verify(bookServiceMock).addBookToBuddy(book);
     }
 
     @Test
-    public void givenAlreadyAddedBookFromGoogle_whenPostToAdd_thenBookNotAdded() throws Exception {
+    public void givenAlreadyAddedBook_whenPostToAdd_thenBookNotAdded() throws Exception {
         String message = "The selected book is already in your collection";
-        when(restBooksServiceMock.getGoogleBookByIdentifierOrTitle(isbn, title)).thenReturn(bookFromGoogle);
-        when(bookServiceMock.addBookToBuddy(bookFromGoogle)).thenReturn(false);
+        when(bookServiceMock.addBookToBuddy(book)).thenReturn(false);
         mockMvc.perform(post("/app/myBooks/add").with(csrf())
-                .param("isbn", isbn)
-                .param("title", title))
+                .flashAttr("book", book))
                 .andExpect(status().is(302))
                 .andExpect(model().attribute("info", message))
                 .andExpect(redirectedUrl("/app/myBooks?info=" + URLEncoder.encode(message, StandardCharsets.UTF_8)));

@@ -12,10 +12,6 @@ import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
-import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
-import pl.coderslab.cultureBuddies.googleapis.restModel.ImageLinks;
-import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
-import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -32,37 +28,34 @@ public class BookServiceImpl implements BookService {
     private final BuddyBookRepository buddyBookRepository;
 
     @Override
-    public boolean addBookToBuddy(BookFromGoogle bookFromGoogle) throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
-        final Optional<Book> bookFromDb = bookRepository.findFirstByIdentifier(bookFromGoogle.getId());
+    public boolean addBookToBuddy(Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
+        final Optional<Book> bookFromDb = bookRepository.findFirstByIdentifier(book.getIdentifier());
         if (bookFromDb.isPresent()) {
             return buddyService.addBook(bookFromDb.get());
         } else {
-            return buddyService.addBook(saveBook(bookFromGoogle));
+            return buddyService.addBook(saveBook(book));
         }
     }
 
-
-    @Override
-    public Book saveBook(BookFromGoogle bookFromGoogle) throws InvalidDataFromExternalRestApiException {
-        final String[] authors = bookFromGoogle.getVolumeInfo().getAuthors();
-        if (authors == null || authors.length == 0) {
+    private Book saveBook(Book book) throws InvalidDataFromExternalRestApiException {
+        final List<String> authorsFullName = book.getAuthorsFullName();
+        if (authorsFullName == null || authorsFullName.isEmpty()) {
             throw new InvalidDataFromExternalRestApiException("Data obtained from external service are invalid!");
         }
-        final Book book = getBook(bookFromGoogle);
-        addAuthorsToBook(authors, book);
+        addAuthorsToBook(book, authorsFullName);
         log.debug("Saving entity {}...", book);
         try {
             final Book savedBook = bookRepository.save(book);
             log.debug("Entity {} has been saved", book);
             return savedBook;
         } catch (ConstraintViolationException | org.hibernate.exception.ConstraintViolationException ex) {
-            log.warn("Book from google fails validation: {}", bookFromGoogle);
+            log.warn("Book from google fails validation: {}", book);
             log.warn("{}", ex.getMessage());
             throw new InvalidDataFromExternalRestApiException("Data obtained from external service are invalid!");
         }
     }
 
-    private void addAuthorsToBook(String[] authors, Book book) {
+    private void addAuthorsToBook(Book book, List<String> authors) {
         for (String author : authors) {
             final String[] names = author.split(" ");
             String firstName = names[0];
@@ -71,22 +64,6 @@ public class BookServiceImpl implements BookService {
             final Author existingAuthor = authorFromDB.orElseGet(() -> authorRepository.save(Author.builder().firstName(firstName).lastName(lastName).build()));
             book.addAuthor(existingAuthor);
         }
-    }
-
-    private Book getBook(BookFromGoogle bookGoogle) throws InvalidDataFromExternalRestApiException {
-        final VolumeInfo volInf = bookGoogle.getVolumeInfo();
-        if (volInf == null) {
-            throw new InvalidDataFromExternalRestApiException("Invalid data from external api");
-        }
-        final ImageLinks imgLinks = (volInf.getImageLinks() != null) ? volInf.getImageLinks() : new ImageLinks();
-        final IndustryIdentifier[] identifiers = volInf.getIndustryIdentifiers();
-        if (identifiers == null || identifiers.length < 1 || identifiers[0] == null) {
-            throw new InvalidDataFromExternalRestApiException("Invalid data from external api");
-        }
-        final String isbn = identifiers[0].getIdentifier();
-        return Book.builder().title(volInf.getTitle())
-                .identifier(isbn)
-                .thumbnailLink(imgLinks.getThumbnail()).build();
     }
 
     @Override
@@ -109,7 +86,6 @@ public class BookServiceImpl implements BookService {
         return buddyBookRepository.findBookRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
     }
 
-
     @Override
     public List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException {
         final String principalUsername = buddyService.getPrincipalUsername();
@@ -122,5 +98,4 @@ public class BookServiceImpl implements BookService {
             throw new NotExistingRecordException("Author with id " + authorId + " does not exist");
         }
     }
-
 }

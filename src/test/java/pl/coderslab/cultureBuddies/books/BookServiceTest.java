@@ -16,7 +16,6 @@ import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
-import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.ImageLinks;
 import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
 import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
@@ -25,9 +24,8 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +48,6 @@ class BookServiceTest {
     private Author author;
     @Spy
     private BuddyBook buddyBook;
-    private BookFromGoogle bookFromGoogle;
     private Book book;
 
     @BeforeEach
@@ -67,14 +64,10 @@ class BookServiceTest {
                 .industryIdentifiers(industryIdentifiers)
                 .authors(new String[]{"Jan Kowalski", "Piotr Nowak"})
                 .build();
-
-        bookFromGoogle = BookFromGoogle.builder()
-                .volumeInfo(volumeInfo)
-                .build();
-
         book = Book.builder()
-                .title(bookFromGoogle.getVolumeInfo().getTitle())
+                .title("title")
                 .identifier(isbn)
+                .authorsFullName(Collections.singletonList("Jan Kowalski"))
                 .thumbnailLink(volumeInfo.getImageLinks().getThumbnail()).build();
 
         when(authorRepositoryMock.findById(author.getId())).thenReturn(Optional.of(author));
@@ -105,20 +98,18 @@ class BookServiceTest {
         //given
         when(bookRepositoryMock.save(book)).thenThrow(ConstraintViolationException.class);
         //when,then
-        assertThrows(InvalidDataFromExternalRestApiException.class, () -> testObj.saveBook(bookFromGoogle));
+        assertThrows(InvalidDataFromExternalRestApiException.class, () -> testObj.addBookToBuddy(book));
     }
 
     @Test
-    public void givenValidBookFromGoogle_whenBookBeingSaved_thenBookIsSaved() throws InvalidDataFromExternalRestApiException {
+    public void givenValidBookFromGoogle_whenBookBeingSaved_thenBookIsSaved() throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
         //given
-        final Book expected = book.toBuilder().id(10L).build();
-        when(bookRepositoryMock.save(book)).thenReturn(expected);
+        when(buddyServiceMock.addBook(book)).thenReturn(true);
+        when(bookRepositoryMock.findFirstByIdentifier(book.getIdentifier())).thenReturn(Optional.ofNullable(book));
         //when
-        final Book savedBook = testObj.saveBook(bookFromGoogle);
+        final boolean isJustSaved = testObj.addBookToBuddy(book);
         //then
-        verify(bookRepositoryMock).save(book);
-        assertThat(savedBook, is(expected));
+        verify(buddyServiceMock).addBook(book);
+        assertTrue(isJustSaved);
     }
-
-
 }

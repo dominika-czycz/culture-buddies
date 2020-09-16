@@ -1,6 +1,5 @@
 package pl.coderslab.cultureBuddies.googleapis;
 
-import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 

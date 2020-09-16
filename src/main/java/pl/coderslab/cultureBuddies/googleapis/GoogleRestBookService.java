@@ -41,7 +41,7 @@ public class GoogleRestBookService implements RestBooksService {
         BookFromGoogle foundBook;
         if (resultFromGoogle == null || resultFromGoogle.getItems() == null || resultFromGoogle.getItems().length == 0) {
             final LibrarySearchResults resultsByTitle = getSearchResultsByTitle(title);
-            if (resultsByTitle != null&&resultsByTitle.getItems()!=null) {
+            if (resultsByTitle != null && resultsByTitle.getItems() != null) {
                 final List<BookFromGoogle> booksFromGoogle = Arrays.asList(resultsByTitle.getItems());
                 final List<BookFromGoogle> booksList = checkBooks(booksFromGoogle);
                 log.debug("List size {}.", booksList.size());

@@ -38,12 +38,18 @@
                                       th:text="${author}"><span>, </span></span>
                             </td>
                             <td>
-                                <form th:action="@{/app/myBooks/add}"
-                                      method="post">
-                                    <input type="text" th:hidden="hidden" th:name="isbn"
+                                <form th:action="@{/app/myBooks/add}" method="post" th:object="${book}">
+                                    <input type="text" hidden="hidden" name="identifier"
                                            th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
-                                    <input type="text" th:hidden="hidden" th:name="title"
-                                           th:value="${#request.getParameter('title')}"/>
+                                    <input type="text" hidden="hidden" name="title"
+                                           th:value="${gBook.volumeInfo.title}"/>
+                                    <input type="text" hidden="hidden" name="thumbnailLink"
+                                           th:if="${gBook.volumeInfo.imageLinks!=null && gBook.volumeInfo.imageLinks.thumbnail!=null}"
+                                           th:value="${gBook.volumeInfo.imageLinks.thumbnail}"/>
+                                    <select hidden="hidden" name="authorsFullName" multiple="multiple">
+                                        <option th:each="author: ${gBook.volumeInfo.authors}"
+                                                th:value="${author}" selected="selected"></option>
+                                    </select>
                                     <button type="submit" class="btn btn-success">add</button>
                                 </form>
                             </td>

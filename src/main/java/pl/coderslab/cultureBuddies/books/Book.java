@@ -9,9 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "books")
@@ -36,6 +34,8 @@ public class Book {
             inverseJoinColumns= @JoinColumn(name = "author_id")
     )
     private Set<Author> authors;
+    @Transient
+    private List<String> authorsFullName = new ArrayList<>();
     @OneToMany(mappedBy = "book",
             orphanRemoval = true)
     private Set<BuddyBook> buddies = new HashSet<>();
@@ -44,6 +44,7 @@ public class Book {
     private String identifier;
     @URL
     private String thumbnailLink;
+
 
     public void addAuthor(Author author) {
         if (authors == null) {

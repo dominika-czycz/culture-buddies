@@ -29,6 +29,7 @@ public class BookController {
     public String prepareAllPage(Model model) throws NotExistingRecordException {
         log.info("Preparing myBooks page...");
         final List<Author> authors = authorService.getOrderedAuthorsListOfPrincipalUser();
+        log.debug("Authors' list with {} positions has been found. ", authors.size());
         model.addAttribute("authors", authors);
         return "/books/myBooks";
     }
@@ -44,22 +45,19 @@ public class BookController {
     }
 
     @GetMapping("/add")
-    public String prepareAddPage(@RequestParam String title, Model model, RedirectAttributes attributes) throws NotExistingRecordException {
+    public String prepareAddPage(@RequestParam String title, Model model) throws NotExistingRecordException {
         log.info("Getting books list from google...");
         final List<BookFromGoogle> books = restBooksService.getGoogleBooksListByTitle(title);
         log.debug("{} results found", books.size());
         model.addAttribute("gBooks", books);
-        attributes.addAttribute("title", title);
+        model.addAttribute(new Book());
         return "/books/add";
     }
 
     @PostMapping("/add")
-    public String processAddPage(@RequestParam String isbn, @RequestParam String title, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException {
-        log.info("Preparing to add book to buddy...");
-        log.debug("Looking for book with isbn {}", isbn);
-        final BookFromGoogle resultFromGoogle = restBooksService.getGoogleBookByIdentifierOrTitle(isbn, title);
-        log.debug("Book from google to add {}", resultFromGoogle);
-        final boolean isJustAdded = bookService.addBookToBuddy(resultFromGoogle);
+    public String processAddPage(Book book, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException {
+        log.debug("Preparing to add book {} to buddy...", book);
+        final boolean isJustAdded = bookService.addBookToBuddy(book);
         if (!isJustAdded) {
             model.addAttribute("info", "The selected book is already in your collection");
         }
