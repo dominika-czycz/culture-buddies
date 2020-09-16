@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyBook;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
@@ -23,15 +24,14 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class BookController {
-    private final BuddyService buddyService;
     private final BookService bookService;
     private final RestBooksService restBooksService;
+    private final AuthorService authorService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
         log.info("Preparing myBooks page...");
-        final Buddy buddy = buddyService.findAuthenticatedBuddyWithAuthors();
-        final Set<Author> authors = buddy.getAuthors();
+        final List<Author> authors = authorService.getOrderedAuthorsListOfPrincipalUser();
         model.addAttribute("authors", authors);
         return "/books/myBooks";
     }
@@ -47,20 +47,21 @@ public class BookController {
     }
 
     @GetMapping("/add")
-    public String prepareAddPage(@RequestParam String title, Model model) throws NotExistingRecordException {
+    public String prepareAddPage(@RequestParam String title, Model model, RedirectAttributes attributes) throws NotExistingRecordException {
         log.info("Getting books list from google...");
         final List<BookFromGoogle> books = restBooksService.getGoogleBooksListByTitle(title);
         log.debug("{} results found", books.size());
         model.addAttribute("gBooks", books);
         model.addAttribute(new BookFromGoogle());
+        attributes.addAttribute("title", title);
         return "/books/add";
     }
 
     @PostMapping("/add")
-    public String processAddPage(@RequestParam String isbn, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException {
+    public String processAddPage(@RequestParam String isbn, @RequestParam String title,  RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException {
         log.info("Preparing to add book to buddy...");
         log.debug("Looking for book with isbn {}", isbn);
-        final BookFromGoogle resultFromGoogle = restBooksService.getGoogleBookByIsbn(isbn);
+        final BookFromGoogle resultFromGoogle = restBooksService.getGoogleBookByIsbnOrTitle(isbn, title);
         log.debug("Book from google to add {}", resultFromGoogle);
         final boolean isAdded = bookService.addBookToBuddy(resultFromGoogle);
         if (!isAdded) {

@@ -50,8 +50,11 @@ public class BookServiceImpl implements BookService {
         }
         final Book book = getBook(bookFromGoogle);
         addAuthorsToBook(authors, book);
+        log.debug("Saving entity {}...", book);
         try {
-            return bookRepository.save(book);
+            final Book savedBook = bookRepository.save(book);
+            log.debug("Entity {} has been saved", book);
+            return savedBook;
         } catch (ConstraintViolationException | org.hibernate.exception.ConstraintViolationException ex) {
             log.warn("Book from google fails validation: {}", bookFromGoogle);
             log.warn("{}", ex.getMessage());
@@ -77,7 +80,7 @@ public class BookServiceImpl implements BookService {
         }
         final ImageLinks imgLinks = (volInf.getImageLinks() != null) ? volInf.getImageLinks() : new ImageLinks();
         final IndustryIdentifier[] identifiers = volInf.getIndustryIdentifiers();
-        if (identifiers == null || identifiers.length == 0 || identifiers[0] == null) {
+        if (identifiers == null || identifiers.length < 1 || identifiers[0] == null) {
             throw new InvalidDataFromExternalRestApiException("Invalid data from external api");
         }
         final String isbn = identifiers[0].getIdentifier();
@@ -113,12 +116,11 @@ public class BookServiceImpl implements BookService {
         return findBooksRateWhereAuthorIdAndBuddyUsername(authorId, principalUsername);
     }
 
-    private boolean checkIfAuthorExists(Long authorId) throws NotExistingRecordException {
+    private void checkIfAuthorExists(Long authorId) throws NotExistingRecordException {
         final Optional<Author> author = authorRepository.findById(authorId);
         if (author.isEmpty()) {
             throw new NotExistingRecordException("Author with id " + authorId + " does not exist");
         }
-        return true;
     }
 
 }

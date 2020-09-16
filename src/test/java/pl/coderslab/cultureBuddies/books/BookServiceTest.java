@@ -18,6 +18,7 @@ import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiExce
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.ImageLinks;
+import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
 import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
 
 import javax.validation.ConstraintViolationException;
@@ -56,12 +57,26 @@ class BookServiceTest {
     public void setUp() throws NotExistingRecordException {
         buddy.setUsername("testBuddy");
         author.setId(10L);
-        bookFromGoogle = BookFromGoogle.builder().volumeInfo(VolumeInfo.builder()
-                .imageLinks(new ImageLinks()).build())
+
+        String isbn = "8374955422";
+        final IndustryIdentifier industryIdentifier = new IndustryIdentifier();
+        industryIdentifier.setIdentifier(isbn);
+        final IndustryIdentifier[] industryIdentifiers = {industryIdentifier};
+        final VolumeInfo volumeInfo = VolumeInfo.builder()
+                .imageLinks(new ImageLinks())
+                .industryIdentifiers(industryIdentifiers)
+                .authors(new String[]{"Jan Kowalski", "Piotr Nowak"})
                 .build();
-        book = Book.builder().title(bookFromGoogle.getVolumeInfo().getTitle())
-                .isbn(bookFromGoogle.getVolumeInfo().getIndustryIdentifiers()[0].getIdentifier())
-                .thumbnailLink(bookFromGoogle.getVolumeInfo().getImageLinks().getThumbnail()).build();
+
+        bookFromGoogle = BookFromGoogle.builder()
+                .volumeInfo(volumeInfo)
+                .build();
+
+        book = Book.builder()
+                .title(bookFromGoogle.getVolumeInfo().getTitle())
+                .isbn(isbn)
+                .thumbnailLink(volumeInfo.getImageLinks().getThumbnail()).build();
+
         when(authorRepositoryMock.findById(author.getId())).thenReturn(Optional.of(author));
         when(buddyServiceMock.findByUsername(buddy.getUsername())).thenReturn(buddy);
     }
@@ -97,16 +112,10 @@ class BookServiceTest {
     public void givenValidBookFromGoogle_whenBookBeingSaved_thenBookIsSaved() throws InvalidDataFromExternalRestApiException {
         //given
         final Book expected = book.toBuilder().id(10L).build();
-
         when(bookRepositoryMock.save(book)).thenReturn(expected);
-        final VolumeInfo volumeInfo = VolumeInfo.builder()
-                .imageLinks(new ImageLinks())
-                .authors(new String[]{"Jan Kowalski", "Piotr Nowak"})
-                .build();
-
-        bookFromGoogle.setVolumeInfo(volumeInfo);
         //when
         final Book savedBook = testObj.saveBook(bookFromGoogle);
+        //then
         verify(bookRepositoryMock).save(book);
         assertThat(savedBook, is(expected));
     }

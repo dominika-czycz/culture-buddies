@@ -13,6 +13,8 @@ public interface BuddyService {
 
     Buddy findByUsername(String username) throws NotExistingRecordException;
 
+    Buddy findPrincipal() throws NotExistingRecordException;
+
     String getPrincipalUsername();
 
     Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingRecordException;

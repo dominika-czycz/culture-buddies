@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
@@ -31,7 +32,7 @@ class BookControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private BuddyService buddyServiceMock;
+    private AuthorService authorServiceMock;
     @MockBean
     private BookService bookServiceMock;
     @MockBean
@@ -52,10 +53,11 @@ class BookControllerTest {
     void whenAppMyBookUrl_thenMyBookView() throws Exception {
         final Author author2 = author.toBuilder().lastName("Nowak").build();
         buddy.addAuthor(author).addAuthor(author2);
-        when(buddyServiceMock.findAuthenticatedBuddyWithAuthors()).thenReturn(buddy);
+        final List<Author> authors = Arrays.asList(author, author2);
+        when(authorServiceMock.getOrderedAuthorsListOfPrincipalUser()).thenReturn(authors);
         mockMvc.perform(get("/app/myBooks"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("authors", buddy.getAuthors()))
+                .andExpect(model().attribute("authors", authors))
                 .andExpect(view().name("/books/myBooks"));
     }
 

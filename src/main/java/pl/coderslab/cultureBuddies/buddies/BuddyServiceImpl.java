@@ -13,7 +13,6 @@ import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
@@ -65,6 +64,14 @@ public class BuddyServiceImpl implements BuddyService {
     public Buddy findByUsername(String username) throws NotExistingRecordException {
         return buddyRepository.findFirstByUsernameIgnoringCase(username)
                 .orElseThrow(new NotExistingRecordException("Buddy with username " + username + " does not exist in database"));
+    }
+
+    @Override
+    public Buddy findPrincipal() throws NotExistingRecordException {
+        final String principalUsername = getPrincipalUsername();
+        final Optional<Buddy> principal = buddyRepository.findFirstByUsernameIgnoringCase(principalUsername);
+        return principal.orElseThrow(new NotExistingRecordException("Buddy with username " + principalUsername
+                + " does not exist"));
     }
 
     @Override

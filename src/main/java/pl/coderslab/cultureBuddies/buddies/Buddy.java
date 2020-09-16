@@ -58,6 +58,10 @@ public class Buddy {
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "buddies_authors",
+            joinColumns = @JoinColumn(name = "buddy_id"),
+            inverseJoinColumns= @JoinColumn(name = "author_id")
+    )
     private Set<Author> authors = new HashSet<>();
 
     @OneToMany(

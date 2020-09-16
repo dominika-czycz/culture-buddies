@@ -34,12 +34,17 @@
                         <tr th:each="gBook: ${gBooks}">
                             <td class="medium-font left">
                                 <span class="bold-font" th:text="${gBook.volumeInfo.title}">title</span> by:
-                                <span th:each="author: ${gBook.volumeInfo.authors}" th:text="${author}"><span>, </span></span>
+                                <span th:each="author: ${gBook.volumeInfo.authors}"
+                                      th:text="${author}"><span>, </span></span>
                             </td>
                             <td>
-                                <form th:action="@{/app/myBooks/add}" method="post">
-                                    <input type="text" th:hidden="hidden" th:name="isbn" th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
-                                    <button type="submit" class="btn btn-success">add</button>a
+                                <form th:action="@{/app/myBooks/add}"
+                                      method="post">
+                                    <input type="text" th:hidden="hidden" th:name="isbn"
+                                           th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
+                                    <input type="text" th:hidden="hidden" th:name="title"
+                                           th:value="${#request.getParameter('title')}"/>
+                                    <button type="submit" class="btn btn-success">add</button>
                                 </form>
                             </td>
                         </tr>
