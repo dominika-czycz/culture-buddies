@@ -35,7 +35,7 @@ class BuddyBookRepositoryTest {
                 .build();
         Book book = Book.builder()
                 .title("Novel")
-                .isbn("8381258162")
+                .identifier("8381258162")
                 .buddies(new HashSet<>())
                 .authors(new HashSet<>()).build();
         Buddy buddy = Buddy.builder()

@@ -41,7 +41,7 @@ public class Book {
     private Set<BuddyBook> buddies = new HashSet<>();
     @NotNull
     @Column(unique = true)
-    private String isbn;
+    private String identifier;
     @URL
     private String thumbnailLink;
 

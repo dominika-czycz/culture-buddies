@@ -63,7 +63,7 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/"));
-        verify(buddyServiceMock, atLeastOnce()).save(null, unsavedBuddy);
+        verify(buddyServiceMock).save(null, unsavedBuddy);
     }
 
     @Test
@@ -114,7 +114,7 @@ class RegisterControllerTest {
                 .param("username", unsavedBuddy.getUsername())
                 .param("password", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/"));
-        verify(buddyServiceMock, atLeastOnce()).save(profilePicture, unsavedBuddy);
+        verify(buddyServiceMock).save(profilePicture, unsavedBuddy);
     }
 
     @Test

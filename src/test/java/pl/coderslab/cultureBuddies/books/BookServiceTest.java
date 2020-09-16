@@ -74,7 +74,7 @@ class BookServiceTest {
 
         book = Book.builder()
                 .title(bookFromGoogle.getVolumeInfo().getTitle())
-                .isbn(isbn)
+                .identifier(isbn)
                 .thumbnailLink(volumeInfo.getImageLinks().getThumbnail()).build();
 
         when(authorRepositoryMock.findById(author.getId())).thenReturn(Optional.of(author));

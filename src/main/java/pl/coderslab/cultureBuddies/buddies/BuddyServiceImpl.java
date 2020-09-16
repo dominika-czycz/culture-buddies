@@ -42,8 +42,10 @@ public class BuddyServiceImpl implements BuddyService {
 
     private void addAuthors(Book book, Buddy buddy) {
         final Set<Author> authors = book.getAuthors();
-        for (Author author : authors) {
-            buddy.addAuthor(author);
+        if (authors != null) {
+            for (Author author : authors) {
+                buddy.addAuthor(author);
+            }
         }
     }
 
@@ -84,23 +86,6 @@ public class BuddyServiceImpl implements BuddyService {
             username = principal.toString();
         }
         return username;
-    }
-
-    @Override
-    public Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingRecordException {
-        final Optional<Buddy> buddy = buddyRepository.findFirstByUsernameWithAuthors(username);
-        return buddy.orElseThrow(new NotExistingRecordException("Buddy with" + username + " username does not exist in database!"));
-    }
-
-    @Override
-    public Buddy findAuthenticatedBuddyWithAuthors() throws NotExistingRecordException {
-        return findBuddyByUsernameWithAuthors(getPrincipalUsername());
-    }
-
-    @Override
-    public Buddy findById(Long id) throws NotExistingRecordException {
-        final Optional<Buddy> buddy = buddyRepository.findById(id);
-        return buddy.orElseThrow(new NotExistingRecordException("Buddy with" + id + " id does not exist in database!"));
     }
 
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {

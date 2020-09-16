@@ -10,12 +10,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.security.Role;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -31,6 +34,8 @@ class BuddyServiceTest {
     private PictureService pictureServiceMock;
     @MockBean
     private RoleRepository roleRepositoryMock;
+    @MockBean
+    private BuddyBookRepository buddyBookRepository;
     @Autowired
     private BuddyService testObject;
     @Spy
@@ -53,6 +58,21 @@ class BuddyServiceTest {
         savedBuddy = unsavedBuddy.toBuilder()
                 .id(10L).build();
         when(buddyRepositoryMock.save(unsavedBuddy)).thenReturn(savedBuddy);
+    }
+
+    @Test
+    @WithMockUser("bestBuddy")
+    public void givenBookAndBuddy_whenBookAddedToBuddy_thenSuccess() throws NotExistingRecordException {
+        final Author author = Author.builder().id(10L).lastName("Kowalski").build();
+        final Book book = Book.builder().title("new Book").identifier("ISBN").authors(Set.of(author)).build();
+        buddySpy.setUsername("bestBuddy");
+        when(buddyBookRepository.findByBookAndBuddy(book, buddySpy)).thenReturn(Optional.empty());
+        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(buddySpy.getUsername())).thenReturn(Optional.of(buddySpy));
+        final BuddyBook buddyBook = BuddyBook.builder().book(book).buddy(buddySpy).build();
+        when(buddySpy.addBook(book)).thenReturn(buddyBook);
+        final boolean isAdded = testObject.addBook(book);
+        verify(buddyBookRepository).save(buddyBook);
+        assertTrue(isAdded);
     }
 
     @Test
@@ -134,7 +154,7 @@ class BuddyServiceTest {
 
     @Test
     @WithMockUser(username = "testUsername")
-    public void givenUsername_whenGettingUsername_thenUsernameGot(){
+    public void givenUsername_whenGettingUsername_thenUsernameGot() {
         //given
         String excepted = "testUsername";
         //when

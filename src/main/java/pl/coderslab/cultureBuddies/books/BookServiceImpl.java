@@ -33,7 +33,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean addBookToBuddy(BookFromGoogle bookFromGoogle) throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
-        final Optional<Book> bookFromDb = bookRepository.findFirstByIsbn(bookFromGoogle.getId());
+        final Optional<Book> bookFromDb = bookRepository.findFirstByIdentifier(bookFromGoogle.getId());
         if (bookFromDb.isPresent()) {
             return buddyService.addBook(bookFromDb.get());
         } else {
@@ -85,7 +85,7 @@ public class BookServiceImpl implements BookService {
         }
         final String isbn = identifiers[0].getIdentifier();
         return Book.builder().title(volInf.getTitle())
-                .isbn(isbn)
+                .identifier(isbn)
                 .thumbnailLink(imgLinks.getThumbnail()).build();
     }
 

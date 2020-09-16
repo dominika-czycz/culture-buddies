@@ -17,10 +17,4 @@ public interface BuddyService {
 
     String getPrincipalUsername();
 
-    Buddy findBuddyByUsernameWithAuthors(String username) throws NotExistingRecordException;
-
-    Buddy findAuthenticatedBuddyWithAuthors() throws NotExistingRecordException;
-
-    Buddy findById(Long id) throws NotExistingRecordException;
-
 }

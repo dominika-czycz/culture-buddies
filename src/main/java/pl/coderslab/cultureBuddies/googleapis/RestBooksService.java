@@ -9,5 +9,5 @@ import java.util.List;
 public interface RestBooksService {
     List<BookFromGoogle> getGoogleBooksListByTitle(String title) throws NotExistingRecordException;
 
-    BookFromGoogle getGoogleBookByIsbnOrTitle(String isbn, String title) throws NotExistingRecordException;
+    BookFromGoogle getGoogleBookByIdentifierOrTitle(String isbn, String title) throws NotExistingRecordException;
 }

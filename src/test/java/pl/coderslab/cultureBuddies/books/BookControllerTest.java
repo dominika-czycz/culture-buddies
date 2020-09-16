@@ -14,14 +14,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
+import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
+import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
+import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -40,6 +48,9 @@ class BookControllerTest {
     @Spy
     private Buddy buddy;
     private Author author;
+    private BookFromGoogle bookFromGoogle;
+    private final String title = "title";
+    private final String isbn = "8374955422";
 
     @BeforeEach
     void setUp() {
@@ -47,14 +58,61 @@ class BookControllerTest {
                 .id(12L)
                 .firstName("Jan")
                 .lastName("Kowalski").build();
+        final IndustryIdentifier industryIdentifier = new IndustryIdentifier();
+        industryIdentifier.setIdentifier(isbn);
+        final IndustryIdentifier[] industryIdentifiers = {industryIdentifier};
+        final VolumeInfo volumeInfo = VolumeInfo.builder()
+                .industryIdentifiers(industryIdentifiers).title(title)
+                .build();
+        bookFromGoogle = BookFromGoogle.builder()
+                .volumeInfo(volumeInfo).build();
     }
 
     @Test
-    void whenAppMyBookUrl_thenMyBookView() throws Exception {
+    public void givenNewBookFromGoogle_whenPostToAdd_thenBookIsAddedToBuddy() throws Exception {
+        when(restBooksServiceMock.getGoogleBookByIdentifierOrTitle(isbn, title)).thenReturn(bookFromGoogle);
+        when(bookServiceMock.addBookToBuddy(bookFromGoogle)).thenReturn(true);
+        mockMvc.perform(post("/app/myBooks/add").with(csrf())
+                .param("isbn", isbn)
+                .param("title", title))
+                .andExpect(status().is(302))
+                .andExpect(redirectedUrl("/app/myBooks"));
+        verify(bookServiceMock).addBookToBuddy(bookFromGoogle);
+    }
+
+    @Test
+    public void givenAlreadyAddedBookFromGoogle_whenPostToAdd_thenBookNotAdded() throws Exception {
+        String message = "The selected book is already in your collection";
+        when(restBooksServiceMock.getGoogleBookByIdentifierOrTitle(isbn, title)).thenReturn(bookFromGoogle);
+        when(bookServiceMock.addBookToBuddy(bookFromGoogle)).thenReturn(false);
+        mockMvc.perform(post("/app/myBooks/add").with(csrf())
+                .param("isbn", isbn)
+                .param("title", title))
+                .andExpect(status().is(302))
+                .andExpect(model().attribute("info", message))
+                .andExpect(redirectedUrl("/app/myBooks?info=" + URLEncoder.encode(message, StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    public void givenTitle_whenAppMyBookAddPlusTitleUrl_thenAddViewAndModelWithGoogleBooksList() throws Exception {
+        //given
+        final List<BookFromGoogle> googleList = Collections.singletonList(bookFromGoogle);
+        when(restBooksServiceMock.getGoogleBooksListByTitle(title)).thenReturn(googleList);
+        //when, then
+        mockMvc.perform(get("/app/myBooks/add?title=" + title))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("gBooks", googleList))
+                .andExpect(view().name("/books/add"));
+    }
+
+    @Test
+    public void whenAppMyBooksUrl_thenMyBookView() throws Exception {
+        //given
         final Author author2 = author.toBuilder().lastName("Nowak").build();
         buddy.addAuthor(author).addAuthor(author2);
         final List<Author> authors = Arrays.asList(author, author2);
         when(authorServiceMock.getOrderedAuthorsListOfPrincipalUser()).thenReturn(authors);
+        //when, then
         mockMvc.perform(get("/app/myBooks"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("authors", authors))
@@ -63,7 +121,7 @@ class BookControllerTest {
 
     @Test
     @WithMockUser(username = "testBuddy")
-    void whenAppMyBookAuthorUrl_thenMyBookAuthorView() throws Exception {
+    public void whenAppMyBookAuthorUrl_thenMyBookAuthorView() throws Exception {
         //given
         final Book book = Book.builder().title("Book").id(10L).build();
         final Book book2 = Book.builder().title("Book 2").id(11L).build();
