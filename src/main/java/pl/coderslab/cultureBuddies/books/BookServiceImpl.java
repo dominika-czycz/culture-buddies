@@ -12,6 +12,7 @@ import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -28,12 +29,13 @@ public class BookServiceImpl implements BookService {
     private final BuddyBookRepository buddyBookRepository;
 
     @Override
-    public boolean addBookToBuddy(Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
+    public BuddyBook addBookToBuddy(Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
         final Optional<Book> bookFromDb = bookRepository.findFirstByIdentifier(book.getIdentifier());
         if (bookFromDb.isPresent()) {
-            return buddyService.addBook(bookFromDb.get());
+            return buddyService.addBookToPrincipalBuddy(bookFromDb.get());
         } else {
-            return buddyService.addBook(saveBook(book));
+            final Book newlySavedBook = saveBook(book);
+            return buddyService.addBookToPrincipalBuddy(newlySavedBook);
         }
     }
 

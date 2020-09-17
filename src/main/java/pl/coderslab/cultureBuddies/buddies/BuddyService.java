@@ -3,11 +3,12 @@ package pl.coderslab.cultureBuddies.buddies;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 
 import java.io.IOException;
 
 public interface BuddyService {
-    boolean addBook(Book book) throws NotExistingRecordException;
+    BuddyBook addBookToPrincipalBuddy(Book book) throws NotExistingRecordException, RelationshipAlreadyCreatedException;
 
     boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException;
 

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
@@ -29,18 +30,21 @@ public class BuddyServiceImpl implements BuddyService {
 
     @Transactional
     @Override
-    public boolean addBook(Book book) throws NotExistingRecordException {
+    public BuddyBook addBookToPrincipalBuddy(Book book) throws NotExistingRecordException, RelationshipAlreadyCreatedException {
         final Buddy buddy = findByUsername(getPrincipalUsername());
         if (buddyBookRepository.findByBookAndBuddy(book, buddy).isPresent()) {
-            return false;
+            throw new RelationshipAlreadyCreatedException("The book already exists in your collection");
         }
-        final BuddyBook buddyBook = buddy.addBook(book);
-        addAuthors(book, buddy);
-        buddyBookRepository.save(buddyBook);
-        return true;
+        return saveBuddyBook(book, buddy);
     }
 
-    private void addAuthors(Book book, Buddy buddy) {
+    private BuddyBook saveBuddyBook(Book book, Buddy buddy) {
+        final BuddyBook buddyBook = buddy.addBook(book);
+        addAuthorsToBuddy(book, buddy);
+        return buddyBookRepository.save(buddyBook);
+    }
+
+    private void addAuthorsToBuddy(Book book, Buddy buddy) {
         final Set<Author> authors = book.getAuthors();
         if (authors != null) {
             for (Author author : authors) {

@@ -11,6 +11,7 @@ import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.BuddyBook;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
@@ -55,13 +56,10 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public String processAddPage(Book book, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException {
+    public String processAddPage(Book book, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
         log.debug("Preparing to add book {} to buddy...", book);
-        final boolean isJustAdded = bookService.addBookToBuddy(book);
-        if (!isJustAdded) {
-            model.addAttribute("info", "The selected book is already in your collection");
-        }
-        return "redirect:/app/myBooks";
+        bookService.addBookToBuddy(book);
+        return "/books/rate";
     }
 }
 

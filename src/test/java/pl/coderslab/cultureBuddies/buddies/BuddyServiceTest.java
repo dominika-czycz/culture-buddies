@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.Role;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
@@ -62,7 +63,8 @@ class BuddyServiceTest {
 
     @Test
     @WithMockUser("bestBuddy")
-    public void givenBookAndBuddy_whenBookAddedToBuddy_thenSuccess() throws NotExistingRecordException {
+    public void givenBookAndBuddy_whenBookAddedToBuddy_thenBuddyBookRelationCreated() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
+        //given
         final Author author = Author.builder().id(10L).lastName("Kowalski").build();
         final Book book = Book.builder().title("new Book").identifier("ISBN").authors(Set.of(author)).build();
         buddySpy.setUsername("bestBuddy");
@@ -70,9 +72,12 @@ class BuddyServiceTest {
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(buddySpy.getUsername())).thenReturn(Optional.of(buddySpy));
         final BuddyBook buddyBook = BuddyBook.builder().book(book).buddy(buddySpy).build();
         when(buddySpy.addBook(book)).thenReturn(buddyBook);
-        final boolean isAdded = testObject.addBook(book);
+        when(buddyBookRepository.save(buddyBook)).thenReturn(buddyBook);
+        //when
+        final BuddyBook createdBuddyBook = testObject.addBookToPrincipalBuddy(book);
+        //then
         verify(buddyBookRepository).save(buddyBook);
-        assertTrue(isAdded);
+        assertNotNull(createdBuddyBook);
     }
 
     @Test

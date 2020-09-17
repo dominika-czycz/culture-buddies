@@ -8,6 +8,8 @@ import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.LibrarySearchResults;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -59,12 +61,14 @@ public class GoogleRestBookService implements RestBooksService {
     }
 
     private LibrarySearchResults getSearchResultsByTitle(String title) {
-        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=title:" + title;
+        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=title:"
+                + URLEncoder.encode(title, StandardCharsets.UTF_8);
         return template.getForObject(uri, LibrarySearchResults.class);
     }
 
     private LibrarySearchResults getSearchResultsByIsbn(String isbn) {
-        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=isbn:" + isbn;
+        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=isbn:"
+                + URLEncoder.encode(isbn, StandardCharsets.UTF_8);
         return template.getForObject(uri, LibrarySearchResults.class);
     }
 

@@ -16,6 +16,7 @@ import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.ImageLinks;
 import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
 import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
@@ -24,8 +25,9 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -102,14 +104,14 @@ class BookServiceTest {
     }
 
     @Test
-    public void givenValidBookFromGoogle_whenBookBeingSaved_thenBookIsSaved() throws InvalidDataFromExternalRestApiException, NotExistingRecordException {
+    public void givenBookNotRelatedWithBuddy_whenBookAddedToBuddy_thenNewRelationCreated() throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
         //given
-        when(buddyServiceMock.addBook(book)).thenReturn(true);
         when(bookRepositoryMock.findFirstByIdentifier(book.getIdentifier())).thenReturn(Optional.ofNullable(book));
+        when(buddyServiceMock.addBookToPrincipalBuddy(book)).thenReturn(buddyBook);
         //when
-        final boolean isJustSaved = testObj.addBookToBuddy(book);
+        final BuddyBook createdBuddyBook = testObj.addBookToBuddy(book);
         //then
-        verify(buddyServiceMock).addBook(book);
-        assertTrue(isJustSaved);
+        verify(buddyServiceMock).addBookToPrincipalBuddy(book);
+        assertThat(createdBuddyBook, is(buddyBook));
     }
 }
