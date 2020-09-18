@@ -3,7 +3,7 @@ package pl.coderslab.cultureBuddies.books;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

@@ -3,6 +3,7 @@ package pl.coderslab.cultureBuddies.buddies;
 import lombok.*;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
@@ -20,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles", "authors", "books"})
+@ToString(exclude = {"roles", "authors", "books", "books", "password"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

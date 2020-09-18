@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 
 import java.util.HashSet;
 import java.util.Optional;

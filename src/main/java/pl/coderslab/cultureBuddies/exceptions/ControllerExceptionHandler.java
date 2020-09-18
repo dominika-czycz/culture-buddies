@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
-
     @ExceptionHandler(value = {Exception.class})
     public ModelAndView handleConflict(HttpServletRequest request,
                                        Exception ex) throws Exception {
@@ -21,7 +20,8 @@ public class ControllerExceptionHandler {
             throw ex;
         }
         log.debug("Handling exception {}. Request address {}", ex.toString(), request.getRequestURI());
-        log.debug("{}", request.getUserPrincipal().getName());
+        log.debug("{}", ex.getMessage());
+        ex.printStackTrace();
         ModelAndView mav = new ModelAndView();
         mav.addObject("message", ex.getLocalizedMessage());
         mav.setViewName("/errors/error");

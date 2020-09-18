@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookId;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
@@ -45,12 +47,15 @@ class BookControllerTest {
     private BookService bookServiceMock;
     @MockBean
     private RestBooksService restBooksServiceMock;
+    @MockBean
+    private BuddyBookService buddyBookService;
     @Spy
     private Buddy buddy;
     @Spy
     private Book book;
     @Spy
     private BuddyBook buddyBook;
+
     private Author author;
     private BookFromGoogle bookFromGoogle;
     private final String title = "title";
@@ -73,19 +78,33 @@ class BookControllerTest {
     }
 
     @Test
+    public void givenValidBuddyBookWithRating_whenPostToRate_thenBuddyBookIsUpdated() throws Exception {
+        mockMvc.perform(post("/app/myBooks/rate").with(csrf())
+                .flashAttr("buddyBook", buddyBook))
+                .andExpect(status().is(302))
+                .andExpect(redirectedUrl("/app/myBooks"));
+    }
+
+    @Test
     public void givenBook_whenPostToAdd_thenBookIsAddedToBuddy() throws Exception {
+        //given
         when(bookServiceMock.addBookToBuddy(book)).thenReturn(buddyBook);
+        //when, then
         mockMvc.perform(post("/app/myBooks/add").with(csrf())
                 .flashAttr("book", book))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("buddyBookWithId", buddyBook))
+                .andExpect(model().attribute("buddyBook", new BuddyBook()))
+                .andExpect(model().attribute("book", book))
                 .andExpect(view().name("/books/rate"));
         verify(bookServiceMock).addBookToBuddy(book);
     }
 
-    //TODO
     @Test
     public void givenAlreadyAddedBook_whenPostToAdd_thenBookNotAdded() throws Exception {
+        //given
         when(bookServiceMock.addBookToBuddy(book)).thenThrow(RelationshipAlreadyCreatedException.class);
+        //when, then
         mockMvc.perform(post("/app/myBooks/add").with(csrf())
                 .flashAttr("book", book))
                 .andExpect(status().isOk())
@@ -128,7 +147,6 @@ class BookControllerTest {
         author.addBook(book)
                 .addBook(book2);
         when(bookServiceMock.findBooksByAuthorAndPrincipalUsername(author.getId())).thenReturn(books);
-
         //when, then
         mockMvc.perform(get("/app/myBooks/" + author.getId()))
                 .andExpect(status().isOk())

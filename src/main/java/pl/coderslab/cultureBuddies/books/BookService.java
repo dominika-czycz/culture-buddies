@@ -1,6 +1,6 @@
 package pl.coderslab.cultureBuddies.books;
 
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
@@ -41,7 +43,9 @@ public class BuddyServiceImpl implements BuddyService {
     private BuddyBook saveBuddyBook(Book book, Buddy buddy) {
         final BuddyBook buddyBook = buddy.addBook(book);
         addAuthorsToBuddy(book, buddy);
-        return buddyBookRepository.save(buddyBook);
+        final BuddyBook saved = buddyBookRepository.save(buddyBook);
+        log.debug("Entity {} has been saved.", saved);
+        return saved;
     }
 
     private void addAuthorsToBuddy(Book book, Buddy buddy) {

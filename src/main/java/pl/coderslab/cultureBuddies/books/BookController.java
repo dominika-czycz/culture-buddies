@@ -4,17 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -25,6 +27,7 @@ public class BookController {
     private final BookService bookService;
     private final RestBooksService restBooksService;
     private final AuthorService authorService;
+    private final BuddyBookService buddyBookService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
@@ -56,10 +59,25 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public String processAddPage(Book book, RedirectAttributes model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
-        log.debug("Preparing to add book {} to buddy...", book);
-        bookService.addBookToBuddy(book);
+    public String processAddPage(Book book, Model model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
+        log.debug("Preparing to add relation between  {} and principal...", book);
+        final BuddyBook buddyBook = bookService.addBookToBuddy(book);
+        log.debug("BuddyBook {}", buddyBook);
+        model.addAttribute("buddyBookWithId", buddyBook);
+        model.addAttribute(new BuddyBook());
+        model.addAttribute(book);
         return "/books/rate";
+    }
+
+    @PostMapping("/rate")
+    public String processAddPage(@Valid BuddyBook buddyBook, BindingResult result) throws NotExistingRecordException {
+        log.debug("Preparing to update entity {}.", buddyBook);
+        if (result.hasErrors()) {
+            log.warn("Entity {} has failed validation! Return to rate view", buddyBook);
+            return "/books/rate";
+        }
+        buddyBookService.updateBuddyBook(buddyBook);
+        return "redirect:/app/myBooks";
     }
 }
 

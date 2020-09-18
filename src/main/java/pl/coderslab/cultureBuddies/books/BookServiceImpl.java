@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
-import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
@@ -85,7 +85,7 @@ public class BookServiceImpl implements BookService {
     public List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException {
         checkIfAuthorExists(authorId);
         final Buddy buddy = buddyService.findByUsername(username);
-        return buddyBookRepository.findBookRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
+        return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
     }
 
     @Override

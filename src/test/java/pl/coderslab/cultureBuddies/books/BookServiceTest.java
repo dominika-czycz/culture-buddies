@@ -11,8 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddies.BuddyBook;
-import pl.coderslab.cultureBuddies.buddies.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
@@ -87,12 +87,12 @@ class BookServiceTest {
     @Test
     public void givenAuthorIdAndBuddyUsername_whenSearchingBooksRate_thenBooksListBeingSearched() throws NotExistingRecordException {
         //given
-        when(buddyBookRepositoryMock.findBookRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId()))
+        when(buddyBookRepositoryMock.findRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId()))
                 .thenReturn(Collections.singletonList(buddyBook));
         //when
         testObj.findBooksRateWhereAuthorIdAndBuddyUsername(author.getId(), buddy.getUsername());
         //then
-        verify(buddyBookRepositoryMock).findBookRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId());
+        verify(buddyBookRepositoryMock).findRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId());
     }
 
     @Test
