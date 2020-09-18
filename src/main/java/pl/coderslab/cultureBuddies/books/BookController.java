@@ -41,9 +41,9 @@ public class BookController {
     @GetMapping("/{authorId}")
     public String prepareByAuthorPage(Model model, @PathVariable Long authorId) throws NotExistingRecordException {
         log.info("Preparing /app/myBooks/{authorId} page...");
-        final List<Book> books = bookService.findBooksByAuthorAndPrincipalUsername(authorId);
         final List<BuddyBook> booksRating = bookService.findBooksRateOfPrincipalByAuthorId(authorId);
-        model.addAttribute("books", books);
+        final Author author = authorService.findById(authorId);
+        model.addAttribute(author);
         model.addAttribute("booksRatingList", booksRating);
         return "/books/author";
     }
@@ -59,7 +59,8 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public String processAddPage(Book book, Model model) throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
+    public String processAddPage(Book book, Model model)
+            throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  {} and principal...", book);
         final BuddyBook buddyBook = bookService.addBookToBuddy(book);
         log.debug("BuddyBook {}", buddyBook);
@@ -77,6 +78,26 @@ public class BookController {
             return "/books/rate";
         }
         buddyBookService.updateBuddyBook(buddyBook);
+        return "redirect:/app/myBooks";
+    }
+
+    @GetMapping("/delete/{bookId}")
+    public String prepareDeletePage(@PathVariable Long bookId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing to delete principal relation with book of id:  {}...", bookId);
+        final BuddyBook buddyBook = buddyBookService.findRelationWithPrincipalByBookId(bookId);
+        log.debug("Preparing to delete buddy-book relation with id {}...", buddyBook);
+        final Book book = bookService.findByIdWithAuthors(bookId);
+        final Long authorId = book.getAuthors().iterator().next().getId();
+        model.addAttribute("authorId", authorId);
+        model.addAttribute(book);
+        model.addAttribute(buddyBook);
+        return "/books/delete";
+    }
+
+    @PostMapping("/delete")
+    public String processDeletePage(@RequestParam Long bookId) throws NotExistingRecordException {
+        log.debug("Preparing to delete relation principal and book of id={}.", bookId);
+        buddyBookService.remove(bookId);
         return "redirect:/app/myBooks";
     }
 }

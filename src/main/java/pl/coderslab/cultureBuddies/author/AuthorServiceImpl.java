@@ -19,6 +19,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<Author> getOrderedAuthorsListOfPrincipalUser() throws NotExistingRecordException {
         final Buddy principal = buddyService.findPrincipal();
-        return authorRepository.findByBuddiesOrderByLastName(principal);
+        return authorRepository.findByBuddiesOrderByLastName(principal.getId());
+    }
+
+    @Override
+    public Author findById(Long authorId) throws NotExistingRecordException {
+        return authorRepository.findById(authorId).orElseThrow(new NotExistingRecordException("Author with id " + authorId +
+                " does not exist in database!"));
     }
 }

@@ -42,19 +42,9 @@ public class BuddyServiceImpl implements BuddyService {
 
     private BuddyBook saveBuddyBook(Book book, Buddy buddy) {
         final BuddyBook buddyBook = buddy.addBook(book);
-        addAuthorsToBuddy(book, buddy);
         final BuddyBook saved = buddyBookRepository.save(buddyBook);
         log.debug("Entity {} has been saved.", saved);
         return saved;
-    }
-
-    private void addAuthorsToBuddy(Book book, Buddy buddy) {
-        final Set<Author> authors = book.getAuthors();
-        if (authors != null) {
-            for (Author author : authors) {
-                buddy.addAuthor(author);
-            }
-        }
     }
 
     @Transactional

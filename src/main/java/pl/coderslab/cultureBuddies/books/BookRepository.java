@@ -11,4 +11,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByAuthorIdAndBookId(Long authorId, Long buddyId);
 
     Optional<Book> findFirstByIdentifier(String isbn);
+@Query(value = "SELECT b FROM Book b JOIN FETCH b.authors where b.id = ?1")
+    Book findByIdWithAuthors(Long bookId);
 }

@@ -13,9 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
-import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
-import pl.coderslab.cultureBuddies.buddyBook.BuddyBookId;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
@@ -49,8 +47,6 @@ class BookControllerTest {
     private RestBooksService restBooksServiceMock;
     @MockBean
     private BuddyBookService buddyBookService;
-    @Spy
-    private Buddy buddy;
     @Spy
     private Book book;
     @Spy
@@ -127,7 +123,6 @@ class BookControllerTest {
     public void whenAppMyBooksUrl_thenMyBookView() throws Exception {
         //given
         final Author author2 = author.toBuilder().lastName("Nowak").build();
-        buddy.addAuthor(author).addAuthor(author2);
         final List<Author> authors = Arrays.asList(author, author2);
         when(authorServiceMock.getOrderedAuthorsListOfPrincipalUser()).thenReturn(authors);
         //when, then
@@ -143,14 +138,12 @@ class BookControllerTest {
         //given
         final Book book = Book.builder().title("Book").id(10L).build();
         final Book book2 = Book.builder().title("Book 2").id(11L).build();
-        final List<Book> books = Arrays.asList(book, book2);
-        author.addBook(book)
-                .addBook(book2);
-        when(bookServiceMock.findBooksByAuthorAndPrincipalUsername(author.getId())).thenReturn(books);
+        author.addBook(book).addBook(book2);
+        when(authorServiceMock.findById(author.getId())).thenReturn(author);
         //when, then
         mockMvc.perform(get("/app/myBooks/" + author.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("books", books))
+                .andExpect(model().attribute("author", author))
                 .andExpect(view().name("/books/author"));
     }
 }

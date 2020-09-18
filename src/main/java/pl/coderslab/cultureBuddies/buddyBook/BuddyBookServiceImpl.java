@@ -3,6 +3,9 @@ package pl.coderslab.cultureBuddies.buddyBook;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.coderslab.cultureBuddies.buddies.Buddy;
+import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.Optional;
@@ -12,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BuddyBookServiceImpl implements BuddyBookService {
     private final BuddyBookRepository buddyBookRepository;
+    private final BuddyService buddyService;
 
     @Override
     public void updateBuddyBook(BuddyBook buddyBook) throws NotExistingRecordException {
@@ -27,5 +31,24 @@ public class BuddyBookServiceImpl implements BuddyBookService {
         updating.setRate(buddyBook.getRate());
         final BuddyBook updated = buddyBookRepository.save(updating);
         log.debug("Entity {} has been updated", updated);
+    }
+
+    @Override
+    public BuddyBook findRelationWithPrincipalByBookId(long bookId) throws NotExistingRecordException {
+        final Buddy principal = buddyService.findPrincipal();
+        final BuddyBookId buddyBookId = new BuddyBookId();
+        buddyBookId.setBuddyId(principal.getId());
+        buddyBookId.setBookId(bookId);
+        log.debug("Looking for buddy-book relation with id {}", buddyBookId);
+        final Optional<BuddyBook> buddyBookRelation = buddyBookRepository.findById(buddyBookId);
+        return buddyBookRelation.orElseThrow(new NotExistingRecordException("Something went wrong. You are not related to this book!"));
+    }
+
+    @Override
+    @Transactional
+    public void remove(Long bookId) throws NotExistingRecordException {
+        final BuddyBook buddyBook = findRelationWithPrincipalByBookId(bookId);
+        buddyBookRepository.delete(buddyBook);
+        log.debug("Entity {}  has been deleted.", buddyBook);
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
+import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
-import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -99,5 +99,16 @@ public class BookServiceImpl implements BookService {
         if (author.isEmpty()) {
             throw new NotExistingRecordException("Author with id " + authorId + " does not exist");
         }
+    }
+
+    @Override
+    public Book findById(Long id) throws NotExistingRecordException {
+        final Optional<Book> book = bookRepository.findById(id);
+        return book.orElseThrow(new NotExistingRecordException("Book with id " + id + " does not exist in database!"));
+    }
+
+    @Override
+    public Book findByIdWithAuthors(Long bookId) {
+        return bookRepository.findByIdWithAuthors(bookId);
     }
 }

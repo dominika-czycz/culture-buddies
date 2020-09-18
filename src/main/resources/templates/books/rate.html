@@ -28,9 +28,11 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-10">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom margin-top ">Rate
-                        <span th:text="${book.title}">Book title </span> <span th:each="author: ${book.authorsFullName}"
-                                                                               th:text="${author}">Author full name</span>
+                    <div class="center cookie-font bigger-font small-margin-bottom margin-top "> Rate
+                        <div class="other-font medium-font small-margin-top">
+                            <span th:text="${book.title}">Book title </span> by:
+                            <span th:each="author: ${book.authorsFullName}"
+                                  th:text="${author}">Author full name</span>, </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-3"></div>
@@ -55,7 +57,8 @@
                                                        th:text="${#fields.errors('rate')}"
                                                        class="light-font">error</small>
                                             </label>
-                                            <input type="hidden" th:value="${buddyBookWithId.id.buddyId}" name="buddyId">
+                                            <input type="hidden" th:value="${buddyBookWithId.id.buddyId}"
+                                                   name="buddyId">
                                             <input type="hidden" th:value="${buddyBookWithId.id.bookId}" name="bookId">
                                         </div>
                                         <div class="btn-group" role="group">

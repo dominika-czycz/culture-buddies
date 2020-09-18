@@ -30,9 +30,6 @@ public class Author {
     private String lastName;
     @ManyToMany(mappedBy = "authors")
     private Set<Book> books = new HashSet<>();
-    @ManyToMany(mappedBy = "authors")
-    private Set<Buddy> buddies = new HashSet<>();
-
 
     public String getFullName() {
         return firstName + " " + lastName;

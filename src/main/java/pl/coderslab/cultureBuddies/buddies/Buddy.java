@@ -21,7 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles", "authors", "books", "books", "password"})
+@ToString(exclude = {"roles",  "books", "books", "password"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,13 +57,6 @@ public class Buddy {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "buddies_authors",
-            joinColumns = @JoinColumn(name = "buddy_id"),
-            inverseJoinColumns= @JoinColumn(name = "author_id")
-    )
-    private Set<Author> authors = new HashSet<>();
 
     @OneToMany(
             mappedBy = "buddy",
@@ -104,13 +97,4 @@ public class Buddy {
         return this;
     }
 
-    public Buddy addAuthor(Author author) {
-        if (authors == null) {
-            authors = new HashSet<>();
-        }
-        if (author != null) {
-            authors.add(author);
-        }
-        return this;
-    }
 }

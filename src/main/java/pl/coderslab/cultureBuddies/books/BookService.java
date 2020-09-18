@@ -17,4 +17,8 @@ public interface BookService {
     List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException;
 
     List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException;
+
+    Book findById(Long id) throws NotExistingRecordException;
+
+    Book findByIdWithAuthors(Long bookId);
 }

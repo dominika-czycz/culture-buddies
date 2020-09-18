@@ -105,15 +105,12 @@ class BuddyRepositoryTest {
                 .build();
         final Author savedAuthor = testEm.persist(author);
         final Author savedAuthor2 = testEm.persist(author2);
-        validTestBuddy.addAuthor(savedAuthor);
-        validTestBuddy.addAuthor(savedAuthor2);
         testEm.persist(validTestBuddy);
         testEm.flush();
         testEm.clear();
         //when
-        final Buddy buddyFromDb = testObject.findFirstByUsernameWithAuthors(validTestBuddy.getUsername()).get();
+        final Buddy buddyFromDb = testObject.findFirstByUsernameIgnoringCase(validTestBuddy.getUsername()).get();
         //then
         assertThat(buddyFromDb, is(validTestBuddy));
-        assertThat(buddyFromDb.getAuthors().size(), is(2));
     }
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AuthorService {
     List<Author> getOrderedAuthorsListOfPrincipalUser() throws NotExistingRecordException;
+
+    Author findById(Long authorId) throws NotExistingRecordException;
 }
