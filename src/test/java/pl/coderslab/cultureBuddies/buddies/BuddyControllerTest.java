@@ -48,7 +48,6 @@ class BuddyControllerTest {
                 .andExpect(model().attribute("buddy", buddy));
         //then
         verify(buddyServiceMock).findByUsername(username);
-        verify(emailServiceMock, atLeastOnce()).sendHTMLEmail(buddy.getName(), buddy.getEmail());
     }
 
     @Test

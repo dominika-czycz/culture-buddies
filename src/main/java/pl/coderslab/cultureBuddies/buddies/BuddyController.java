@@ -20,14 +20,12 @@ import javax.mail.MessagingException;
 @RequiredArgsConstructor
 public class BuddyController {
     private final BuddyService buddyService;
-    private final EmailService emailService;
 
 
     @GetMapping("{username}")
     public String prepareProfile(@PathVariable String username, Model model) throws NotExistingRecordException, MessagingException {
         final Buddy buddy = buddyService.findByUsername(username);
         model.addAttribute(buddy);
-        emailService.sendHTMLEmail(buddy.getName(), buddy.getEmail());
         return "buddy/profile";
     }
 

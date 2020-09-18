@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.email.EmailService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -29,6 +30,8 @@ class RegisterControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private BuddyService buddyServiceMock;
+    @MockBean
+    private EmailService emailServiceMock;
 
     @BeforeEach
     public void setUp() {
@@ -56,14 +59,12 @@ class RegisterControllerTest {
         //when, then
         when(buddyServiceMock.save(null, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(post("/register").with(csrf())
-                .param("name", unsavedBuddy.getName())
-                .param("email", unsavedBuddy.getEmail())
-                .param("lastName", unsavedBuddy.getLastName())
-                .param("city", unsavedBuddy.getCity())
-                .param("username", unsavedBuddy.getUsername())
-                .param("password", unsavedBuddy.getPassword()))
+                .flashAttr("buddy", unsavedBuddy)
+                .param("repeatedPassword", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/"));
         verify(buddyServiceMock).save(null, unsavedBuddy);
+        verify(emailServiceMock).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
+
     }
 
     @Test
@@ -71,13 +72,17 @@ class RegisterControllerTest {
         //given
         final Buddy emptyBuddy = new Buddy();
         //when, then
-        mockMvc.perform(post("/register").with(csrf()))
+        mockMvc.perform(post("/register").with(csrf())
+                .param("repeatedPassword", "password")
+                .flashAttr("buddy", emptyBuddy))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(6))
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "name", "lastName", "email", "username",
                         "password", "city"));
         verify(buddyServiceMock, atMost(0)).save(null, emptyBuddy);
+        verify(emailServiceMock, atMost(0)).sendHTMLEmail(emptyBuddy.getName(), emptyBuddy.getEmail());
+
     }
 
     @Test
@@ -86,17 +91,15 @@ class RegisterControllerTest {
         final Buddy unsavedWithInvalidEmail = unsavedBuddy.toBuilder().email("nonExistingEmail").build();
         //when, then
         mockMvc.perform(post("/register").with(csrf())
-                .param("name", unsavedWithInvalidEmail.getName())
-                .param("email", unsavedWithInvalidEmail.getEmail())
-                .param("lastName", unsavedWithInvalidEmail.getLastName())
-                .param("city", unsavedWithInvalidEmail.getCity())
-                .param("username", unsavedWithInvalidEmail.getUsername())
-                .param("password", unsavedWithInvalidEmail.getPassword()))
+                .flashAttr("buddy", unsavedWithInvalidEmail)
+                .param("repeatedPassword", unsavedWithInvalidEmail.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(1))
                 .andExpect(model().attributeHasFieldErrors("buddy",
                         "email"));
         verify(buddyServiceMock, atMost(0)).save(null, unsavedWithInvalidEmail);
+        verify(emailServiceMock, atMost(0)).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
+
     }
 
     @Test
@@ -107,14 +110,12 @@ class RegisterControllerTest {
         when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(multipart("/register")
                 .file(profilePicture).with(csrf())
-                .param("name", unsavedBuddy.getName())
-                .param("email", unsavedBuddy.getEmail())
-                .param("lastName", unsavedBuddy.getLastName())
-                .param("city", unsavedBuddy.getCity())
-                .param("username", unsavedBuddy.getUsername())
-                .param("password", unsavedBuddy.getPassword()))
+                .flashAttr("buddy", unsavedBuddy)
+                .param("repeatedPassword", unsavedBuddy.getPassword()))
                 .andExpect(redirectedUrl("/"));
         verify(buddyServiceMock).save(profilePicture, unsavedBuddy);
+        verify(emailServiceMock).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
+
     }
 
     @Test
@@ -123,14 +124,12 @@ class RegisterControllerTest {
         final Buddy notUniqueBuddy = unsavedBuddy.toBuilder().username(notUniqueUsername).build();
         when(buddyServiceMock.save(null, notUniqueBuddy)).thenReturn(false);
         mockMvc.perform(post("/register").with(csrf())
-                .param("name", notUniqueBuddy.getName())
-                .param("email", notUniqueBuddy.getEmail())
-                .param("lastName", notUniqueBuddy.getLastName())
-                .param("city", notUniqueBuddy.getCity())
-                .param("username", notUniqueBuddy.getUsername())
-                .param("password", notUniqueBuddy.getPassword()))
+                .flashAttr("buddy", notUniqueBuddy)
+                .param("repeatedPassword", notUniqueBuddy.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
                 .andExpect(model().attribute("errorMessage", "Username is not unique."));
+        verify(emailServiceMock, atMost(0)).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
+
     }
 }
