@@ -23,8 +23,7 @@ import java.util.Objects;
 @Slf4j
 @RequestMapping("register")
 @RequiredArgsConstructor
-public class
-RegisterController {
+public class RegisterController {
     private final BuddyService buddyService;
     private final EmailService emailService;
     private static final int FILE_MAX_SIZE = 1048576;
@@ -76,7 +75,7 @@ RegisterController {
     }
 
     private boolean isProperFileSize(MultipartFile profilePicture, Model model) {
-        if (profilePicture==null) return true;
+        if (profilePicture == null) return true;
         if (profilePicture.getSize() > FILE_MAX_SIZE) {
             log.warn("Profile picture size {} over 10MB", profilePicture.getSize());
             model.addAttribute("pictureMessage", "Profile picture's size must be lower than 1MB!");

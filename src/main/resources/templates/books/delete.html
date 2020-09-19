@@ -30,26 +30,26 @@
             <div class="col-sm-7">
                 <div class="table-background around-padding">
                     <div class="center cookie-font error bigger-font margin-top-bottom">
-                        Are you sure you want to remove <span class="other-font medium-font " th:text="${book.title}">this item</span> from your
-                        list?
+                        Are you sure you want to remove
+                        <div class="other-font medium-font small-margin-top small-margin-bottom"
+                             th:text="${book.title}">this item
+                        </div>
+                        from your list?
                     </div>
                     <div class="center info-font">
-
                         <form th:action="@{/app/myBooks/delete}" th:method="post">
                             <input type="hidden" name="bookId" th:value="${buddyBook.id.bookId}">
                             <input type="hidden" name="buddyId" th:value="${buddyBook.id.buddyId}">
                             <button type="submit" class="btn btn-danger">remove</button>
                         </form>
-                        <button type="button" class="btn btn-info"><a th:href="@{/app/myBooks/${authorId}}"
+                        <button type="button" class="btn btn-info"><a th:href="@{/app/myBooks/__${authorId}__}"
                                                                       class="lighter-link">return</a></button>
                     </div>
                 </div>
             </div>
             <div class="col-sm-1"></div>
-
         </div>
     </article>
-
     <footer>
         <div class="row">
             <div class="col-sm-12">

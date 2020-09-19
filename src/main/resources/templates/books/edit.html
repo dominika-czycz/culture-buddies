@@ -1,0 +1,98 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgBooks">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom margin-top "> Rate
+                        <div class="other-font medium-font small-margin-top">
+                            <span th:text="${book.title}">Book title </span> by:
+                            <span th:each="author: ${book.authors}"
+                                  th:text="${author.fullName}">Author full name</span>, </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-6 center">
+                            <form th:action="@{/app/myBooks/edit}" method="post" th:object="${buddyBook}">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="form-group">
+                                            <label for="review"></label>
+                                            <textarea th:field="*{comment}"
+                                                      id="review"
+                                                      class="form-control"
+                                                      placeholder="Share your thoughts on this book with your buddies..."
+                                                      maxlength="255"></textarea>
+                                            <small id="helpReview" class="light-font">short review (max 255
+                                                characters)</small>
+                                            <label>How many &#129304; do you rate this book?
+                                                <input th:field="*{rate}" type="number" min="0" max="10" step="1"
+                                                       class="narrow"
+                                                       name="rate">
+                                                <small th:if="${#fields.hasErrors('rate')}"
+                                                       th:text="${#fields.errors('rate')}"
+                                                       class="light-font">error</small>
+                                            </label>
+                                            <input type="hidden" th:value="${buddyBook.id.buddyId}"
+                                                   name="buddyId">
+                                            <input type="hidden" th:value="${buddyBook.id.bookId}" name="bookId">
+                                            <input type="hidden" th:value="${authorId}" name="authorId">
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" id="add" class="btn btn-success">add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </article>
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span><a
+                            href="https://unsplash.com/@charlesdeluvio?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Charles Deluvio</a> on <a
+                            href="https://unsplash.com/s/photos/sad?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>,
+                <span>, <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+                </span></div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

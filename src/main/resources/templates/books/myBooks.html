@@ -27,7 +27,7 @@
     <article class="article-background-imgBooks">
         <div class="row padding">
             <div class="col-sm-1"></div>
-            <div class="col-sm-7">
+            <div class="col-sm-5">
                 <div class="table-background around-padding">
                     <div class="center cookie-font bigger-font small-margin-bottom ">Authors of my books:</div>
                     <div class="center cookie-font medium-font small-margin-bottom ">(select to see the list of books)
@@ -36,36 +36,67 @@
                         <tbody>
                         <tr th:each="author: ${authors}" class="info-font medium-font">
                             <td colspan="4" class="center link"><a th:text="${author.fullName}"
-                                                                   th:href="${'/app/myBooks/'+author.id}">Nabokov</a>
+                                                                   th:href="@{/app/myBooks/__${author.id}__}">Nabokov</a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+            <div class="col-sm-1"></div>
             <div class="col-sm-3">
-                <form th:action="@{/app/myBooks/add}" method="get">
-                    <div class="card">
-                        <div class="card-header">
-                            <div th:if="${#httpServletRequest.getParameter('info')}!=null"
-                                 th:text="${#httpServletRequest.getParameter('info')}" class="info-font light-error">Info
+                <div>
+                    <form th:action="@{/app/myBooks/add}" method="get">
+                        <div class="card">
+                            <div class="card-header">
+                                <div th:if="${#httpServletRequest.getParameter('info')}!=null"
+                                     th:text="${#httpServletRequest.getParameter('info')}"
+                                     class="info-font light-error">
+                                    Info
+                                </div>
+                                <h4 class="text-center other-font light-font">Search for a new book by title</h4>
                             </div>
-                            <h4 class="text-center other-font light-font">Add new book</h4>
+                            <div class="card-body text-center">
+                                <div class="form-group">
+                                    <label for="title"></label><input type="text" id="title" class="form-control"
+                                                                      name="title"
+                                                                      placeholder="title..."/>
+                                    <small id="helpTitle" class="light-font">title</small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="submit" id="add" class="btn btn-success">add
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body text-center">
-                            <div class="form-group">
-                                <label for="title"></label><input type="text" id="title" class="form-control"
-                                                                  name="title"
-                                                                  placeholder="title..."/>
-                                <small id="helpTitle" class="light-font">title</small>
+                    </form>
+                </div>
+                <div class="small-margin-top">
+                    <form th:action="@{/app/myBooks/add}" method="get">
+                        <div class="card">
+                            <div class="card-header">
+                                <div th:if="${#httpServletRequest.getParameter('info')}!=null"
+                                     th:text="${#httpServletRequest.getParameter('info')}"
+                                     class="info-font light-error">
+                                    Info
+                                </div>
+                                <h4 class="text-center other-font">Search for a new book by author</h4>
                             </div>
-                            <div class="btn-group" role="group">
-                                <button type="submit" id="add" class="btn btn-success">add
-                                </button>
+                            <div class="card-body text-center">
+                                <div class="form-group">
+                                    <label for="title"></label><input type="text" id="title" class="form-control"
+                                                                      name="title"
+                                                                      placeholder="title..."/>
+                                    <small id="helpTitle" class="light-font">title</small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="submit" id="add" class="btn btn-success">add
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <div class="col-sm-1"></div>
 

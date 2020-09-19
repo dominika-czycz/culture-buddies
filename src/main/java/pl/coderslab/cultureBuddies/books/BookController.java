@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
@@ -82,12 +83,11 @@ public class BookController {
     }
 
     @GetMapping("/delete/{bookId}")
-    public String prepareDeletePage(@PathVariable Long bookId, Model model) throws NotExistingRecordException {
-        log.debug("Preparing to delete principal relation with book of id:  {}...", bookId);
+    public String prepareDeletePage(@PathVariable Long bookId, @RequestParam Long authorId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing delete page of relation between principal and book with  id:  {}...", bookId);
         final BuddyBook buddyBook = buddyBookService.findRelationWithPrincipalByBookId(bookId);
-        log.debug("Preparing to delete buddy-book relation with id {}...", buddyBook);
-        final Book book = bookService.findByIdWithAuthors(bookId);
-        final Long authorId = book.getAuthors().iterator().next().getId();
+        log.debug("Found entities relation:  {}.", buddyBook);
+        final Book book = bookService.findById(bookId);
         model.addAttribute("authorId", authorId);
         model.addAttribute(book);
         model.addAttribute(buddyBook);
@@ -96,9 +96,35 @@ public class BookController {
 
     @PostMapping("/delete")
     public String processDeletePage(@RequestParam Long bookId) throws NotExistingRecordException {
-        log.debug("Preparing to delete relation principal and book of id={}.", bookId);
+        log.debug("Preparing to delete relation of principal and book with id:  {}.", bookId);
         buddyBookService.remove(bookId);
         return "redirect:/app/myBooks";
+    }
+
+    @GetMapping("/edit/{bookId}")
+    public String prepareEditPage(@PathVariable Long bookId, @RequestParam Long authorId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing edit page of relation between between principal and book with id {}", bookId);
+        final BuddyBook buddyBook = buddyBookService.findRelationWithPrincipalByBookId(bookId);
+        log.debug("Found entities relation:  {}.", buddyBook);
+        final Book book = bookService.findByIdWithAuthors(bookId);
+        model.addAttribute("authorId", authorId);
+        model.addAttribute(book);
+        model.addAttribute(buddyBook);
+        return "books/edit";
+    }
+
+    @PostMapping("/edit")
+    public String processEditPage(@Valid BuddyBook buddyBook, BindingResult result,
+                                  @RequestParam Long authorId,
+                                  RedirectAttributes attributes) throws NotExistingRecordException {
+        log.debug("Preparing to edit entity {}", buddyBook);
+        if (result.hasErrors()) {
+            log.warn("Entity {} has failed validation! Return to edit view", buddyBook);
+            return "/books/edit";
+        }
+        buddyBookService.updateBuddyBook(buddyBook);
+        attributes.addAttribute("authorId", authorId);
+        return "redirect:/app/myBooks/{authorId}";
     }
 }
 
