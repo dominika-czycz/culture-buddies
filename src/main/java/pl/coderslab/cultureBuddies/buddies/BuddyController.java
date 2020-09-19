@@ -37,6 +37,7 @@ public class BuddyController {
     }
 
     @ModelAttribute("profilePictureDir")
+
     public String profilePictureDir() {
         return "/pictures/buddyPictures/";
     }

@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.googleapis;
 
+import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,9 @@ import org.springframework.web.client.RestTemplate;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.LibrarySearchResults;
+import pl.coderslab.cultureBuddies.googleapis.restModel.NumberOfResults;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -20,59 +23,59 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GoogleRestBookService implements RestBooksService {
     private final RestTemplate template;
+    private static final Integer RESULTS_ON_PAGE = 10;
 
     @Override
-    public List<BookFromGoogle> getGoogleBooksListByTitle(String title) throws NotExistingRecordException {
-        final LibrarySearchResults searchResults = getSearchResultsByTitle(title);
+    public List<BookFromGoogle> getGoogleBooksList(String title, String author, Integer pageNo) throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException {
+        return getGoogleBooksListByTitleAndAuthor(author, title, pageNo);
+    }
+
+    private List<BookFromGoogle> getGoogleBooksListByTitleAndAuthor(String author, String title, Integer pageNo) throws BadHttpRequest, NotExistingRecordException {
+        if (pageNo == null || pageNo < 0) throw new BadHttpRequest();
+        final Optional<LibrarySearchResults> rawSearchResults = getSearchResultsByAuthorAndTitle(author, title, pageNo);
+        final LibrarySearchResults searchResults = rawSearchResults.orElseThrow(new NotExistingRecordException("No match to the title was found."));
+        return prepareResultsList(searchResults, title);
+    }
+
+    private Optional<LibrarySearchResults> getSearchResultsByAuthorAndTitle(String author, String title, Integer pageNo) {
+        return getLibrarySearchResults(title, author, pageNo);
+    }
+
+    private Optional<LibrarySearchResults> getLibrarySearchResults(String title, String author, Integer pageNo) {
+        final String uriToCount = createUri(title, author, 0);
+        if (hasNoMoreResults(pageNo, uriToCount)) return Optional.empty();
+        final int startIndex = pageNo * RESULTS_ON_PAGE;
+        final String uri = createUri(title, author, startIndex);
+        return Optional.ofNullable(template.getForObject(uri, LibrarySearchResults.class));
+    }
+
+    private String createUri(String title, String author, int startIndex) {
+        final String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&" +
+                "startIndex=" + startIndex + "&maxResults=" + RESULTS_ON_PAGE + "&printType=books&q="
+                + URLEncoder.encode(title, StandardCharsets.UTF_8) + "+inauthor:" + URLEncoder.encode(author, StandardCharsets.UTF_8);
+        log.debug("Generated Google api uri {}", uri);
+        return uri;
+    }
+
+    private boolean hasNoMoreResults(Integer pageNo, String uri) {
+        final NumberOfResults resultsNumber = template.getForObject(uri, NumberOfResults.class);
+        if (resultsNumber == null || resultsNumber.getTotalItems() == 0) return true;
+        if (pageNo == 0) return false;
+        final Integer totalItems = resultsNumber.getTotalItems();
+        if (totalItems > (pageNo + 1) * RESULTS_ON_PAGE) return false;
+        return totalItems % ((pageNo) * RESULTS_ON_PAGE) == 0;
+    }
+
+    private List<BookFromGoogle> prepareResultsList(LibrarySearchResults searchResults, String title) throws NotExistingRecordException {
         String message = "No match to the title was found.";
-        if (searchResults == null || searchResults.getItems() == null) {
-            throw new NotExistingRecordException(message);
-        }
+        if (searchResults.getItems().length == 0) throw new NotExistingRecordException(message);
         final List<BookFromGoogle> booksList = Arrays.stream(searchResults.getItems()).collect(Collectors.toList());
-        final List<BookFromGoogle> checkedList = checkBooks(booksList);
-        if (checkedList.isEmpty()) {
-            throw new NotExistingRecordException(message);
-        }
+        final List<BookFromGoogle> checkedList = checkBooks(booksList, title);
+        if (checkedList.isEmpty()) throw new NotExistingRecordException(message);
         return checkedList;
     }
 
-    @Override
-    public BookFromGoogle getGoogleBookByIdentifierOrTitle(String isbn, String title) throws NotExistingRecordException {
-        final LibrarySearchResults resultFromGoogle = getSearchResultsByIsbn(isbn);
-        String message = "Book does not exist in google book service";
-        BookFromGoogle foundBook;
-        if (resultFromGoogle == null || resultFromGoogle.getItems() == null || resultFromGoogle.getItems().length == 0) {
-            final LibrarySearchResults resultsByTitle = getSearchResultsByTitle(title);
-            if (resultsByTitle != null && resultsByTitle.getItems() != null) {
-                final List<BookFromGoogle> booksFromGoogle = Arrays.asList(resultsByTitle.getItems());
-                final List<BookFromGoogle> booksList = checkBooks(booksFromGoogle);
-                log.debug("List size {}.", booksList.size());
-                final Optional<BookFromGoogle> bookFromList = booksList.stream()
-                        .filter(b -> b.getVolumeInfo().getIndustryIdentifiers()[0].getIdentifier().equals(isbn))
-                        .findFirst();
-                foundBook = bookFromList.orElseThrow(new NotExistingRecordException(message));
-            } else {
-                throw new NotExistingRecordException(message);
-            }
-        } else {
-            foundBook = resultFromGoogle.getItems()[0];
-        }
-        return foundBook;
-    }
-
-    private LibrarySearchResults getSearchResultsByTitle(String title) {
-        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=title:"
-                + URLEncoder.encode(title, StandardCharsets.UTF_8);
-        return template.getForObject(uri, LibrarySearchResults.class);
-    }
-
-    private LibrarySearchResults getSearchResultsByIsbn(String isbn) {
-        String uri = "https://www.googleapis.com/books/v1/volumes?orderBy=relevance&printType=books&q=isbn:"
-                + URLEncoder.encode(isbn, StandardCharsets.UTF_8);
-        return template.getForObject(uri, LibrarySearchResults.class);
-    }
-
-    private List<BookFromGoogle> checkBooks(List<BookFromGoogle> booksList) {
+    private List<BookFromGoogle> checkBooks(List<BookFromGoogle> booksList, String title) {
         log.info("Checking books list from google...");
         return booksList.stream()
                 .filter(b -> b.getVolumeInfo() != null)
@@ -81,6 +84,6 @@ public class GoogleRestBookService implements RestBooksService {
                 .filter(b -> b.getVolumeInfo().getIndustryIdentifiers()[0].getIdentifier() != null)
                 .filter(b -> b.getVolumeInfo().getAuthors() != null && b.getVolumeInfo().getAuthors().length > 0)
                 .collect(Collectors.toList());
-    }
 
+    }
 }

@@ -111,7 +111,7 @@ class BookControllerTest {
     public void givenTitle_whenAppMyBookAddPlusTitleUrl_thenAddViewAndModelWithGoogleBooksList() throws Exception {
         //given
         final List<BookFromGoogle> googleList = Collections.singletonList(bookFromGoogle);
-        when(restBooksServiceMock.getGoogleBooksListByTitle(title)).thenReturn(googleList);
+        when(restBooksServiceMock.getGoogleBooksList(title, "",0)).thenReturn(googleList);
         //when, then
         mockMvc.perform(get("/app/myBooks/add?title=" + title))
                 .andExpect(status().isOk())

@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.books;
 
+import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -49,13 +51,19 @@ public class BookController {
         return "/books/author";
     }
 
-    @GetMapping("/add")
-    public String prepareAddPage(@RequestParam String title, Model model) throws NotExistingRecordException {
+    @GetMapping("/add/{pageNo}")
+    public String prepareAddPage(@PathVariable Integer pageNo,
+                                 @RequestParam String title,
+                                 @RequestParam String author,
+                                 Model model) throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException {
         log.info("Getting books list from google...");
-        final List<BookFromGoogle> books = restBooksService.getGoogleBooksListByTitle(title);
+        final List<BookFromGoogle> books = restBooksService.getGoogleBooksList(title, author, pageNo);
         log.debug("{} results found", books.size());
         model.addAttribute("gBooks", books);
         model.addAttribute(new Book());
+        model.addAttribute("pageNo", pageNo);
+        model.addAttribute("title", title);
+        model.addAttribute("author", author);
         return "/books/add";
     }
 

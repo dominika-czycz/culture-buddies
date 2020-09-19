@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.googleapis;
 
+import javassist.tools.web.BadHttpRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,9 +37,9 @@ class GoogleRestBookServiceTest {
     }
 
     @Test
-    public void givenBookTitle_whenLookingForBookWithTitle_thenBooksFound() throws NotExistingRecordException {
+    public void givenBookTitle_whenLookingForBookWithTitle_thenBooksFound() throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException {
         //when
-        final List<BookFromGoogle> googleBooksListByTitle = testObj.getGoogleBooksListByTitle(existingTitle);
+        final List<BookFromGoogle> googleBooksListByTitle = testObj.getGoogleBooksList(existingTitle, "", 0);
         //then
         assertNotNull(googleBooksListByTitle);
         assertThat(googleBooksListByTitle.size(), not(0));
@@ -47,24 +49,6 @@ class GoogleRestBookServiceTest {
     public void givenNotExistingTitle_whenLookingForBook_thenNonExistingRecordException() {
         //when, then
         assertThrows(NotExistingRecordException.class,
-                () -> testObj.getGoogleBooksListByTitle(notExistingTitle));
+                () -> testObj.getGoogleBooksList(notExistingTitle, "", 0));
     }
-
-    @Test
-    public void givenExistingIsbn_whenLookingForBook_thenBookFound() throws NotExistingRecordException {
-        //when
-        final BookFromGoogle book = testObj.getGoogleBookByIdentifierOrTitle(existingIsbn, existingTitle);
-        final String actual = book.getVolumeInfo().getIndustryIdentifiers()[0].getIdentifier();
-        //then
-        assertThat(actual, is(existingIsbn));
-    }
-    @Test
-    public void givenNonExistingIsbnAndNonExistingTitle_whenLookingForBook_thenNonExistingRecordException() throws NotExistingRecordException {
-        String notExistingIsbn = "NotExistingISBN";
-        assertThrows(NotExistingRecordException.class,
-                () -> testObj.getGoogleBookByIdentifierOrTitle(notExistingIsbn, notExistingTitle));
-    }
-
-
-
 }

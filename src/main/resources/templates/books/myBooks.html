@@ -46,7 +46,7 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-3">
                 <div>
-                    <form th:action="@{/app/myBooks/add}" method="get">
+                    <form th:action="@{/app/myBooks/add/0}" method="get">
                         <div class="card">
                             <div class="card-header">
                                 <div th:if="${#httpServletRequest.getParameter('info')}!=null"
@@ -54,47 +54,27 @@
                                      class="info-font light-error">
                                     Info
                                 </div>
-                                <h4 class="text-center other-font light-font">Search for a new book by title</h4>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="form-group">
-                                    <label for="title"></label><input type="text" id="title" class="form-control"
-                                                                      name="title"
-                                                                      placeholder="title..."/>
-                                    <small id="helpTitle" class="light-font">title</small>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="submit" id="add" class="btn btn-success">add
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="small-margin-top">
-                    <form th:action="@{/app/myBooks/add}" method="get">
-                        <div class="card">
-                            <div class="card-header">
-                                <div th:if="${#httpServletRequest.getParameter('info')}!=null"
-                                     th:text="${#httpServletRequest.getParameter('info')}"
-                                     class="info-font light-error">
-                                    Info
-                                </div>
-                                <h4 class="text-center other-font">Search for a new book by author</h4>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="form-group">
-                                    <label for="title"></label><input type="text" id="title" class="form-control"
-                                                                      name="title"
-                                                                      placeholder="title..."/>
-                                    <small id="helpTitle" class="light-font">title</small>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="submit" id="add" class="btn btn-success">add
-                                    </button>
+                                <h4 class="text-center other-font light-font">Search for a new book by title, author or
+                                    both</h4>
+                                <div class="card-body text-center">
+                                    <div class="form-group">
+                                        <label for="title"></label><input type="text" id="title" class="form-control"
+                                                                          name="title"
+                                                                          th:default="default"
+                                                                          placeholder="title..."/>
+                                        <small id="helpTitle" class="light-font">title</small>
+                                        <label for="author"></label><input type="text" id="author" class="form-control"
+                                                                           name="author"
+                                                                           th:default="default"
+                                                                           placeholder="author..."/>
+                                        <small id="helpAuthor" class="light-font">title</small>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button type="submit" id="add" class="btn btn-success">add
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </form>
                 </div>
             </div>
