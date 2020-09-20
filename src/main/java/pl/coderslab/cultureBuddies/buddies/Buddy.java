@@ -84,17 +84,4 @@ public class Buddy {
         return buddyBook;
     }
 
-    public Buddy removeBook(Book book) {
-        for (Iterator<BuddyBook> iterator = books.iterator(); iterator.hasNext(); ) {
-            final BuddyBook buddyBook = iterator.next();
-            if (buddyBook.getBuddy().equals(this) && buddyBook.getBook().equals(book)) {
-                iterator.remove();
-                buddyBook.getBook().getBuddies().remove(buddyBook);
-                buddyBook.setBook(null);
-                buddyBook.setBuddy(null);
-            }
-        }
-        return this;
-    }
-
 }

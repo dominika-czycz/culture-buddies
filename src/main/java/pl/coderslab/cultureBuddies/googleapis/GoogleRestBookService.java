@@ -28,7 +28,8 @@ public class GoogleRestBookService implements RestBooksService {
     public List<BookFromGoogle> getGoogleBooksList(String title, String author, Integer pageNo)
             throws NotExistingRecordException, BadHttpRequest {
         if (pageNo == null || pageNo < 0) throw new BadHttpRequest();
-        final Optional<LibrarySearchResults> rawSearchResults = getSearchResultsByAuthorAndTitle(author, title, pageNo);
+        final Optional<LibrarySearchResults> rawSearchResults =
+                getSearchResultsByAuthorAndTitle(author, title, pageNo);
         final LibrarySearchResults searchResults = rawSearchResults.orElseThrow(new NotExistingRecordException("Nothing matches your search"));
         return prepareResultsList(searchResults);
     }

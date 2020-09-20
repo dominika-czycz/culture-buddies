@@ -105,7 +105,8 @@ public class BookController {
     }
 
     @GetMapping("/delete/{bookId}")
-    public String prepareDeletePage(@PathVariable Long bookId, @RequestParam Long authorId, Model model) throws NotExistingRecordException {
+    public String prepareDeletePage(@PathVariable Long bookId, @RequestParam Long authorId,
+                                    Model model) throws NotExistingRecordException {
         log.debug("Preparing delete page of relation between principal and book with  id:  {}...", bookId);
         final BuddyBook buddyBook = buddyBookService.findRelationWithPrincipalByBookId(bookId);
         log.debug("Found entities relation:  {}.", buddyBook);
@@ -132,7 +133,7 @@ public class BookController {
         model.addAttribute("authorId", authorId);
         model.addAttribute(book);
         model.addAttribute(buddyBook);
-        return "books/edit";
+        return "/books/edit";
     }
 
     @PostMapping("/edit")

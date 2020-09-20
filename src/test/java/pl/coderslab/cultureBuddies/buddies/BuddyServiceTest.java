@@ -20,6 +20,7 @@ import pl.coderslab.cultureBuddies.security.Role;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,11 +39,15 @@ class BuddyServiceTest {
     @MockBean
     private RoleRepository roleRepositoryMock;
     @MockBean
-    private BuddyBookRepository buddyBookRepository;
+    private BuddyBookRepository buddyBookRepositoryMock;
     @Autowired
     private BuddyService testObject;
     @Spy
     private Buddy buddySpy;
+    @Spy
+    private Book book;
+    @Spy
+    private BuddyBook buddyBook;
 
     private Buddy unsavedBuddy;
     private Buddy savedBuddy;
@@ -57,10 +62,23 @@ class BuddyServiceTest {
                 .lastName("Kowalska")
                 .password("annaKowalska")
                 .city("Wrocław")
+                .books(new HashSet<>())
                 .build();
         savedBuddy = unsavedBuddy.toBuilder()
                 .id(10L).build();
         when(buddyRepositoryMock.save(unsavedBuddy)).thenReturn(savedBuddy);
+    }
+
+    @Test
+    @WithMockUser("bestBuddy")
+    public void givenBookAlreadyAssignedToPrincipal_whenAddingBookToPrincipal_thenRelationAlreadyCreatedException() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
+        //given
+        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy"))
+                .thenReturn(Optional.ofNullable(savedBuddy));
+        when(buddyBookRepositoryMock.findByBookAndBuddy(book, savedBuddy))
+                .thenReturn(Optional.of(buddyBook));
+        assertThrows(RelationshipAlreadyCreatedException.class,
+                ()->testObject.addBookToPrincipalBuddy(book));
     }
 
     @Test
@@ -70,21 +88,21 @@ class BuddyServiceTest {
         final Author author = Author.builder().id(10L).lastName("Kowalski").build();
         final Book book = Book.builder().title("new Book").identifier("ISBN").authors(Set.of(author)).build();
         buddySpy.setUsername("bestBuddy");
-        when(buddyBookRepository.findByBookAndBuddy(book, buddySpy)).thenReturn(Optional.empty());
+        when(buddyBookRepositoryMock.findByBookAndBuddy(book, buddySpy)).thenReturn(Optional.empty());
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(buddySpy.getUsername())).thenReturn(Optional.of(buddySpy));
         final BuddyBook buddyBook = BuddyBook.builder().book(book).buddy(buddySpy).build();
         when(buddySpy.addBook(book)).thenReturn(buddyBook);
-        when(buddyBookRepository.save(buddyBook)).thenReturn(buddyBook);
+        when(buddyBookRepositoryMock.save(buddyBook)).thenReturn(buddyBook);
         //when
         final BuddyBook createdBuddyBook = testObject.addBookToPrincipalBuddy(book);
         //then
-        verify(buddyBookRepository).save(buddyBook);
+        verify(buddyBookRepositoryMock).save(buddyBook);
         assertNotNull(createdBuddyBook);
     }
 
     @Test
     public void whenSavingBuddyAndPicture_thenBuddyAndPictureSaved() throws IOException {
-        MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
+        MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture" .getBytes());
         //when
         final boolean isSaved = testObject.save(profilePicture, unsavedBuddy);
         //then

@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
@@ -18,7 +17,6 @@ import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j
