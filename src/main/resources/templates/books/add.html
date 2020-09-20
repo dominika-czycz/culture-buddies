@@ -58,9 +58,10 @@
                     <div class="row">
                         <div class="col-sm-2">
                             <form method="get" th:if="${pageNo>0}"
-                                  th:action="@{/app/myBooks/add/__${pageNo-1}__}">
+                                  th:action="@{/app/myBooks/search/__${pageNo-1}__}">
                                 <input type="hidden" name="author" th:value="${author}">
                                 <input type="hidden" name="title" th:value="${title}">
+                                <input type="hidden" name="maxPage" th:value="${maxPage}">
                                 <button type="submit" class="btn btn-info bigger-font">
                                     &#8678;
                                 </button>
@@ -68,10 +69,11 @@
                         </div>
                         <div class="col-sm-8"></div>
                         <div class="col-sm-2">
-                            <form method="get" th:if="${pageNo<maxPageNo}"
-                                  th:action="@{/app/myBooks/add/__${pageNo+1}__}">
+                            <form method="get" th:if="${pageNo<maxPage}"
+                                  th:action="@{/app/myBooks/search/__${pageNo+1}__}">
                                 <input type="hidden" name="author" th:value="${author}">
                                 <input type="hidden" name="title" th:value="${title}">
+                                <input type="hidden" name="maxPage" th:value="${maxPage}">
                                 <button type="submit" class="btn btn-info bigger-font">&#8680;
                                 </button>
                             </form>

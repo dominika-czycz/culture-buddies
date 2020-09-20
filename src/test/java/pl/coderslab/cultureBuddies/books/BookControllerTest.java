@@ -12,11 +12,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
-import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.IndustryIdentifier;
 import pl.coderslab.cultureBuddies.googleapis.restModel.VolumeInfo;
@@ -40,11 +38,7 @@ class BookControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private AuthorService authorServiceMock;
-    @MockBean
     private BookService bookServiceMock;
-    @MockBean
-    private RestBooksService restBooksServiceMock;
     @MockBean
     private BuddyBookService buddyBookService;
     @Spy
@@ -111,16 +105,20 @@ class BookControllerTest {
     public void givenTitle_whenAppMyBookAddUrl_thenAddViewAndModelWithGoogleBooksList() throws Exception {
         //given
         String author = "";
+        int maxPage = 100;
         final List<BookFromGoogle> googleList = Collections.singletonList(bookFromGoogle);
-        when(restBooksServiceMock.getGoogleBooksList(title, author, 0)).thenReturn(googleList);
+        when(bookServiceMock.getBooksFromExternalApi(title, author, 0)).thenReturn(googleList);
         //when, then
-        mockMvc.perform(get("/app/myBooks/add/0?title=" + title + "&author=" + author))
+        mockMvc.perform(get("/app/myBooks/search/0")
+                .param("title", title)
+                .param("author", author)
+                .param("maxPage", String.valueOf(maxPage)))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("gBooks", googleList))
                 .andExpect(model().attribute("pageNo", 0))
                 .andExpect(model().attribute("title", title))
                 .andExpect(model().attribute("author", author))
-                .andExpect(model().attribute("book", new  Book()))
+                .andExpect(model().attribute("book", new Book()))
                 .andExpect(view().name("/books/add"));
     }
 
@@ -129,7 +127,7 @@ class BookControllerTest {
         //given
         final Author author2 = author.toBuilder().lastName("Nowak").build();
         final List<Author> authors = Arrays.asList(author, author2);
-        when(authorServiceMock.getOrderedAuthorsListOfPrincipalUser()).thenReturn(authors);
+        when(bookServiceMock.getBooksAuthorsOfPrincipal()).thenReturn(authors);
         //when, then
         mockMvc.perform(get("/app/myBooks"))
                 .andExpect(status().isOk())
@@ -144,7 +142,7 @@ class BookControllerTest {
         final Book book = Book.builder().title("Book").id(10L).build();
         final Book book2 = Book.builder().title("Book 2").id(11L).build();
         author.addBook(book).addBook(book2);
-        when(authorServiceMock.findById(author.getId())).thenReturn(author);
+        when(bookServiceMock.getAuthorById(author.getId())).thenReturn(author);
         //when, then
         mockMvc.perform(get("/app/myBooks/" + author.getId()))
                 .andExpect(status().isOk())

@@ -8,6 +8,7 @@ import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +17,11 @@ import java.util.Optional;
 public class BuddyBookServiceImpl implements BuddyBookService {
     private final BuddyBookRepository buddyBookRepository;
     private final BuddyService buddyService;
+
+    @Override
+    public List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy) {
+        return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
+    }
 
     @Override
     public void updateBuddyBook(BuddyBook buddyBook) throws NotExistingRecordException {

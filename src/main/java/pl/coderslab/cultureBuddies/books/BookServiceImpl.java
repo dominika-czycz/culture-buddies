@@ -1,18 +1,21 @@
 package pl.coderslab.cultureBuddies.books;
 
+import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.author.AuthorRepository;
+import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
-import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
+import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
+import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -24,9 +27,30 @@ import java.util.Optional;
 @Transactional
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
     private final BuddyService buddyService;
-    private final BuddyBookRepository buddyBookRepository;
+    private final BuddyBookService buddyBookService;
+    private final RestBooksService restBooksService;
+    private final AuthorService authorService;
+
+    @Override
+    public int getMaxResultsPage(String title, String author) throws NotExistingRecordException {
+        return restBooksService.countMaxPage(title, author);
+    }
+
+    @Override
+    public List<Author> getBooksAuthorsOfPrincipal() throws NotExistingRecordException {
+        return authorService.getOrderedAuthorsListOfPrincipalUser();
+    }
+
+    @Override
+    public List<BookFromGoogle> getBooksFromExternalApi(String title, String author, int pageNo) throws NotExistingRecordException, BadHttpRequest {
+        return restBooksService.getGoogleBooksList(title, author, pageNo);
+    }
+
+    @Override
+    public Author getAuthorById(Long authorId) throws NotExistingRecordException {
+        return authorService.findById(authorId);
+    }
 
     @Override
     public BuddyBook addBookToBuddy(Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
@@ -62,43 +86,33 @@ public class BookServiceImpl implements BookService {
             final String[] names = author.split(" ");
             String firstName = names[0];
             String lastName = names[names.length - 1];
-            final Optional<Author> authorFromDB = authorRepository.findFirstByFirstNameAndLastName(firstName, lastName);
-            final Author existingAuthor = authorFromDB.orElseGet(() -> authorRepository.save(Author.builder().firstName(firstName).lastName(lastName).build()));
+            final Author existingAuthor = authorService.saveIfNotExistYet(firstName, lastName);
             book.addAuthor(existingAuthor);
         }
     }
 
     @Override
-    public List<Book> findBooksByAuthorAndUsername(String username, Long authorId) throws NotExistingRecordException {
+    public List<Book> findBooksByUsernameAndAuthorId(String username, Long authorId) throws NotExistingRecordException {
         final Buddy buddy = buddyService.findByUsername(username);
-        checkIfAuthorExists(authorId);
-        return bookRepository.findByAuthorIdAndBookId(authorId, buddy.getId());
-    }
-
-    @Override
-    public List<Book> findBooksByAuthorAndPrincipalUsername(Long authorId) throws NotExistingRecordException {
-        final String username = buddyService.getPrincipalUsername();
-        return findBooksByAuthorAndUsername(username, authorId);
+        if (authorService.checkIfAuthorExists(authorId)) {
+            return bookRepository.findByAuthorIdAndBookId(authorId, buddy.getId());
+        }
+        throw new NotExistingRecordException("Author with id " + authorId + " does not exist!");
     }
 
     @Override
     public List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException {
-        checkIfAuthorExists(authorId);
-        final Buddy buddy = buddyService.findByUsername(username);
-        return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
+        if (authorService.checkIfAuthorExists(authorId)) {
+            final Buddy buddy = buddyService.findByUsername(username);
+            return buddyBookService.getRatingWhereAuthorIdAndBuddy(authorId, buddy);
+        }
+        throw new NotExistingRecordException("Author with id " + authorId + " does not exist!");
     }
 
     @Override
     public List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException {
         final String principalUsername = buddyService.getPrincipalUsername();
         return findBooksRateWhereAuthorIdAndBuddyUsername(authorId, principalUsername);
-    }
-
-    private void checkIfAuthorExists(Long authorId) throws NotExistingRecordException {
-        final Optional<Author> author = authorRepository.findById(authorId);
-        if (author.isEmpty()) {
-            throw new NotExistingRecordException("Author with id " + authorId + " does not exist");
-        }
     }
 
     @Override

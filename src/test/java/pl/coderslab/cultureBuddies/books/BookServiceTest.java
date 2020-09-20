@@ -9,11 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.author.AuthorRepository;
+import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
-import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,13 +37,14 @@ class BookServiceTest {
     @Autowired
     private BookService testObj;
     @MockBean
-    private BuddyService buddyServiceMock;
-    @MockBean
-    private AuthorRepository authorRepositoryMock;
-    @MockBean
     private BookRepository bookRepositoryMock;
     @MockBean
-    private BuddyBookRepository buddyBookRepositoryMock;
+    private BuddyService buddyServiceMock;
+    @MockBean
+    private BuddyBookService buddyBookServiceMock;
+    @MockBean
+    private AuthorService authorServiceMock;
+
     @Spy
     private Buddy buddy;
     @Spy
@@ -71,15 +72,15 @@ class BookServiceTest {
                 .identifier(isbn)
                 .authorsFullName(Collections.singletonList("Jan Kowalski"))
                 .thumbnailLink(volumeInfo.getImageLinks().getThumbnail()).build();
-
-        when(authorRepositoryMock.findById(author.getId())).thenReturn(Optional.of(author));
+        when(authorServiceMock.checkIfAuthorExists(author.getId())).thenReturn(true);
+        when(authorServiceMock.findById(author.getId())).thenReturn(author);
         when(buddyServiceMock.findByUsername(buddy.getUsername())).thenReturn(buddy);
     }
 
     @Test
     public void givenBuddyAndAuthor_whenSearchingBuddyBookListByAuthor_thenBooksListBeingSearched() throws NotExistingRecordException {
         //when
-        testObj.findBooksByAuthorAndUsername(buddy.getUsername(), author.getId());
+        testObj.findBooksByUsernameAndAuthorId(buddy.getUsername(), author.getId());
         //then
         verify(bookRepositoryMock).findByAuthorIdAndBookId(author.getId(), buddy.getId());
     }
@@ -87,12 +88,12 @@ class BookServiceTest {
     @Test
     public void givenAuthorIdAndBuddyUsername_whenSearchingBooksRate_thenBooksListBeingSearched() throws NotExistingRecordException {
         //given
-        when(buddyBookRepositoryMock.findRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId()))
+        when(buddyBookServiceMock.getRatingWhereAuthorIdAndBuddy(author.getId(), buddy))
                 .thenReturn(Collections.singletonList(buddyBook));
         //when
         testObj.findBooksRateWhereAuthorIdAndBuddyUsername(author.getId(), buddy.getUsername());
         //then
-        verify(buddyBookRepositoryMock).findRatingWhereAuthorIdAndBuddyId(author.getId(), buddy.getId());
+        verify(buddyBookServiceMock).getRatingWhereAuthorIdAndBuddy(author.getId(), buddy);
     }
 
     @Test

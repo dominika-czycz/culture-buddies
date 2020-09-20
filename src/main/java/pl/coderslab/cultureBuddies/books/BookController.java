@@ -9,13 +9,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.author.Author;
-import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
-import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.Valid;
@@ -27,14 +25,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
-    private final RestBooksService restBooksService;
-    private final AuthorService authorService;
     private final BuddyBookService buddyBookService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
         log.info("Preparing myBooks page...");
-        final List<Author> authors = authorService.getOrderedAuthorsListOfPrincipalUser();
+        final List<Author> authors = bookService.getBooksAuthorsOfPrincipal();
         log.debug("Authors' list with {} positions has been found. ", authors.size());
         model.addAttribute("authors", authors);
         return "/books/myBooks";
@@ -44,27 +40,41 @@ public class BookController {
     public String prepareByAuthorPage(Model model, @PathVariable Long authorId) throws NotExistingRecordException {
         log.info("Preparing /app/myBooks/{authorId} page...");
         final List<BuddyBook> booksRating = bookService.findBooksRateOfPrincipalByAuthorId(authorId);
-        final Author author = authorService.findById(authorId);
+        final Author author = bookService.getAuthorById(authorId);
         model.addAttribute(author);
         model.addAttribute("booksRatingList", booksRating);
         return "/books/author";
     }
 
-    @GetMapping("/add/{pageNo}")
-    public String prepareAddPage(@PathVariable Integer pageNo,
-                                 @RequestParam String title,
-                                 @RequestParam String author,
-                                 Model model) throws NotExistingRecordException, BadHttpRequest {
+    @PostMapping("/search")
+    public String prepareFirstResultsPage(@RequestParam String title,
+                                          @RequestParam String author,
+                                          Model model) throws NotExistingRecordException, BadHttpRequest {
         log.info("Getting books list from google...");
-        final int maxPage = restBooksService.countMaxPage(title, author);
+        final int maxPage = bookService.getMaxResultsPage(title, author);
+        final int startPage = 0;
+        return prepareResultsPage(title, author, model, maxPage, startPage);
+    }
+
+    @GetMapping("/search/{pageNo}")
+    public String prepareNextResultsPage(@PathVariable Integer pageNo,
+                                         @RequestParam String title,
+                                         @RequestParam String author,
+                                         @RequestParam Integer maxPage,
+                                         Model model) throws NotExistingRecordException, BadHttpRequest {
+        log.info("Getting books list from google...");
+        return prepareResultsPage(title, author, model, maxPage, pageNo);
+    }
+
+    private String prepareResultsPage(String title, String author, Model model, int maxPage, int pageNo) throws NotExistingRecordException, BadHttpRequest {
         if (pageNo > maxPage) {
             throw new NotExistingRecordException("No more results to your search!");
         }
-        final List<BookFromGoogle> books = restBooksService.getGoogleBooksList(title, author, pageNo);
+        final List<BookFromGoogle> books = bookService.getBooksFromExternalApi(title, author, pageNo);
         log.debug("{} results found", books.size());
         model.addAttribute("gBooks", books);
         model.addAttribute(new Book());
-        model.addAttribute("maxPageNo", maxPage);
+        model.addAttribute("maxPage", maxPage);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("title", title);
         model.addAttribute("author", author);
