@@ -8,5 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface RestBooksService {
-    List<BookFromGoogle> getGoogleBooksList(String title, String author, Integer pageNo) throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException;
+    List<BookFromGoogle> getGoogleBooksList(String title, String author, Integer pageNo) throws NotExistingRecordException, BadHttpRequest;
+
+    int countMaxPage(String title, String author) throws NotExistingRecordException;
 }

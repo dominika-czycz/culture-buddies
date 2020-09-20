@@ -55,25 +55,27 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="center">
-                        <span>
-                            <form method="get" th:action="@{/app/myBooks/add/__${pageNo+1}__}">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <form method="get" th:if="${pageNo>0}"
+                                  th:action="@{/app/myBooks/add/__${pageNo-1}__}">
                                 <input type="hidden" name="author" th:value="${author}">
                                 <input type="hidden" name="title" th:value="${title}">
-                                <button type="submit" class="btn btn-success small-margin-top">next
-                                    page
+                                <button type="submit" class="btn btn-info bigger-font">
+                                    &#8678;
                                 </button>
                             </form>
-                        </span>
-                        <span>
-                            <form method="get" th:if="${pageNo>0} " th:action="@{/app/myBooks/add/__${pageNo-1}__}">
+                        </div>
+                        <div class="col-sm-8"></div>
+                        <div class="col-sm-2">
+                            <form method="get" th:if="${pageNo<maxPageNo}"
+                                  th:action="@{/app/myBooks/add/__${pageNo+1}__}">
                                 <input type="hidden" name="author" th:value="${author}">
                                 <input type="hidden" name="title" th:value="${title}">
-                                <button type="submit" class="btn btn-info">
-                                    previous page
+                                <button type="submit" class="btn btn-info bigger-font">&#8680;
                                 </button>
                             </form>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>

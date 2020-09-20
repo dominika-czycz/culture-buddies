@@ -13,7 +13,6 @@ import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,14 +24,12 @@ class GoogleRestBookServiceTest {
     @Autowired
     RestBooksService testObj;
     private String existingTitle;
-    private String existingIsbn;
     private String notExistingTitle;
 
 
     @BeforeEach
     public void setUp() {
         existingTitle = "Nineteen Eighty-Four";
-        existingIsbn = "9781849433495";
         notExistingTitle = "868686868999999999999999999999999999999999968686868686876868686";
     }
 
@@ -51,4 +48,5 @@ class GoogleRestBookServiceTest {
         assertThrows(NotExistingRecordException.class,
                 () -> testObj.getGoogleBooksList(notExistingTitle, "", 0));
     }
+
 }

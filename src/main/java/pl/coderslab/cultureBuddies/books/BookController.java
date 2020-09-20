@@ -19,7 +19,6 @@ import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -55,12 +54,17 @@ public class BookController {
     public String prepareAddPage(@PathVariable Integer pageNo,
                                  @RequestParam String title,
                                  @RequestParam String author,
-                                 Model model) throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException {
+                                 Model model) throws NotExistingRecordException, BadHttpRequest {
         log.info("Getting books list from google...");
+        final int maxPage = restBooksService.countMaxPage(title, author);
+        if (pageNo > maxPage) {
+            throw new NotExistingRecordException("No more results to your search!");
+        }
         final List<BookFromGoogle> books = restBooksService.getGoogleBooksList(title, author, pageNo);
         log.debug("{} results found", books.size());
         model.addAttribute("gBooks", books);
         model.addAttribute(new Book());
+        model.addAttribute("maxPageNo", maxPage);
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("title", title);
         model.addAttribute("author", author);

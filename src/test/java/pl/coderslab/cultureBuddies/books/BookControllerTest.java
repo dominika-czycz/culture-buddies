@@ -108,14 +108,19 @@ class BookControllerTest {
     }
 
     @Test
-    public void givenTitle_whenAppMyBookAddPlusTitleUrl_thenAddViewAndModelWithGoogleBooksList() throws Exception {
+    public void givenTitle_whenAppMyBookAddUrl_thenAddViewAndModelWithGoogleBooksList() throws Exception {
         //given
+        String author = "";
         final List<BookFromGoogle> googleList = Collections.singletonList(bookFromGoogle);
-        when(restBooksServiceMock.getGoogleBooksList(title, "",0)).thenReturn(googleList);
+        when(restBooksServiceMock.getGoogleBooksList(title, author, 0)).thenReturn(googleList);
         //when, then
-        mockMvc.perform(get("/app/myBooks/add?title=" + title))
+        mockMvc.perform(get("/app/myBooks/add/0?title=" + title + "&author=" + author))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("gBooks", googleList))
+                .andExpect(model().attribute("pageNo", 0))
+                .andExpect(model().attribute("title", title))
+                .andExpect(model().attribute("author", author))
+                .andExpect(model().attribute("book", new  Book()))
                 .andExpect(view().name("/books/add"));
     }
 
