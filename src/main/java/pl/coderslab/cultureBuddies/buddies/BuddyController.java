@@ -16,25 +16,26 @@ import javax.mail.MessagingException;
 
 @Controller
 @Slf4j
-@RequestMapping("app")
+@RequestMapping("app/board/")
 @RequiredArgsConstructor
 public class BuddyController {
     private final BuddyService buddyService;
 
-
     @GetMapping("{username}")
-    public String prepareProfile(@PathVariable String username, Model model) throws NotExistingRecordException, MessagingException {
+    public String prepareProfile(@PathVariable String username, Model model) throws NotExistingRecordException {
         final Buddy buddy = buddyService.findByUsername(username);
         model.addAttribute(buddy);
         return "buddy/profile";
     }
 
-    @GetMapping("profile")
+    @GetMapping("/profile")
     public String redirectProfile(RedirectAttributes redirectAttributes) {
         String username = buddyService.getPrincipalUsername();
         redirectAttributes.addAttribute("username", username);
-        return "redirect:/app/{username}";
+        return "redirect:/app/board/{username}";
     }
+
+
 
     @ModelAttribute("profilePictureDir")
 

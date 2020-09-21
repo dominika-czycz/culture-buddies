@@ -11,11 +11,13 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,7 +67,7 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public Buddy findPrincipal() throws NotExistingRecordException {
+    public Buddy getPrincipal() throws NotExistingRecordException {
         final String principalUsername = getPrincipalUsername();
         final Optional<Buddy> principal = buddyRepository.findFirstByUsernameIgnoringCase(principalUsername);
         return principal.orElseThrow(new NotExistingRecordException("Buddy with username " + principalUsername
@@ -82,6 +84,34 @@ public class BuddyServiceImpl implements BuddyService {
             username = principal.toString();
         }
         return username;
+    }
+
+    @Override
+    public List<Buddy> getBuddiesOfPrincipal() throws NotExistingRecordException {
+        final Long principalId = getPrincipal().getId();
+        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationIs(principalId, "buddies");
+    }
+
+    @Override
+    public List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authorsIds) throws EmptyKeysException, NotExistingRecordException {
+        if (authorsIds == null || authorsIds.isEmpty()
+                && (username == null || username.isBlank())) {
+            throw new EmptyKeysException("At least one keyword cannot be empty!");
+        }
+        List<Buddy> results = findMatchingBuddies(username, authorsIds);
+        if (results.isEmpty()) throw new NotExistingRecordException("Nothing matches to your search!");
+        return results;
+    }
+
+    public List<Buddy> findMatchingBuddies(String username, List<Integer> authorsIds) throws NotExistingRecordException {
+        final Long principalId = getPrincipal().getId();
+        if (authorsIds.isEmpty()) {
+            return buddyRepository.findNewBuddiesByUsernameStartingWithAndIdNot(username, principalId);
+        }
+        if (username.isBlank()) {
+            return buddyRepository.findNewBuddiesByAuthors(authorsIds, principalId);
+        }
+        return buddyRepository.findNewBuddiesByAuthorsAndUsernameLike(authorsIds, username, principalId);
     }
 
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {

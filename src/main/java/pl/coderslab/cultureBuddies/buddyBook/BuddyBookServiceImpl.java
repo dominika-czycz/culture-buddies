@@ -43,7 +43,7 @@ public class BuddyBookServiceImpl implements BuddyBookService {
 
     @Override
     public BuddyBook findRelationWithPrincipalByBookId(long bookId) throws NotExistingRecordException {
-        final Buddy principal = buddyService.findPrincipal();
+        final Buddy principal = buddyService.getPrincipal();
         final BuddyBookId buddyBookId = new BuddyBookId();
         buddyBookId.setBuddyId(principal.getId());
         buddyBookId.setBookId(bookId);

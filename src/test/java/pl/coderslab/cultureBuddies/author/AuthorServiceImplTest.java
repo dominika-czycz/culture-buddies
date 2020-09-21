@@ -79,7 +79,7 @@ class AuthorServiceImplTest {
     @Test
     public void whenLookingForPrincipalAuthors_thenAuthorsListFound() throws NotExistingRecordException {
         buddy.setId(213L);
-        when(buddyServiceMock.findPrincipal()).thenReturn(buddy);
+        when(buddyServiceMock.getPrincipal()).thenReturn(buddy);
         final Author author1 = new Author();
         final List<Author> authors = List.of(this.author, author1);
         when(authorRepositoryMock.findByBuddiesOrderByLastName(buddy.getId()))

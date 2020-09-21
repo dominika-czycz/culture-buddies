@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.validator.constraints.Range;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
-import pl.coderslab.cultureBuddies.buddyBook.BuddyBookId;
 
 import javax.persistence.*;
 

@@ -27,6 +27,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public List<Author> findAll() {
+        return authorRepository.findAllByOrderByLastName();
+    }
+
+    @Override
     public Author saveIfNotExistYet(String firstName, String lastName) {
         final Optional<Author> authorFromDB = authorRepository.findFirstByFirstNameAndLastName(firstName, lastName);
         return authorFromDB.orElseGet(() -> authorRepository.save(Author.builder()
@@ -36,7 +41,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> getOrderedAuthorsListOfPrincipalUser() throws NotExistingRecordException {
-        final Buddy principal = buddyService.findPrincipal();
+        final Buddy principal = buddyService.getPrincipal();
         return authorRepository.findByBuddiesOrderByLastName(principal.getId());
     }
 

@@ -12,4 +12,6 @@ public interface AuthorService {
     Author saveIfNotExistYet(String firstName, String lastName);
 
     boolean checkIfAuthorExists(Long authorId) throws NotExistingRecordException;
+
+    List<Author> findAll();
 }

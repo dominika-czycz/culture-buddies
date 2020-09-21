@@ -42,7 +42,7 @@ class BuddyControllerTest {
         when(buddyServiceMock.findByUsername(username)).thenReturn(buddy);
 
         //when
-        mockMvc.perform(get("/app/" + username))
+        mockMvc.perform(get("/app/board/" + username))
                 .andExpect(status().isOk())
                 .andExpect(view().name("buddy/profile"))
                 .andExpect(model().attribute("buddy", buddy));
@@ -53,8 +53,8 @@ class BuddyControllerTest {
     @Test
     public void whenAppProfileUrl_thenRedirectAppUsernameUrl() throws Exception {
         when(buddyServiceMock.getPrincipalUsername()).thenReturn("testUsername");
-        mockMvc.perform(get("/app/profile"))
+        mockMvc.perform(get("/app/board/profile"))
                 .andExpect(status().is(302))
-                .andExpect(redirectedUrl("/app/" + username));
+                .andExpect(redirectedUrl("/app/board/" + username));
     }
 }

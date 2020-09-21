@@ -32,7 +32,7 @@ public class Author {
     private Set<Book> books = new HashSet<>();
 
     public String getFullName() {
-        return firstName + " " + lastName;
+        return lastName + " " + firstName;
     }
 
     public Author addBook(Book book) {

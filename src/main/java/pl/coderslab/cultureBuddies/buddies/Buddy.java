@@ -1,16 +1,15 @@
 package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.*;
-import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -21,7 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles",  "books", "books", "password"})
+@ToString(exclude = {"roles", "books", "books", "password"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +61,16 @@ public class Buddy {
             mappedBy = "buddy",
             orphanRemoval = true)
     private Set<BuddyBook> books = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "buddy",
+            orphanRemoval = true)
+    private Set<BuddyRelation> buddies = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "buddyOf",
+            orphanRemoval = true)
+    private Set<BuddyRelation> buddyOf = new HashSet<>();
 
     @PrePersist
     public void prePersist() {

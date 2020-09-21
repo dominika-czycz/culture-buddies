@@ -52,7 +52,7 @@ class BuddyBookServiceTest {
                 .build();
         when(buddyBookRepositoryMock.findById(buddyBookId))
                 .thenReturn(Optional.ofNullable(validBuddyBook));
-        when(buddyServiceMock.findPrincipal()).thenReturn(buddy);
+        when(buddyServiceMock.getPrincipal()).thenReturn(buddy);
     }
 
     @Test

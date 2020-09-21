@@ -94,7 +94,7 @@ public class BookController {
     }
 
     @PostMapping("/rate")
-    public String processAddPage(@Valid BuddyBook buddyBook, BindingResult result) throws NotExistingRecordException {
+    public String processAddPage(@Valid BuddyBook buddyBook, BindingResult result, Model model) throws NotExistingRecordException {
         log.debug("Preparing to update entity {}.", buddyBook);
         if (result.hasErrors()) {
             log.warn("Entity {} has failed validation! Return to rate view", buddyBook);

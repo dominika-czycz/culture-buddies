@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgBuddies">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-5">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom ">My Buddies:</div>
+                    <div class="center cookie-font medium-font small-margin-bottom ">(select to see details of a buddy)
+                    </div>
+                    <table class="table borderless">
+                        <tbody>
+                        <tr th:each="buddy: ${buddies}" class="info-font medium-font">
+                            <td colspan="4" class="center link"><a th:text="${buddy.username}"
+                                                                   th:href="@{/app/myBuddies/__${buddy.id}__}">Buddy</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3">
+                <div>
+                    <form th:action="@{/app/myBuddies/search/}" method="POST">
+                        <div class="card">
+                            <div class="card-header">
+                                <div th:if="${#httpServletRequest.getParameter('info')}!=null"
+                                     th:text="${#httpServletRequest.getParameter('info')}"
+                                     class="info-font light-error">
+                                    Info
+                                </div>
+                                <h4 class="text-center other-font light-font">Search for new buddies by username, authors
+                                    or ...</h4>
+                                <div class="card-body text-center">
+                                    <div class="form-group">
+                                        <label for="username"></label><input type="text" id="username"
+                                                                             class="form-control"
+                                                                             name="username"
+                                                                             th:default="default"
+                                                                             placeholder="username..."/>
+                                        <small id="helpTitle" class="light-font">title</small>
+                                        <div>
+                                            <label for="authors"></label>
+                                            <select id="authors" name="authorsIds" multiple="multiple" class="lighter form-control">
+                                                <option value="">Select authors...</option>
+                                                <option th:each="author: ${authors}" th:value="${author.id}"
+                                                        th:label="${author.fullName}"></option>
+                                            </select>
+                                            <small id="helpCity" class="light-font">authors</small>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button type="submit" id="add" class="btn btn-success"> &#128270;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </article>
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span>Photo by <a
+                            href="https://unsplash.com/@danielkcheung?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                        Daniel Cheung</a>
+                        on
+                        <a href="https://unsplash.com/s/photos/daniel-cheung-lego?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                        Unsplash</a></span>,
+                <span>, <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+                </span></div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
