@@ -19,24 +19,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyBuddiesController {
     private final BuddyService buddyService;
-    private final BuddyRelationService buddyRelationService;
     private final AuthorService authorService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
         log.info("Preparing myBooks page...");
         final List<Buddy> buddies = buddyService.getBuddiesOfPrincipal();
-        log.debug("Buddies' list with {} positions has been found. ", buddies.size());
+        log.debug("Buddy's buddies list with {} positions has been found. ", buddies.size());
+        final List<Buddy> inviting = buddyService.getBuddiesInvitingPrincipal();
         List<Author> authors = authorService.findAll();
         model.addAttribute("buddies", buddies);
         model.addAttribute("authors", authors);
+        model.addAttribute("inviting", inviting);
+        model.addAttribute("newBuddy", new Buddy());
         return "/buddy/myBuddies";
     }
 
     @PostMapping("/search")
-    public String prepareFirstResultsPage(@RequestParam String username,
-                                          @ModelAttribute(name = "authorsIds") ArrayList<Integer> authors,
-                                          Model model) throws EmptyKeysException, NotExistingRecordException {
+    public String prepareResultsPage(@RequestParam String username,
+                                     @ModelAttribute(name = "authorsIds") ArrayList<Integer> authors,
+                                     Model model) throws EmptyKeysException, NotExistingRecordException {
         log.debug("keywords: username {}, authors  {}", username, authors);
         log.info("Looking for buddies...");
         List<Buddy> buddies = buddyService.findByUsernameAndAuthors(username, authors);
@@ -45,6 +47,15 @@ public class MyBuddiesController {
         model.addAttribute("newBuddy", new Buddy());
         return "/buddy/add";
     }
+
+    @PostMapping("/add")
+    public String processInviteNewBuddy(@RequestParam Long buddyId) throws NotExistingRecordException {
+        log.debug("Preparing to invite buddy with id {}...", buddyId);
+        buddyService.inviteBuddy(buddyId);
+        return "redirect:/app/myBuddies/";
+
+    }
+
     @ModelAttribute("profilePictureDir")
 
     public String profilePictureDir() {

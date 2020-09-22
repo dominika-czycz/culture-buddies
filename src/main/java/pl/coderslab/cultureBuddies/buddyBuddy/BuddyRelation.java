@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
-@ToString
 public class BuddyRelation {
     @EmbeddedId
     private BuddyBuddyId id = new BuddyBuddyId();
@@ -31,6 +30,4 @@ public class BuddyRelation {
 
     @ManyToOne
     private RelationStatus status;
-
-
 }

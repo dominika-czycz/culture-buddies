@@ -99,7 +99,6 @@ class RegisterControllerTest {
                         "email"));
         verify(buddyServiceMock, atMost(0)).save(null, unsavedWithInvalidEmail);
         verify(emailServiceMock, atMost(0)).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
-
     }
 
     @Test

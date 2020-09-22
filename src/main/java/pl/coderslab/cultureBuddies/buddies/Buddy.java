@@ -20,7 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles", "books", "books", "password"})
+@ToString(exclude = {"roles", "books", "books", "password", "buddies"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

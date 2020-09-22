@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.buddies;
 
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
@@ -24,5 +25,13 @@ public interface BuddyService {
 
     List<Buddy> getBuddiesOfPrincipal() throws NotExistingRecordException;
 
+    List<Buddy> getBuddiesInvitingPrincipal() throws NotExistingRecordException;
+
     List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authors) throws EmptyKeysException, NotExistingRecordException;
+
+    void inviteBuddy(Long buddyId) throws NotExistingRecordException;
+
+    boolean arePasswordTheSame(String repeatedPassword, Buddy buddy, Model model);
+
+    boolean isProperFileSize(MultipartFile profilePicture, Model model);
 }

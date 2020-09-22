@@ -33,7 +33,7 @@
                     <table class="table">
                         <tr th:each="buddy: ${buddies}">
                             <td>
-                                <div class="box">
+                                <div class="small-box">
                                     <div class="frame">
                                         <img class="profile-small-img" th:if="${buddy.getPictureUrl()!= null}"
                                              th:src="@{${profilePictureDir + buddy.pictureUrl}}" alt="profile picture">
@@ -43,7 +43,7 @@
                                 </div>
                             </td>
                             <td class="left link medium-font"><a th:text="${buddy.username}"
-                                                                   th:href="@{/app/myBuddies/__${buddy.id}__}">Buddy</a>
+                                                                 th:href="@{/app/myBuddies/__${buddy.id}__}">Buddy</a>
                             </td>
                             <td class="medium-font left">
                                 <span class="info-font" th:text="${buddy.city}"></span>

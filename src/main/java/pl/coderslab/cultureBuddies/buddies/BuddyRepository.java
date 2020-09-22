@@ -23,17 +23,26 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
             value = "SELECT DISTINCT b.* FROM buddies b " +
                     "JOIN buddies_books  on b.id = buddies_books.buddy_id " +
                     "JOIN author_book ab on buddies_books.book_id = ab.book_id " +
+                    "LEFT JOIN buddies_relations br on b.id = br.buddy_id " +
+                    "LEFT JOIN buddies b2 ON br.buddy_of_id = b2.id  " +
                     "JOIN authors a on ab.author_id = a.id " +
-                    "WHERE a.id in (?1) AND b.id <> ?2")
+                    "WHERE a.id in (?1) AND b.id <> ?2 AND ( b2.id <> ?2 ||  b2.id is null)")
     List<Buddy> findNewBuddiesByAuthors(Collection<Integer> authorsIds, Long excludedBuddyId);
 
+    @Query(nativeQuery = true,
+            value = "SELECT DISTINCT b.* FROM buddies b  " +
+                    "LEFT JOIN buddies_relations br on b.id = br.buddy_id " +
+                    "LEFT JOIN buddies b2 ON br.buddy_of_id = b2.id  " +
+                    "WHERE b.username LIKE CONCAT(?1 ,'%') AND b.id <> ?2 AND ( b2.id <> ?2 ||  b2.id is null) ")
     List<Buddy> findNewBuddiesByUsernameStartingWithAndIdNot(String username, Long excludedBuddyId);
 
     @Query(nativeQuery = true,
             value = "SELECT DISTINCT b.* FROM buddies b " +
                     "JOIN buddies_books  on b.id = buddies_books.buddy_id " +
                     "JOIN author_book ab on buddies_books.book_id = ab.book_id " +
+                    "LEFT JOIN buddies_relations br on b.id = br.buddy_id " +
+                    "LEFT JOIN buddies b2 ON br.buddy_of_id = b2.id  " +
                     "JOIN authors a on ab.author_id = a.id " +
-                    "WHERE a.id in (?1) AND b.username LIKE CONCAT(?2 ,'%') AND b.id <> ?3")
+                    "WHERE a.id in (?1) AND b.username LIKE CONCAT(?2 ,'%') AND b.id <> ?3 AND ( b2.id <> ?3 ||  b2.id is null)")
     List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(Collection<Integer> authorsLastName, String username, Long excludedBuddyId);
 }

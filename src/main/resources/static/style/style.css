@@ -152,6 +152,11 @@ body {
     height: 200px;
     border: 5px;
 }
+.small-box{
+    width: 100%;
+    height: 60px;
+    border: 5px;
+}
 
 .profile-img {
     outline: 5px solid rgba(2,9,13,0.82);
@@ -162,7 +167,7 @@ body {
 .profile-small-img {
     outline: 1px solid rgba(2,9,13,0.82);
     outline-offset: 2px;
-    max-height: 100px;
+    max-height: 50px;
     max-width: 100%;
 }
 
