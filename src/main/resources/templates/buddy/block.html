@@ -1,0 +1,72 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgBuddies">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-7">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font error bigger-font margin-top-bottom">
+                        Are you sure you want to block
+                        <div class="small-margin-top small-margin-bottom"><span class="other-font medium-font "
+                                   th:text="${buddy.username}">this buddy</span>?</div>
+                        If so,
+                        <span class="other-font medium-font small-margin-top small-margin-bottom"
+                              th:text="${buddy.username}"></span>  won't be your buddy anymore!
+                    <div class="center info-font">
+                        <form th:action="@{/app/myBuddies/block}" th:method="post">
+                            <input type="hidden" name="buddyId" th:value="${buddy.id}">
+                            <button type="submit" class="btn btn-danger small-margin-top">block</button>
+                        </form>
+                        <button type="button" class="btn btn-info"><a th:href="@{/app/myBuddies/}"
+                                                                      class="lighter-link">return</a></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </article>
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                    <span><span> <a
+                            href="https://unsplash.com/@itfeelslikefilm?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">🇸🇮 Janko Ferlič</a> on <a
+                            href="https://unsplash.com/s/photos/library?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a>
+                    </span></span></span>,
+                <span>Photo by <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                    on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

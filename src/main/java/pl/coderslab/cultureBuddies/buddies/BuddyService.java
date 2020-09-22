@@ -31,4 +31,10 @@ public interface BuddyService {
     void inviteBuddy(Long buddyId) throws NotExistingRecordException;
 
     void acceptBuddy(Long buddyId) throws NotExistingRecordException;
+
+    void deleteBuddy(Long buddyId) throws NotExistingRecordException;
+
+    Buddy findById(Long buddyId) throws NotExistingRecordException;
+
+    void block(Long buddyId) throws NotExistingRecordException;
 }

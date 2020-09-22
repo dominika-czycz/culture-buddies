@@ -94,18 +94,21 @@ public class BuddyServiceImpl implements BuddyService {
     @Override
     public List<Buddy> getBuddiesOfPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationIs(principalId, "buddies");
+        final RelationStatus buddies = getStatusId("buddies");
+        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, buddies.getId());
     }
 
     @Override
     public List<Buddy> getBuddiesInvitingPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationIs(principalId, "inviting");
+        final RelationStatus inviting = getStatusId("inviting");
+        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, inviting.getId());
     }
 
     @Transactional
     @Override
-    public List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authorsIds) throws EmptyKeysException, NotExistingRecordException {
+    public List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authorsIds)
+            throws EmptyKeysException, NotExistingRecordException {
         if (authorsIds == null || authorsIds.isEmpty()
                 && (username == null || username.isBlank())) {
             throw new EmptyKeysException("At least one keyword cannot be empty!");
@@ -116,39 +119,78 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public void inviteBuddy(Long buddyId) throws NotExistingRecordException {
-        final Optional<Buddy> buddyToInvite = buddyRepository.findById(buddyId);
-        final Buddy invited = buddyToInvite.orElseThrow(new NotExistingRecordException("Buddy does not exist!"));
+    @Transactional
+    public void deleteBuddy(Long buddyId) throws NotExistingRecordException {
+        final String message = "Relation does not exist";
+        final Buddy deleting = getBuddy(buddyId);
         final Buddy principal = getPrincipal();
-        final BuddyRelation savedInviting = saveBuddyRelation(principal, invited, "inviting");
-        final BuddyRelation savedInvited = saveBuddyRelation(invited, principal, "invited");
-        log.debug("Entities {}, {} have been saved.", savedInviting, savedInvited);
+        final Optional<BuddyRelation> deletingPrincipalRel = getBuddyRelationFromDb(deleting, principal);
+        final Optional<BuddyRelation> principalDeletingRel = getBuddyRelationFromDb(principal, deleting);
+        final BuddyRelation deletingPrincipal = deletingPrincipalRel.orElseThrow(new NotExistingRecordException(message));
+        final BuddyRelation principalDeleting = principalDeletingRel.orElseThrow(new NotExistingRecordException(message));
+        buddyRelationRepository.delete(deletingPrincipal);
+        buddyRelationRepository.delete(principalDeleting);
+    }
+
+    @Override
+    @Transactional
+    public void block(Long buddyId) throws NotExistingRecordException {
+        savePrincipalBuddyRelations(buddyId, "blocking", "blocked");
+    }
+
+    @Override
+    @Transactional
+    public void inviteBuddy(Long buddyId) throws NotExistingRecordException {
+        savePrincipalBuddyRelations(buddyId, "inviting", "invited");
 
     }
 
     @Override
+    @Transactional
     public void acceptBuddy(Long buddyId) throws NotExistingRecordException {
-        final Optional<Buddy> buddyToInvite = buddyRepository.findById(buddyId);
-        final Buddy inviting = buddyToInvite.orElseThrow(new NotExistingRecordException("Buddy does not exist!"));
+        savePrincipalBuddyRelations(buddyId, "buddies", "buddies");
+    }
+
+    @Override
+    public Buddy findById(Long buddyId) throws NotExistingRecordException {
+        return buddyRepository.findById(buddyId)
+                .orElseThrow(new NotExistingRecordException("Buddy with id " + buddyId + "does not exist!"));
+    }
+
+    private void savePrincipalBuddyRelations(Long buddyId, String principalIsDoing, String buddyIsDone) throws NotExistingRecordException {
+        final Buddy blocked = getBuddy(buddyId);
         final Buddy principal = getPrincipal();
-        final BuddyRelation savedInviting = saveBuddyRelation(inviting, principal, "buddies");
-        final BuddyRelation savedInvited = saveBuddyRelation(principal, inviting, "buddies");
-        log.debug("Entities {}, {} have been saved.", savedInviting, savedInvited);
+        final BuddyRelation savedBlocking = saveBuddyRelation(principal, blocked, principalIsDoing);
+        final BuddyRelation savedBlocked = saveBuddyRelation(blocked, principal, buddyIsDone);
+        log.debug("Entities {}, {} have been saved.", savedBlocking, savedBlocked);
+    }
+
+    private Buddy getBuddy(Long buddyId) throws NotExistingRecordException {
+        final Optional<Buddy> buddyToInvite = buddyRepository.findById(buddyId);
+        return buddyToInvite.orElseThrow(new NotExistingRecordException("Buddy does not exist!"));
     }
 
     private BuddyRelation saveBuddyRelation(Buddy who, Buddy whom, String relationName) throws NotExistingRecordException {
-        final RelationStatus relationStatus = relationStatusRepository.findFirstByName(relationName)
-                .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
-        final BuddyBuddyId relationId = new BuddyBuddyId();
-        relationId.setBuddyId(who.getId());
-        relationId.setBuddyOfId(whom.getId());
-        final BuddyRelation buddyRelation = buddyRelationRepository.findById(relationId)
-                .orElseGet(() -> getBuddyRelation(who, whom));
+        final RelationStatus relationStatus = getStatusId(relationName);
+        final Optional<BuddyRelation> relation = getBuddyRelationFromDb(who, whom);
+        final BuddyRelation buddyRelation = relation.orElseGet(() -> createBuddyRelation(who, whom));
         buddyRelation.setStatus(relationStatus);
         return buddyRelationRepository.save(buddyRelation);
     }
 
-    private BuddyRelation getBuddyRelation(Buddy who, Buddy whom) {
+    private RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
+        return relationStatusRepository.findFirstByName(relationName)
+                .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
+    }
+
+    private Optional<BuddyRelation> getBuddyRelationFromDb(Buddy who, Buddy whom) {
+        final BuddyBuddyId relationId = new BuddyBuddyId();
+        relationId.setBuddyId(who.getId());
+        relationId.setBuddyOfId(whom.getId());
+        return buddyRelationRepository.findById(relationId);
+    }
+
+    private BuddyRelation createBuddyRelation(Buddy who, Buddy whom) {
         BuddyRelation buddyRelation;
         buddyRelation = new BuddyRelation();
         buddyRelation.setBuddy(who);

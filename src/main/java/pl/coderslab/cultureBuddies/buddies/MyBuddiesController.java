@@ -58,10 +58,39 @@ public class MyBuddiesController {
 
     @PostMapping("/accept")
     public String processAcceptInvitation(@RequestParam Long buddyId) throws NotExistingRecordException {
-        log.debug("Preparing to invite buddy with id {}...", buddyId);
+        log.debug("Preparing to accept buddy with id {}...", buddyId);
         buddyService.acceptBuddy(buddyId);
         return "redirect:/app/myBuddies/";
     }
+
+    @GetMapping("/delete/{buddyId}")
+    public String prepareDeletePage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing to delete buddy with id {}...", buddyId);
+        Buddy buddy = buddyService.findById(buddyId);
+        model.addAttribute(buddy);
+        return "/buddy/delete";
+    }
+
+    @PostMapping("/delete")
+    public String processDeleteFromBuddies(@RequestParam Long buddyId) throws NotExistingRecordException {
+        buddyService.deleteBuddy(buddyId);
+        return "redirect:/app/myBuddies/";
+    }
+
+    @GetMapping("/block/{buddyId}")
+    public String prepareBlockPage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing to block buddy with id {}...", buddyId);
+        Buddy buddy = buddyService.findById(buddyId);
+        model.addAttribute(buddy);
+        return "/buddy/block";
+    }
+
+    @PostMapping("/block")
+    public String processBlockBuddy(@RequestParam Long buddyId) throws NotExistingRecordException {
+        buddyService.block(buddyId);
+        return "redirect:/app/myBuddies/";
+    }
+
 
     @ModelAttribute("profilePictureDir")
 
