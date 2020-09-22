@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBuddy.BuddyBuddyId;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
@@ -21,7 +21,6 @@ import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,7 +34,6 @@ public class BuddyServiceImpl implements BuddyService {
     private final BuddyBookRepository buddyBookRepository;
     private final BuddyRelationRepository buddyRelationRepository;
     private final RelationStatusRepository relationStatusRepository;
-    private static final int FILE_MAX_SIZE = 1048576;
 
     @Transactional
     @Override
@@ -122,46 +120,41 @@ public class BuddyServiceImpl implements BuddyService {
         final Optional<Buddy> buddyToInvite = buddyRepository.findById(buddyId);
         final Buddy invited = buddyToInvite.orElseThrow(new NotExistingRecordException("Buddy does not exist!"));
         final Buddy principal = getPrincipal();
-        final BuddyRelation savedInviting = saveBuddyRelation(invited, principal);
-        final BuddyRelation savedInvited = saveBuddyRelation(principal, invited);
+        final BuddyRelation savedInviting = saveBuddyRelation(principal, invited, "inviting");
+        final BuddyRelation savedInvited = saveBuddyRelation(invited, principal, "invited");
         log.debug("Entities {}, {} have been saved.", savedInviting, savedInvited);
 
     }
 
     @Override
-    public boolean arePasswordTheSame(String repeatedPassword, Buddy buddy, Model model) {
-        if (!Objects.equals(repeatedPassword, buddy.getPassword())) {
-            log.warn("Passwords 1: {}, 2: {} are not the same", buddy.getPassword(), repeatedPassword);
-            model.addAttribute("passwordMessage", "Repeated password is not the same!");
-            return false;
-        }
-        return true;
+    public void acceptBuddy(Long buddyId) throws NotExistingRecordException {
+        final Optional<Buddy> buddyToInvite = buddyRepository.findById(buddyId);
+        final Buddy inviting = buddyToInvite.orElseThrow(new NotExistingRecordException("Buddy does not exist!"));
+        final Buddy principal = getPrincipal();
+        final BuddyRelation savedInviting = saveBuddyRelation(inviting, principal, "buddies");
+        final BuddyRelation savedInvited = saveBuddyRelation(principal, inviting, "buddies");
+        log.debug("Entities {}, {} have been saved.", savedInviting, savedInvited);
     }
 
-    @Override
-    public boolean isProperFileSize(MultipartFile profilePicture, Model model) {
-        if (profilePicture == null) return true;
-        if (profilePicture.getSize() > FILE_MAX_SIZE) {
-            log.warn("Profile picture size {} over 10MB", profilePicture.getSize());
-            model.addAttribute("pictureMessage", "Profile picture's size must be lower than 1MB!");
-            return false;
-        }
-        return true;
-    }
-
-
-    private BuddyRelation saveBuddyRelation(Buddy buddyToInvite, Buddy principal) throws NotExistingRecordException {
-        final BuddyRelation buddyRelation = new BuddyRelation();
-        final RelationStatus inviting = relationStatusRepository.findFirstByName("inviting")
-                .orElseThrow(new NotExistingRecordException("Status inviting does not exist! Contact administrator!"));
-
-        buddyRelation.setBuddy(principal);
-        buddyRelation.setBuddyOf(buddyToInvite);
-        buddyRelation.setStatus(inviting);
-
+    private BuddyRelation saveBuddyRelation(Buddy who, Buddy whom, String relationName) throws NotExistingRecordException {
+        final RelationStatus relationStatus = relationStatusRepository.findFirstByName(relationName)
+                .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
+        final BuddyBuddyId relationId = new BuddyBuddyId();
+        relationId.setBuddyId(who.getId());
+        relationId.setBuddyOfId(whom.getId());
+        final BuddyRelation buddyRelation = buddyRelationRepository.findById(relationId)
+                .orElseGet(() -> getBuddyRelation(who, whom));
+        buddyRelation.setStatus(relationStatus);
         return buddyRelationRepository.save(buddyRelation);
     }
 
+    private BuddyRelation getBuddyRelation(Buddy who, Buddy whom) {
+        BuddyRelation buddyRelation;
+        buddyRelation = new BuddyRelation();
+        buddyRelation.setBuddy(who);
+        buddyRelation.setBuddyOf(whom);
+        return buddyRelation;
+    }
 
     private List<Buddy> findMatchingBuddies(String username, List<Integer> authorsIds) throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();

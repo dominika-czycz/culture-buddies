@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="col-sm-1"></div>
-            <div class="col-sm-3">
+            <div th:if="${!inviting.isEmpty()}" class="col-sm-3">
                 <div class="table-background around-padding">
                     <div class="center cookie-font bigger-font small-margin-bottom ">You've been invited by:</div>
                     <div class="center cookie-font medium-font small-margin-bottom ">(select to see details of a buddy)
@@ -92,16 +92,14 @@
                                                        th:href="@{/app/myBuddies/__${buddy.id}__}">Buddy</a>
                             </td>
                             <td>
-                                <form th:action="@{/app/myBuddies/accept/}" method="post"
-                                      th:object="${newBuddy}">
+                                <form th:action="@{/app/myBuddies/accept/}" method="post">
                                     <input type="text" hidden="hidden" name="buddyId"
                                            th:value="${buddy.id}"/>
                                     <button type="submit" title="accept" class="btn btn-success">&#128077;</button>
                                 </form>
                             </td>
                             <td>
-                                <form th:action="@{/app/myBuddies/discard/}" method="post"
-                                      th:object="${newBuddy}">
+                                <form th:action="@{/app/myBuddies/discard/}" method="post">
                                     <input type="text" hidden="hidden" name="buddyId"
                                            th:value="${buddy.id}"/>
                                     <button type="submit" title="discard" class="btn btn-danger">&#128078;</button>

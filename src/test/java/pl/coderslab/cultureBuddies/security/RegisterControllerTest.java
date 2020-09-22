@@ -105,8 +105,8 @@ class RegisterControllerTest {
     public void whenPostProfilePicture_thenBuddyWithProfilePictureSaved() throws Exception {
         //given
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
-        //when, then
         when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
+        //when, then
         mockMvc.perform(multipart("/register")
                 .file(profilePicture).with(csrf())
                 .flashAttr("buddy", unsavedBuddy)
@@ -114,7 +114,6 @@ class RegisterControllerTest {
                 .andExpect(redirectedUrl("/"));
         verify(buddyServiceMock).save(profilePicture, unsavedBuddy);
         verify(emailServiceMock).sendHTMLEmail(unsavedBuddy.getName(), unsavedBuddy.getEmail());
-
     }
 
     @Test

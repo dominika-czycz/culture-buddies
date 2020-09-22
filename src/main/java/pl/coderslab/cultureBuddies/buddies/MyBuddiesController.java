@@ -56,6 +56,13 @@ public class MyBuddiesController {
 
     }
 
+    @PostMapping("/accept")
+    public String processAcceptInvitation(@RequestParam Long buddyId) throws NotExistingRecordException {
+        log.debug("Preparing to invite buddy with id {}...", buddyId);
+        buddyService.acceptBuddy(buddyId);
+        return "redirect:/app/myBuddies/";
+    }
+
     @ModelAttribute("profilePictureDir")
 
     public String profilePictureDir() {
