@@ -4,6 +4,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -37,4 +38,6 @@ public interface BuddyService {
     Buddy findById(Long buddyId) throws NotExistingRecordException;
 
     void block(Long buddyId) throws NotExistingRecordException;
+
+    RelationStatus getStatusId(String relationName) throws NotExistingRecordException;
 }

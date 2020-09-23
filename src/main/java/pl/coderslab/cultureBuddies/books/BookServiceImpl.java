@@ -18,6 +18,7 @@ import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Author> getBooksAuthorsOfPrincipal() throws NotExistingRecordException {
         return authorService.getOrderedAuthorsListOfPrincipalUser();
+    }
+
+    @Override
+    public List<Author> getBooksAuthorsOfBuddy(Long buddyId) {
+        return authorService.getOrderedAuthorsListOfBuddy(buddyId);
+    }
+
+    @Override
+    public List<BuddyBook> findBooksRateOfBuddyByAuthorId(Long buddyId, Long authorId) throws NotExistingRecordException {
+        @NotBlank final String username = buddyService.findById(buddyId).getUsername();
+        return findBooksRateWhereAuthorIdAndBuddyUsername(authorId, username);
     }
 
     @Override

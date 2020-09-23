@@ -12,6 +12,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     @Query (nativeQuery = true,
     value = "SELECT DISTINCT a.* FROM authors a JOIN author_book ab on a.id = ab.author_id JOIN buddies_books bb on ab.book_id = bb.book_id where buddy_id =?1 " +
             "ORDER BY a.last_name ")
-    List<Author> findByBuddiesOrderByLastName(Long buddyId);
+    List<Author> findByBuddyIdOrderByLastName(Long buddyId);
     List<Author> findAllByOrderByLastName();
 }

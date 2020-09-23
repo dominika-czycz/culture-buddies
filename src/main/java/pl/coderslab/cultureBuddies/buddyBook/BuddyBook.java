@@ -6,6 +6,7 @@ import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "buddies_books")
@@ -35,10 +36,16 @@ public class BuddyBook {
     private String comment;
     @Range(min = 0, max = 10)
     private Integer rate;
+    private LocalDateTime added;
 
     public BuddyBook(Buddy buddy, Book book) {
         this.buddy = buddy;
         this.book = book;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        added = LocalDateTime.now();
     }
 }
 

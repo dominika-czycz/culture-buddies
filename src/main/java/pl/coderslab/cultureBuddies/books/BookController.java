@@ -85,6 +85,18 @@ public class BookController {
     public String processAddPage(Book book, Model model)
             throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  {} and principal...", book);
+        return addBookToBuddy(model, book);
+    }
+
+    @PostMapping("/addFromBuddy")
+    public String processAddBookFromBuddy(@RequestParam Long bookId, Model model)
+            throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
+        log.debug("Preparing to add relation between  book with id {} and principal...", bookId);
+        final Book book = bookService.findById(bookId);
+        return addBookToBuddy(model, book);
+    }
+
+    private String addBookToBuddy(Model model, Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
         final BuddyBook buddyBook = bookService.addBookToBuddy(book);
         log.debug("BuddyBook {}", buddyBook);
         model.addAttribute("buddyBookWithId", buddyBook);
@@ -148,6 +160,20 @@ public class BookController {
         buddyBookService.updateBuddyBook(buddyBook);
         attributes.addAttribute("authorId", authorId);
         return "redirect:/app/myBooks/{authorId}";
+    }
+
+    @GetMapping("/info/{bookId}")
+    public String prepareInfoPage(@PathVariable Long bookId, Model model) throws NotExistingRecordException {
+        final Book book = bookService.findByIdWithAuthors(bookId);
+        final List<BuddyBook> ratings = buddyBookService.findAllPrincipalBuddiesBookRatings(bookId);
+        if (ratings.size() > 0) {
+            final double averageRating = buddyBookService.countRating(ratings);
+            model.addAttribute("averageRating", averageRating);
+        }
+
+        model.addAttribute(book);
+        model.addAttribute("ratings", ratings);
+        return "/books/info";
     }
 }
 

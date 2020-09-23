@@ -178,7 +178,8 @@ public class BuddyServiceImpl implements BuddyService {
         return buddyRelationRepository.save(buddyRelation);
     }
 
-    private RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
+    @Override
+    public RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
         return relationStatusRepository.findFirstByName(relationName)
                 .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
     }

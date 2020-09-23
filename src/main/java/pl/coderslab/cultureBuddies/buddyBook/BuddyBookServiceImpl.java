@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.List;
@@ -21,6 +22,22 @@ public class BuddyBookServiceImpl implements BuddyBookService {
     @Override
     public List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy) {
         return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
+    }
+
+    @Override
+    public List<BuddyBook> findAllPrincipalBuddiesBookRatings(Long bookId) throws NotExistingRecordException {
+        final Buddy principal = buddyService.getPrincipal();
+        final RelationStatus buddies = buddyService.getStatusId("buddies");
+        return buddyBookRepository.
+                findALlPrincipalBuddiesBookRatings(bookId, principal.getId(), buddies.getId());
+    }
+
+    @Override
+    public double countRating(List<BuddyBook> ratings) throws NotExistingRecordException {
+        return ratings.stream()
+                .mapToInt(BuddyBook::getRate)
+                .average()
+                .orElseThrow(new NotExistingRecordException("Ratings does not exist!"));
     }
 
     @Override

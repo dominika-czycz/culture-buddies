@@ -115,11 +115,11 @@ body {
 }
 
 .article-background-imgProfile {
-    background-image: url(../pictures/mona-eendra-vC8wj_Kphak-unsplash.jpg);
+    background-image: url(../pictures/henry-co-M3KfixgdCko-unsplash.jpg);
     background-position:  bottom;
-    background-repeat: repeat;
-    background-size: auto;
-    height:800px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height:auto;
 }
 
 .article-background-error {
@@ -175,8 +175,7 @@ body {
 
 .book-img {
     border: 10px rgb(45, 39, 39);
-    max-height: 100%;
-    max-width: 100%;
+    height: fit-content;
 }
 
 .lighter {
@@ -259,6 +258,20 @@ body {
     color: black;
     font-style: italic;
     text-align: center;
+}
+.buddy-font {
+    font-family: "Source Code Pro", serif;
+    color: black;
+    font-style: italic;
+}
+
+
+.profile-picture-font {
+    font-family: "Source Code Pro", serif;
+    color: black;
+    font-style: italic;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .other-font {

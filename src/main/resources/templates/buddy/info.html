@@ -30,13 +30,13 @@
             <div class="col-sm-6">
                 <div class="table-backgroundProfile around-padding">
                     <div class="small-margin-bottom">
-                        <h3 class="info-font light-font">Recently added by your buddies</h3>
+                        <h3 class="info-font light-font"><span th:text="${buddy.username}">Username</span>'s</h3>
                         <div class="center cookie-font">
                             <div class="btn-group margin-left" role="group">
                                 <button type="button" class="btn"><a href="/"
                                                                      class="important-link bigger-font">events</a>
                                 </button>
-                                <button type="button" class="btn"><a href="/" class="red-link bigger-font">books</a>
+                                <button type="button" class="btn"><a th:href="@{/app/myBuddies/books/__${buddy.id}__}" class="red-link bigger-font">books</a>
                                 </button>
                                 <button type="button" class="btn"><a href="/" class="red-link bigger-font">music</a>
                                 </button>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="center cookie-font bigger-font small-margin-bottom light-font small-padding">5
-                        recently events
+                        recently events added by <span class="buddy-font medium-font" th:text="${buddy.username}">Username</span>
                     </div>
                     <table class="table borderless">
                         <tbody>
@@ -73,7 +73,7 @@
                         <img class="profile-img" th:if="${buddy.getPictureUrl() == null}"
                              th:src="@{${profilePictureDir + defaultPicture}}" alt="profile picture">
                     </div>
-                    <div th:text="${buddy.username}" class="profile-picture-font small-margin-top">username</div>
+                    <div th:text="${buddy.username}" class="profile-picture-font  small-margin-top">username</div>
                 </div>
             </div>
             <div class="col-sm-1"></div>
@@ -84,8 +84,10 @@
             <div class="col-sm-12">
                 <span class="images-references">Background photos by
                    <span>
-                         <span>Photo by <a href="https://unsplash.com/@hngstrm?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
-                             Henry &amp; Co.</a> on <a href="https://unsplash.com/s/photos/wall?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                         <span>Photo by <a
+                                 href="https://unsplash.com/@hngstrm?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                             Henry &amp; Co.</a> on <a
+                                 href="https://unsplash.com/s/photos/wall?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
                              Unsplash</a></span>
                 <span>, <a
                         href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a

@@ -14,4 +14,7 @@ public interface AuthorService {
     boolean checkIfAuthorExists(Long authorId) throws NotExistingRecordException;
 
     List<Author> findAll();
+
+    List<Author> getOrderedAuthorsListOfBuddy(Long buddyId);
+
 }

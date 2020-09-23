@@ -15,4 +15,7 @@ public interface BuddyBookService {
 
     List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy);
 
+    List<BuddyBook> findAllPrincipalBuddiesBookRatings(Long bookId) throws NotExistingRecordException;
+
+    double countRating(List<BuddyBook> ratings) throws NotExistingRecordException;
 }

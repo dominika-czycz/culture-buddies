@@ -4,6 +4,7 @@ import lombok.*;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "buddies_relations")
@@ -30,4 +31,10 @@ public class BuddyRelation {
 
     @ManyToOne
     private RelationStatus status;
+    private LocalDateTime added;
+
+    @PrePersist
+    public void prePersist() {
+        added = LocalDateTime.now();
+    }
 }

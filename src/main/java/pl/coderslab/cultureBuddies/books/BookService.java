@@ -29,4 +29,9 @@ public interface BookService {
     Book findByIdWithAuthors(Long bookId);
 
     List<Author> getBooksAuthorsOfPrincipal() throws NotExistingRecordException;
+
+    List<Author> getBooksAuthorsOfBuddy(Long buddyId);
+
+    List<BuddyBook> findBooksRateOfBuddyByAuthorId(Long buddyId, Long authorId) throws NotExistingRecordException;
+
 }

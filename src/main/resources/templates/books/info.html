@@ -13,7 +13,6 @@
     <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
 </head>
 <body>
-<
 <div class="container-fluid">
     <header class="jumbotron darker header-background-img">
         <div class="row">
@@ -27,55 +26,48 @@
     <div th:include="navigation::dashboard"></div>
     <article class="article-background-imgBooks">
         <div class="row padding">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-8">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-7">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom">My Books by: <span
-                            class="other-font medium-font" th:text="${author.getFullName()}"></span></div>
-                    <table class="table striped">
-                        <tbody>
-                        <div th:each="bookWithOpinion: ${booksRatingList}">
-                            <tr class="lighter-yellow other-font">
-                                <td class="other-font  medium-font center">rate</td>
-                                <td class="link info-font medium-font right"><a th:href="@{/app/myBooks/info/__${bookWithOpinion.id.bookId}__}"
-                                                                                th:text="${bookWithOpinion.book.title}">Title</a>
-                                </td>
-                                <td class="right">
-                                    <button type="reset" class="btn btn-danger"><a
-                                            th:href="@{/app/myBooks/delete/__${bookWithOpinion.id.bookId + '?authorId=' + author.id}__}">&#x1f5d1;</a>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="center title-font">
-                                    <span th:if="${bookWithOpinion.rate !=null}">
-                                        <span th:text="${bookWithOpinion.rate}">rate </span>
-                                        <span class="bigger-font">&#129304;</span>
-                                    </span>
-                                    <span th:if="${bookWithOpinion.rate ==null}">
-                                        <span class="bigger-font"> 	&#129300;</span>
-                                    </span>
-
-                                </td>
-                                <td class="info-font right medium-font" th:text="${bookWithOpinion.comment}">comment
-                                </td>
-                                <td class="right">
-                                    <button type="button" class="btn btn-success"><a
-                                            th:href="@{/app/myBooks/edit/__${bookWithOpinion.id.bookId + '?authorId=' + author.id}__}">
-                                        &#128221;</a>
-                                    </button>
-                                </td>
-                            </tr>
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Your buddies say about
+                        <span class="other-font medium-font" th:text="${book.title}">title</span>
+                    </div>
+                    <div th:if="${averageRating!=null}" class="center cookie-font bigger-font small-margin-bottom ">
+                        (average rating
+                        <span th:text="${#numbers.formatDecimal(averageRating, 0, 'COMMA', 1, 'POINT')}">average rating</span>)
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-8">
+                            <dl>
+                                <div th:each="rating : ${ratings}" class="margin-bottom">
+                                    <dt class="small-margin-bottom">
+                                        <a th:href="@{/app/myBuddies/info/__${rating.id.buddyId}__}"
+                                           class="red-link list-font" th:text="${rating.buddy.username}">
+                                            Buddy username</a>
+                                    </dt>
+                                    <dd>
+                                        <span class="bigger-font bold-font left cookie-font">(<span
+                                                th:text="${rating.rate}"> rate </span>x &#129304;)</span>
+                                        <span class="info-font right"
+                                              th:text="${rating.comment}"> Comment </span>
+                                    </dd>
+                                </div>
+                            </dl>
                         </div>
-                        </tbody>
-                    </table>
+                        <div class="col-sm-3">
+                            <div class="box">
+                                <div>
+                                    <img class="book-img" th:src="@{${book.getThumbnailLink()}}" alt="book photo"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-1"></div>
-
+            <div class="col-sm-2"></div>
         </div>
     </article>
-
     <footer>
         <div class="row">
             <div class="col-sm-12">
@@ -93,7 +85,6 @@
             </div>
         </div>
     </footer>
-
 </div>
 </body>
 </html>

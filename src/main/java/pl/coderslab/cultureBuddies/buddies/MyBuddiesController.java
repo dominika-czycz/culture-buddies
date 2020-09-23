@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
+import pl.coderslab.cultureBuddies.books.BookService;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
@@ -20,6 +22,7 @@ import java.util.List;
 public class MyBuddiesController {
     private final BuddyService buddyService;
     private final AuthorService authorService;
+    private final BookService bookService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
@@ -89,6 +92,36 @@ public class MyBuddiesController {
     public String processBlockBuddy(@RequestParam Long buddyId) throws NotExistingRecordException {
         buddyService.block(buddyId);
         return "redirect:/app/myBuddies/";
+    }
+
+    @GetMapping("/info/{buddyId}")
+    public String prepareBuddyInfoPage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findById(buddyId);
+        model.addAttribute(buddy);
+        return "buddy/info";
+    }
+
+    @GetMapping("/books/{buddyId}")
+    public String prepareBuddyBooksPage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        log.info("Preparing buddy's Books page...");
+        final Buddy buddy = buddyService.findById(buddyId);
+        final List<Author> authors = bookService.getBooksAuthorsOfBuddy(buddyId);
+        log.debug("Authors' list with {} positions has been found. ", authors.size());
+        model.addAttribute("authors", authors);
+        model.addAttribute(buddy);
+        return "/buddy/buddyBooks";
+    }
+
+    @GetMapping("/authors/{authorId}")
+    public String prepareBuddyAuthorPage(@PathVariable Long authorId, @RequestParam Long buddyId, Model model) throws NotExistingRecordException {
+        log.info("Preparing buddy's author page...");
+        final Buddy buddy = buddyService.findById(buddyId);
+        final List<BuddyBook> booksRating = bookService.findBooksRateOfBuddyByAuthorId(buddyId, authorId);
+        final Author author = bookService.getAuthorById(authorId);
+        model.addAttribute(buddy);
+        model.addAttribute(author);
+        model.addAttribute("booksRatingList", booksRating);
+        return "/buddy/buddyAuthor";
     }
 
 

@@ -82,10 +82,10 @@ class AuthorServiceImplTest {
         when(buddyServiceMock.getPrincipal()).thenReturn(buddy);
         final Author author1 = new Author();
         final List<Author> authors = List.of(this.author, author1);
-        when(authorRepositoryMock.findByBuddiesOrderByLastName(buddy.getId()))
+        when(authorRepositoryMock.findByBuddyIdOrderByLastName(buddy.getId()))
                 .thenReturn(authors);
         testObj.getOrderedAuthorsListOfPrincipalUser();
-        verify(authorRepositoryMock).findByBuddiesOrderByLastName(buddy.getId());
+        verify(authorRepositoryMock).findByBuddyIdOrderByLastName(buddy.getId());
     }
 
 }
