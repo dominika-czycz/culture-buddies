@@ -27,7 +27,6 @@ class ProfilePictureServiceTest {
                 .name("Anna")
                 .lastName("Kowalska")
                 .password("annaKowalska")
-                .city("Wrocław")
                 .build();
     }
 

@@ -31,7 +31,7 @@ public class Book {
     @ManyToMany
     @JoinTable(name = "author_book",
             joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns= @JoinColumn(name = "author_id")
+            inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     private Set<Author> authors;
     @Transient
@@ -54,7 +54,8 @@ public class Book {
             authors.add(author);
         }
     }
-    public Set<BuddyBook> getBuddies(){
+
+    public Set<BuddyBook> getBuddies() {
         return Objects.requireNonNullElseGet(buddies, HashSet::new);
     }
 }

@@ -5,18 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.city.City;
+import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.email.EmailService;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -26,6 +26,7 @@ import java.util.Objects;
 public class RegisterController {
     private final BuddyService buddyService;
     private final EmailService emailService;
+    private final CityRepository cityRepository;
     private static final int FILE_MAX_SIZE = 1048576;
 
     @GetMapping
@@ -72,6 +73,7 @@ public class RegisterController {
         }
         return true;
     }
+
     public boolean isProperFileSize(MultipartFile profilePicture, Model model) {
         if (profilePicture == null) return true;
         if (profilePicture.getSize() > FILE_MAX_SIZE) {
@@ -80,6 +82,11 @@ public class RegisterController {
             return false;
         }
         return true;
+    }
+
+    @ModelAttribute("cities")
+    public List<City> cities() {
+        return cityRepository.findAll();
     }
 }
 

@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.email.EmailService;
 
 import static org.mockito.Mockito.*;
@@ -22,13 +23,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BuddyControllerTest {
-
     @Autowired
     MockMvc mockMvc;
     @MockBean
     private BuddyService buddyServiceMock;
     @MockBean
     private EmailService emailServiceMock;
+    @MockBean
+    private CityRepository cityRepository;
+
     @Spy
     private Buddy buddy;
     private final String username = "testUsername";

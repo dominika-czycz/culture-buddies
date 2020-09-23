@@ -12,6 +12,7 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.city.City;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -45,8 +46,8 @@ class BuddyBookRepositoryTest {
                 .email("test@gmail.com")
                 .name("Anna")
                 .lastName("Kowalska")
+                .city(new City(1L, "Wrocław"))
                 .password("annaKowalska")
-                .city("Wrocław")
                 .books(new HashSet<>())
                 .build();
         final Author savedAuthor = testEm.persist(author);
@@ -59,6 +60,5 @@ class BuddyBookRepositoryTest {
         testEm.flush();
         final Optional<BuddyBook> actual = testObject.findByBookAndBuddy(book, buddy);
         assertThat(actual.get(), is(expected));
-
     }
 }

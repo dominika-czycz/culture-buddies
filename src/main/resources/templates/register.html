@@ -96,8 +96,7 @@
                                 <div th:class="${#fields.hasErrors('city')}? 'errorInput'">
                                     <label for="city"></label>
                                     <select id="city" th:field="*{city}" class="lighter form-control">
-                                        <option th:value="Wrocław">Wrocław</option>
-                                        <option th:value="Warszawa">Warszwa</option>
+                                        <option th:each="city : ${cities}" th:value="${city.id}" th:label="${city.name}"></option>
                                     </select>
                                     <small id="helpCity" class="light-font">city of culture</small>
                                     <small th:if="${#fields.hasErrors('city')}" th:text="${#fields.errors('city')}"

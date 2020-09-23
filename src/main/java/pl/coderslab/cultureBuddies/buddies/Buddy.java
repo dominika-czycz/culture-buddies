@@ -4,11 +4,13 @@ import lombok.*;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
+import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,8 +50,9 @@ public class Buddy {
 
     private String pictureUrl;
 
-    @NotBlank
-    private String city;
+    @NotNull
+    @ManyToOne
+    private City city;
 
     @Column(nullable = false)
     private Boolean enabled;

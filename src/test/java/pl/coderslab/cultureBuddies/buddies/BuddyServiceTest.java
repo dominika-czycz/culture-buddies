@@ -61,7 +61,6 @@ class BuddyServiceTest {
                 .name("Anna")
                 .lastName("Kowalska")
                 .password("annaKowalska")
-                .city("Wrocław")
                 .books(new HashSet<>())
                 .build();
         savedBuddy = unsavedBuddy.toBuilder()
@@ -129,7 +128,6 @@ class BuddyServiceTest {
         buddySpy.setUsername("SpyUsername");
         buddySpy.setPassword("password");
         buddySpy.setEmail("spy@spy");
-        buddySpy.setCity("Wrocław");
         buddySpy.setLastName("SpyName");
         final Buddy savedSpy = buddySpy.toBuilder().id(10L).build();
         savedSpy.addRole(roleUser);

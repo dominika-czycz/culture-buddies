@@ -3,6 +3,7 @@ package pl.coderslab.cultureBuddies.security;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Convert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -11,9 +12,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.city.City;
+import pl.coderslab.cultureBuddies.city.CityConverter;
+import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.email.EmailService;
+
+import javax.persistence.Converter;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,14 +31,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(RegisterController.class)
 @WithAnonymousUser
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 class RegisterControllerTest {
     private Buddy unsavedBuddy;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
+    private CityRepository cityRepository;
+    @MockBean
     private BuddyService buddyServiceMock;
     @MockBean
     private EmailService emailServiceMock;
+
 
     @BeforeEach
     public void setUp() {
@@ -39,9 +50,9 @@ class RegisterControllerTest {
                 .username("bestBuddy")
                 .email("test@gmail.com")
                 .name("Anna")
+                .city(new City(1L, "Wrocław"))
                 .lastName("Kowalska")
                 .password("annaKowalska")
-                .city("Wrocław")
                 .build();
     }
 

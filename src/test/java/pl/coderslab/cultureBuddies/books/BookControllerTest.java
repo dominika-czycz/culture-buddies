@@ -15,6 +15,7 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookId;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
+import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
@@ -43,6 +44,9 @@ class BookControllerTest {
     private BookService bookServiceMock;
     @MockBean
     private BuddyBookService buddyBookServiceMock;
+    @MockBean
+    private CityRepository cityRepository;
+
     @Spy
     private Book book;
     @Spy

@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.validation.ConstraintViolationException;
@@ -36,9 +37,9 @@ class BuddyRepositoryTest {
                 .username("bestBuddy")
                 .email("test@gmail.com")
                 .name("Anna")
+                .city(new City(1L, "Wrocław"))
                 .lastName("Kowalska")
                 .password("annaKowalska")
-                .city("Wrocław")
                 .books(new HashSet<>())
                 .build();
     }
