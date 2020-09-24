@@ -373,22 +373,24 @@ small {
 }
 
 .btn-danger {
-    background-color: rgb(122, 2, 40);
+    background-color: rgba(122, 2, 6, 0.47);
+    border: #ddcaca 2px solid;
     color: wheat;
     font-weight: bold;
     text-transform: uppercase;
 }
 
 .btn-warning {
-    background-color: #084424;
+    background-color: rgba(8, 68, 36, 0.5);
+    border: #ddcaca 2px solid;
     color: #000;
     font-weight: bold;
     text-transform: uppercase;
 }
 
 .btn-info {
-    background-color: darkgoldenrod;
-    border: goldenrod;
+    background-color: rgba(184, 134, 11, 0.57);
+    border: #ddcaca 2px solid;
     color: wheat;
     font-weight: bold;
     text-transform: uppercase;
@@ -396,14 +398,15 @@ small {
 
 .btn-info:hover {
     background-color: goldenrod;
-    border: darkgoldenrod;
+    border: #ddcaca 2px solid;
     color: wheat;
     font-weight: bold;
     text-transform: uppercase;
 }
 
 .btn-success {
-    background-color: olive;
+    background-color: rgba(128, 128, 0, 0.6);
+    border: #ddcaca 2px solid;
     color: wheat;
     font-weight: bold;
     text-transform: uppercase;
@@ -415,6 +418,9 @@ small {
 
 .narrow {
     width: 50px;
+}
+.medium-input {
+    width: 200px;
 }
 
 .green-font {

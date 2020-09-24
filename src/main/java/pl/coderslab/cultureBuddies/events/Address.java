@@ -4,6 +4,7 @@ package pl.coderslab.cultureBuddies.events;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,13 +20,13 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String city;
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String street;
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String number;
     private String flatNumber;

@@ -47,4 +47,10 @@ public class EventServiceImpl implements EventService {
         log.debug("Entity {} has been saved ", saved);
     }
 
+    @Override
+    public Event findByEventById(Long eventId) throws NotExistingRecordException {
+        final Optional<Event> event = eventRepository.findById(eventId);
+        return event.orElseThrow(new NotExistingRecordException("Event with id " + eventId + " does not exist"));
+    }
+
 }

@@ -13,4 +13,6 @@ public interface EventService {
     List<EventType> findAllEventsTypes();
 
     void save(Event event);
+
+    Event findByEventById(Long eventId) throws NotExistingRecordException;
 }

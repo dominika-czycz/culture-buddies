@@ -5,17 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.List;
 
 @Controller
@@ -26,6 +26,7 @@ public class EventController {
     private final EventService eventService;
     private final CityRepository cityRepository;
     private final BuddyService buddyService;
+    private final Validator validator;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
@@ -54,6 +55,29 @@ public class EventController {
         eventService.save(event);
         return "redirect:/app/myEvents/";
     }
+
+    @GetMapping("/edit/{eventId}")
+    public String prepareEditPage(@PathVariable Long eventId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing edit page of event with id {}", eventId);
+        Event event = eventService.findByEventById(eventId);
+        model.addAttribute(event);
+        return "/events/edit";
+    }
+
+    @PostMapping("/edit")
+    public String processEditPage(@Valid BuddyBook buddyBook, BindingResult result,
+                                  @RequestParam Long authorId,
+                                  RedirectAttributes attributes) throws NotExistingRecordException {
+//        log.debug("Preparing to edit entity {}", buddyBook);
+//        if (result.hasErrors()) {
+//            log.warn("Entity {} has failed validation! Return to edit view", buddyBook);
+//            return "/books/edit";
+//        }
+//        buddyBookService.updateBuddyBook(buddyBook);
+//        attributes.addAttribute("authorId", authorId);
+        return "redirect:/app/myBooks/{authorId}";
+    }
+
 
     private boolean isNotValid(Event event, BindingResult result) {
         if (result.hasErrors()) {

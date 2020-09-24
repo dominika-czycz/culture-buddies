@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -45,9 +46,10 @@ public class Event {
     private String stringTime;
     @Column(nullable = false)
     private LocalTime time;
-    @NotNull
+
+    @Valid
     @ManyToOne
-    @JoinColumn(nullable = false, name = "address_id")
+    @NotNull
     private Address address;
     @NotBlank
     @Column(nullable = false)

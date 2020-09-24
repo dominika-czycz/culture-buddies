@@ -46,8 +46,14 @@
                             </td>
                             <td th:text="${event.date}">event date</td>
                             <td class="right">
-                                <button type="reset" title="cancel event!" class="btn btn-danger"><a
-                                        th:href="@{/app/myEvents/delete/__${event.id}__}">&#128078;</a>
+                                <button type="button" title="cancel event!" class="btn btn-danger">
+                                    <a th:href="@{/app/myEvents/delete/__${event.id}__}">&#128078;</a>
+                                </button>
+                            </td>
+                            <td class="right">
+                                <button type="button" class="btn btn-success">
+                                    <a th:href="@{/app/myEvents/edit/__${event.id}__}">
+                                        &#128221;</a>
                                 </button>
                             </td>
                         </tr>
@@ -73,7 +79,7 @@
                                     <input type="text" hidden="hidden" name="eventId"
                                            th:value="${event.id}"/>
                                     <button type="submit" title="I changed my mind. I will not participate"
-                                            class="btn btn-success">&#128077;
+                                            class="btn btn-danger">&#128078;
                                     </button>
                                 </form>
                             </td>
@@ -89,7 +95,7 @@
                         <div class="card-header">
                             <h4 class="text-center other-font light-font">Create new event</h4>
                             <div class="center">
-                                <button type="button" title="block" class="btn btn-info"><a
+                                <button type="button" title="create" class="btn btn-info"><a
                                         th:href="@{/app/myEvents/add}" class="link other-font">let's do it</a>
                                 </button>
                             </div>
@@ -100,7 +106,7 @@
                                  class="info-font light-error">
                                 Info
                             </div>
-                            <h4 class="text-center other-font light-font">...or search for events:</h4>
+                            <h4 class="text-center other-font light-font">...or search for events to join:</h4>
                         </div>
                         <div class="card-body text-center">
                             <div class="form-group">
