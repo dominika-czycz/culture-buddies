@@ -48,4 +48,7 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
     List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(Collection<Integer> authorsIds, String username, Long excludedBuddyId);
 
     int countAllByEvents(Event event);
+
+    @Query("SELECT DISTINCT b from Buddy b LEFT JOIN FETCH b.events e where b.id=?1")
+    Optional<Buddy> findByIdWithEvents(Long id);
 }

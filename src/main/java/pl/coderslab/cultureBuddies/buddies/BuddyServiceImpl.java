@@ -190,6 +190,26 @@ public class BuddyServiceImpl implements BuddyService {
         return buddyRepository.countAllByEvents(event);
     }
 
+    @Override
+    public void removeEvent(Buddy principal) throws NotExistingRecordException {
+        final Buddy buddy = getBuddyWIthEvents(principal);
+        buddy.setEvents(buddy.getEvents());
+        buddyRepository.save(buddy);
+    }
+
+    @Override
+    public Buddy getPrincipalWithEvents() throws NotExistingRecordException {
+        final Buddy principal = getPrincipal();
+        return getBuddyWIthEvents(principal);
+    }
+
+
+    private Buddy getBuddyWIthEvents(Buddy principal) throws NotExistingRecordException {
+        final Optional<Buddy> buddyWithEvents = buddyRepository.findByIdWithEvents(principal.getId());
+        return buddyWithEvents.orElseThrow(
+                new NotExistingRecordException("Buddy with id " + principal.getId() + " does not exist!"));
+    }
+
     private Optional<BuddyRelation> getBuddyRelationFromDb(Buddy who, Buddy whom) {
         final BuddyBuddyId relationId = new BuddyBuddyId();
         relationId.setBuddyId(who.getId());

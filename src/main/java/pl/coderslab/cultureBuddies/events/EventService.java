@@ -11,7 +11,7 @@ public interface EventService {
 
     List<EventType> findAllEventsTypes();
 
-    void save(Event event);
+    void save(Event event) throws NotExistingRecordException;
 
     Event findEventById(Long eventId) throws NotExistingRecordException;
 
@@ -20,4 +20,6 @@ public interface EventService {
     int countParticipants(Event event);
 
     void remove(Long eventId) throws NotExistingRecordException;
+
+    void leave(Long eventId) throws NotExistingRecordException;
 }

@@ -8,7 +8,9 @@ import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
-import java.util.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -38,8 +40,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public void save(Event event) {
+    public void save(Event event) throws NotExistingRecordException {
         saveAddress(event);
+        final Buddy buddy = buddyService.getPrincipalWithEvents();
+        event.setBuddy(buddy);
         final Event saved = eventRepository.save(event);
         log.debug("Entity {} has been saved ", saved);
     }
@@ -71,6 +75,16 @@ public class EventServiceImpl implements EventService {
     public void remove(Long eventId) throws NotExistingRecordException {
         final Event event = findEventById(eventId);
         eventRepository.delete(event);
+    }
+
+    @Override
+    public void leave(Long eventId) throws NotExistingRecordException {
+        final Optional<Event> eventWithBuddies = eventRepository.findEventWithBuddies(eventId);
+        final Event event = eventWithBuddies.orElseThrow(new NotExistingRecordException("Event with id " + eventId + " does not exist!"));
+        final Buddy principal = buddyService.getPrincipalWithEvents();
+        event.removeBuddy(principal);
+        eventRepository.save(event);
+//        buddyService.removeEvent(principal);
     }
 
     @Override

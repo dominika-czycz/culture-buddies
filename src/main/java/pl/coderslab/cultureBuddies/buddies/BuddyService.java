@@ -43,4 +43,9 @@ public interface BuddyService {
     RelationStatus getStatusId(String relationName) throws NotExistingRecordException;
 
     int countParticipants(Event event);
+
+    void removeEvent(Buddy principal) throws NotExistingRecordException;
+
+    Buddy getPrincipalWithEvents() throws NotExistingRecordException;
+
 }

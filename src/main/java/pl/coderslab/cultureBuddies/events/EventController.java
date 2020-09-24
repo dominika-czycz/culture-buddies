@@ -39,7 +39,7 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public String processAddPage(@Valid Event event, BindingResult result) {
+    public String processAddPage(@Valid Event event, BindingResult result) throws NotExistingRecordException {
         log.debug("Entity to save:  {}", event);
         if (isNotValid(event, result)) return "/events/add";
         eventService.save(event);
@@ -66,8 +66,7 @@ public class EventController {
     public String prepareDeletePage(@PathVariable Long eventId, Model model) throws NotExistingRecordException {
         log.debug("Preparing delete page of event with id {}", eventId);
         final Event event = eventService.findEventById(eventId);
-        int participantsNum = eventService.countParticipants(event);
-        if (participantsNum > 1) {
+        if (event.getBuddies().size() > 1) {
             String errorMessage = "The event " + event.getTitle() + " cannot be deleted.  Buddies are already here.";
             model.addAttribute("errorMessage", errorMessage);
             log.warn("Entity {} cannot be deleted. Buddies are already here.", event);
@@ -81,6 +80,21 @@ public class EventController {
     public String processDeletePage(@RequestParam Long eventId) throws NotExistingRecordException {
         log.debug("Preparing to delete event with id:  {}.", eventId);
         eventService.remove(eventId);
+        return "redirect:/app/myEvents/";
+    }
+
+    @GetMapping("/cancel/{eventId}")
+    public String prepareCancelPage(@PathVariable Long eventId, Model model) throws NotExistingRecordException {
+        log.debug("Preparing cancel page of event with id {}", eventId);
+        final Event event = eventService.findEventById(eventId);
+        model.addAttribute(event);
+        return "/events/cancel";
+    }
+
+    @PostMapping("/cancel")
+    public String processCancelPage(@RequestParam Long eventId) throws NotExistingRecordException {
+        log.debug("Preparing to leave event with id:  {}.", eventId);
+        eventService.leave(eventId);
         return "redirect:/app/myEvents/";
     }
 

@@ -77,8 +77,9 @@ public class Event {
         time = LocalTime.parse(stringTime, DateTimeFormatter.ofPattern("HH:mm"));
         addBuddy(buddy);
     }
+
     @PreUpdate
-    public void preUpdate(){
+    public void preUpdate() {
         updated = LocalDateTime.now();
         time = LocalTime.parse(stringTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
@@ -90,6 +91,19 @@ public class Event {
 
     public void addBuddy(Buddy buddy) {
         if (buddies == null) buddies = new HashSet<>();
-        if (buddy != null) buddies.add(buddy);
+        if (buddy != null) {
+            buddies.add(buddy);
+            buddy.getEvents().add(this);
+        }
+    }
+
+    public void removeBuddy(Buddy buddy) {
+        if (buddies == null) buddies = new HashSet<>();
+        if (buddy != null) {
+            buddies.remove(buddy);
+            buddy.getEvents().remove(this);
+        }
+
+
     }
 }

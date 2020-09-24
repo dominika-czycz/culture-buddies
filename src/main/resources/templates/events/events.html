@@ -94,13 +94,11 @@
                             <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
                             <td th:text="${event.date}">event date</td>
                             <td>
-                                <form th:action="@{/app/myEvents/cancel/}" method="post">
-                                    <input type="text" hidden="hidden" name="eventId"
-                                           th:value="${event.id}"/>
-                                    <button type="submit" title="I changed my mind. I will not participate"
-                                            class="btn btn-danger">&#128078;
-                                    </button>
-                                </form>
+                                <button type="submit" title="I changed my mind. I will not participate"
+                                        class="btn btn-danger">
+                                    <a th:href="@{/app/myEvents/cancel/__${event.id}__}">
+                                        &#128078;</a>
+                                </button>
                             </td>
                         </tr>
                         </tbody>
