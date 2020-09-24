@@ -14,6 +14,7 @@ import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyBuddyId;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
+import pl.coderslab.cultureBuddies.events.Event;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -182,6 +183,11 @@ public class BuddyServiceImpl implements BuddyService {
     public RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
         return relationStatusRepository.findFirstByName(relationName)
                 .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
+    }
+
+    @Override
+    public int countParticipants(Event event) {
+        return buddyRepository.countAllByEvents(event);
     }
 
     private Optional<BuddyRelation> getBuddyRelationFromDb(Buddy who, Buddy whom) {

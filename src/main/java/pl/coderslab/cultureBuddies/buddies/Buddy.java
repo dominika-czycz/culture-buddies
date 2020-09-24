@@ -5,6 +5,7 @@ import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.city.City;
+import pl.coderslab.cultureBuddies.events.Event;
 import pl.coderslab.cultureBuddies.security.Role;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles", "books", "password", "buddies", "buddyOf"})
+@ToString(exclude = {"roles", "books", "password", "buddies", "buddyOf", "events"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +60,8 @@ public class Buddy {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
-
+    @ManyToMany(mappedBy = "buddies")
+    private Set<Event> events = new HashSet<>();
     @OneToMany(
             mappedBy = "buddy",
             orphanRemoval = true)

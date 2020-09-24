@@ -28,11 +28,11 @@
             <div class="col-sm-1"></div>
             <div class="col-sm-10">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom margin-top "> Create new event:</div>
+                    <div class="center cookie-font bigger-font small-margin-bottom margin-top "> Edit the event:</div>
                     <div class="row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-6 center">
-                            <form th:action="@{/app/myEvents/add}" method="post" th:object="${event}">
+                            <form th:action="@{/app/myEvents/edit}" method="post" th:object="${event}">
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <div class="form-group">
@@ -78,7 +78,6 @@
                                                        th:text="${#fields.errors('link')}"
                                                        class="light-font">error</small>
                                             </div>
-
                                             <div th:class="${#fields.hasErrors('date')}? 'errorInput'">
                                                 <div>
                                                     <label>
@@ -93,7 +92,6 @@
                                                        th:text="${#fields.errors('date')}"
                                                        class="light-font">error</small>
                                             </div>
-
                                             <div th:class="${#fields.hasErrors('stringTime')}? 'errorInput'">
                                                 <div class="small-margin-top">
                                                     <label>
@@ -169,6 +167,7 @@
                                                 <small id="helpFlatNumber" class="light-font">flat number</small>
                                             </div>
                                         </div>
+                                        <input type="hidden" name="id" th:value="${event.id}">
                                         <input type="hidden" name="buddy" th:value="${buddy.id}">
                                         <div class="btn-group" role="group">
                                             <button type="submit" id="add" class="btn btn-success">add

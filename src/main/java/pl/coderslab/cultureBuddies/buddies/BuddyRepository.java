@@ -3,6 +3,7 @@ package pl.coderslab.cultureBuddies.buddies;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pl.coderslab.cultureBuddies.events.Event;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,4 +46,6 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
                     "AND ( br.buddy_of_id <> ?3 ||  br.buddy_of_id is null) " +
                     "AND b.username LIKE CONCAT(?2 ,'%') ")
     List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(Collection<Integer> authorsIds, String username, Long excludedBuddyId);
+
+    int countAllByEvents(Event event);
 }

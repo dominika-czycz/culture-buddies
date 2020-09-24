@@ -26,9 +26,7 @@
     <div th:include="navigation::dashboard"></div>
     <article class="article-background-imgRegister">
         <div class="row padding">
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-3">
+            <div class="col-sm-4 margin-left">
                 <div class="card">
                     <div class="card-header">
                         <div class="center cookie-font bigger-font small-margin-bottom  light-font">Your events: (<span
@@ -37,21 +35,33 @@
                         <div class="center cookie-font medium-font small-margin-bottom light-font ">(select to see
                             details of an event)
                         </div>
+                        <div th:if="${errorMessage!=null}" class="center light-error other-font small-margin-bottom"
+                             th:text="${errorMessage}">error message
+                        </div>
                     </div>
                     <table class="table borderless">
                         <tbody>
                         <tr th:each="event: ${events}" class="info-font medium-font">
-                            <td class="center "><a class="lighter-link" th:text="${event.title}"
-                                                   th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>
+                            <td class="center ">
+                                <span th:if="${event.title.length()<15}"><a
+                                        class="lighter-link"
+                                        th:text="${event.title}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a></span>
+                                <span th:if="${event.title.length()>=15}"><a
+                                        class="lighter-link"
+                                        th:text="${#strings.substring(event.title,0,15)}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>...</span>
                             </td>
+                            <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
                             <td th:text="${event.date}">event date</td>
                             <td class="right">
-                                <button type="button" title="cancel event!" class="btn btn-danger">
+                                <button th:if="${event.buddies.size()<2}" type="button" title="cancel event!"
+                                        class="btn btn-danger">
                                     <a th:href="@{/app/myEvents/delete/__${event.id}__}">&#128078;</a>
                                 </button>
                             </td>
                             <td class="right">
-                                <button type="button" class="btn btn-success">
+                                <button type="button" class="btn btn-success" title="edit">
                                     <a th:href="@{/app/myEvents/edit/__${event.id}__}">
                                         &#128221;</a>
                                 </button>
@@ -61,18 +71,27 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-1"></div>
-            <div th:if="${!joined.isEmpty()}" class="col-sm-3">
+            <div th:if="${!joined.isEmpty()}" class="col-sm-5">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom ">You've joined to events:</div>
+                    <div class="center cookie-font bigger-font small-margin-bottom ">You've joined to events: (<span
+                            th:text="${joined.size()}"></span>)
+                    </div>
                     <div class="center cookie-font medium-font small-margin-bottom ">(select to see details of an event)
                     </div>
                     <table class="table borderless">
                         <tbody>
                         <tr th:each="event: ${joined}" class="info-font medium-font">
-                            <td class="center link"><a th:text="${event.title}"
-                                                       th:href="@{/app/myEvents/__${event.id}__}">title</a>
+                            <td class="center ">
+                                <span th:if="${event.title.length()<15}"><a
+                                        class="red-link"
+                                        th:text="${event.title}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a></span>
+                                <span th:if="${event.title.length()>=15}"><a
+                                        class="red-link"
+                                        th:text="${#strings.substring(event.title,0,15)}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>...</span>
                             </td>
+                            <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
                             <td th:text="${event.date}">event date</td>
                             <td>
                                 <form th:action="@{/app/myEvents/cancel/}" method="post">
@@ -88,7 +107,6 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-1"></div>
             <div class="col-sm-2">
                 <form th:action="@{/app/myEvents/search/}" method="POST">
                     <div class="card">
@@ -145,14 +163,13 @@
                                 </div>
                             </div>
                             <div class="btn-group" role="group">
-                                <button type="submit" id="search" class="btn btn-success"> &#128270;
+                                <button type="submit" id="search" title="search" class="btn btn-success"> &#128270;
                                 </button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-sm-1"></div>
         </div>
     </article>
     <footer>

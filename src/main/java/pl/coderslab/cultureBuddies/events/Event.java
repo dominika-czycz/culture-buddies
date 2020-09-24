@@ -35,6 +35,7 @@ public class Event {
     @Column(nullable = false)
     private String title;
     private LocalDateTime added;
+    private LocalDateTime updated;
     @NotNull
     @Column(nullable = false)
     @Future
@@ -46,7 +47,6 @@ public class Event {
     private String stringTime;
     @Column(nullable = false)
     private LocalTime time;
-
     @Valid
     @ManyToOne
     @NotNull
@@ -76,6 +76,16 @@ public class Event {
         added = LocalDateTime.now();
         time = LocalTime.parse(stringTime, DateTimeFormatter.ofPattern("HH:mm"));
         addBuddy(buddy);
+    }
+    @PreUpdate
+    public void preUpdate(){
+        updated = LocalDateTime.now();
+        time = LocalTime.parse(stringTime, DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    @PostLoad
+    public void postLoad() {
+        stringTime = time.toString();
     }
 
     public void addBuddy(Buddy buddy) {

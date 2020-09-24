@@ -170,7 +170,6 @@ public class BookController {
             final double averageRating = buddyBookService.countRating(ratings);
             model.addAttribute("averageRating", averageRating);
         }
-
         model.addAttribute(book);
         model.addAttribute("ratings", ratings);
         return "/books/info";
