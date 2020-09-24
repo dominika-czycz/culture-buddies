@@ -44,7 +44,7 @@
                             <td class="center "><a class="lighter-link" th:text="${event.title}"
                                                    th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>
                             </td>
-                            <td th:text="${event.date.toLocalDate()}">event date</td>
+                            <td th:text="${event.date}">event date</td>
                             <td class="right">
                                 <button type="reset" title="cancel event!" class="btn btn-danger"><a
                                         th:href="@{/app/myEvents/delete/__${event.id}__}">&#128078;</a>
@@ -67,7 +67,7 @@
                             <td class="center link"><a th:text="${event.title}"
                                                        th:href="@{/app/myEvents/__${event.id}__}">title</a>
                             </td>
-                            <td th:text="${event.date.toLocalDate()}">event date</td>
+                            <td th:text="${event.date}">event date</td>
                             <td>
                                 <form th:action="@{/app/myEvents/cancel/}" method="post">
                                     <input type="text" hidden="hidden" name="eventId"
@@ -122,7 +122,7 @@
                                     <label for="type"></label>
                                     <select id="type" name="typeId" class="lighter form-control">
                                         <option value="">Select type...</option>
-                                        <option th:each="type: ${type}" th:value="${type.id}"
+                                        <option th:each="type: ${types}" th:value="${type.id}"
                                                 th:label="${type.name}"></option>
                                     </select>
                                     <small id="helpType" class="light-font">types</small>

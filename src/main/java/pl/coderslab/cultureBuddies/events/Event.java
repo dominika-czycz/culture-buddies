@@ -2,13 +2,19 @@ package pl.coderslab.cultureBuddies.events;
 
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,7 +37,14 @@ public class Event {
     @NotNull
     @Column(nullable = false)
     @Future
-    private LocalDateTime date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+    @NotBlank
+    @Pattern(regexp = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")
+    @Transient
+    private String stringTime;
+    @Column(nullable = false)
+    private LocalTime time;
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false, name = "address_id")
@@ -59,5 +72,12 @@ public class Event {
     @PrePersist
     public void prePersist() {
         added = LocalDateTime.now();
+        time = LocalTime.parse(stringTime, DateTimeFormatter.ofPattern("HH:mm"));
+        addBuddy(buddy);
+    }
+
+    public void addBuddy(Buddy buddy) {
+        if (buddies == null) buddies = new HashSet<>();
+        if (buddy != null) buddies.add(buddy);
     }
 }

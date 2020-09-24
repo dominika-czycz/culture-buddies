@@ -11,4 +11,6 @@ public interface EventService {
     List<Event> getJoinedEvents() throws NotExistingRecordException;
 
     List<EventType> findAllEventsTypes();
+
+    void save(Event event);
 }

@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.author.Author;
+import pl.coderslab.cultureBuddies.buddies.BuddyRepository;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookId;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
@@ -46,6 +47,8 @@ class BookControllerTest {
     private BuddyBookService buddyBookServiceMock;
     @MockBean
     private CityRepository cityRepository;
+    @MockBean
+    private BuddyRepository buddyRepository;
 
     @Spy
     private Book book;

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
+import pl.coderslab.cultureBuddies.buddies.BuddyRepository;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.city.CityConverter;
@@ -38,6 +39,8 @@ class RegisterControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private CityRepository cityRepository;
+    @MockBean
+    private BuddyRepository buddyRepository;
     @MockBean
     private BuddyService buddyServiceMock;
     @MockBean

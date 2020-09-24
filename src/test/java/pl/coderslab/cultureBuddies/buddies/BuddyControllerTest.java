@@ -31,6 +31,8 @@ class BuddyControllerTest {
     private EmailService emailServiceMock;
     @MockBean
     private CityRepository cityRepository;
+    @MockBean
+    private BuddyRepository buddyRepository;
 
     @Spy
     private Buddy buddy;

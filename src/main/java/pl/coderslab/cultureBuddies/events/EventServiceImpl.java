@@ -8,6 +8,7 @@ import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -16,6 +17,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventTypeRepository eventTypeRepository;
     private final BuddyService buddyService;
+    private final AddressRepository addressRepository;
 
     @Override
     public List<Event> getEventsOfPrincipal() throws NotExistingRecordException {
@@ -32,6 +34,17 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventType> findAllEventsTypes() {
         return eventTypeRepository.findAll();
+    }
+
+    @Override
+    public void save(Event event) {
+        final Address address = event.getAddress();
+        final Optional<Address> addressFromDb = addressRepository.findFirstByCityAndStreetAndNumberAndFlatNumber(
+                address.getCity(), address.getStreet(), address.getNumber(), address.getFlatNumber());
+        final Address addressToAdd = addressFromDb.orElseGet(() -> addressRepository.save(address));
+        event.setAddress(addressToAdd);
+        final Event saved = eventRepository.save(event);
+        log.debug("Entity {} has been saved ", saved);
     }
 
 }

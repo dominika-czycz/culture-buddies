@@ -1,0 +1,162 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Culture buddies</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css}"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style/style.css}">
+    <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
+</head>
+<div class="container-fluid">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+    <div th:include="navigation::dashboard"></div>
+    <article class="article-background-imgProfile">
+        <div class="row padding">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom margin-top "> Create new event:</div>
+                    <div class="row">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-6 center">
+                            <form th:action="@{/app/myEvents/add}" method="post" th:object="${event}">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="form-group">
+                                            <div><label for="title"></label>
+                                                <input type="text" th:field="*{title}"
+                                                          id="title"
+                                                          class="form-control"
+                                                          placeholder="Title of your event..."
+                                                          maxlength="255"
+                                                          name="title">
+                                                <small id="helpTitle" class="light-font">title</small>
+                                                <small th:if="${#fields.hasErrors('title')}"
+                                                       th:text="${#fields.errors('title')}"
+                                                       class="light-font">error</small>
+                                            </div>
+
+                                            <label for="description"></label>
+                                            <textarea th:field="*{description}"
+                                                      id="description"
+                                                      class="form-control"
+                                                      placeholder="Describe the event..."
+                                                      maxlength="255"
+                                                      name="description"></textarea>
+                                            <small id="helpDescription" class="light-font">short description (max 255
+                                                characters)</small>
+                                            <small th:if="${#fields.hasErrors('description')}"
+                                                   th:text="${#fields.errors('description')}"
+                                                   class="light-font">error</small>
+                                            <div>
+                                                <label>
+                                                    <input th:field="*{date}" type="date"
+                                                           name="date">
+                                                    <small th:if="${#fields.hasErrors('date')}"
+                                                           th:text="${#fields.errors('date')}"
+                                                           class="light-font">error</small>
+                                                    <small id="helpDate" class="light-font">date</small>
+                                                </label>
+                                                <label>
+                                                    <input th:field="*{stringTime}" type="text"
+                                                           name="stringTime">
+                                                    <small th:if="${#fields.hasErrors('stringTime')}"
+                                                           th:text="${#fields.errors('stringTime')}"
+                                                           class="light-font">error</small>
+                                                    <small id="helpTime" class="light-font">time (HH:mm) </small>
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label for="type"></label>
+                                                <select id="type" name="typeId" class="lighter form-control"
+                                                        th:field="*{eventType}">
+                                                    <option value="">Select type...</option>
+                                                    <option th:each="type: ${types}" th:value="${type.id}"
+                                                            th:label="${type.name}"></option>
+                                                </select>
+                                                <small id="helpType" class="light-font">types</small>
+                                            </div>
+                                            <div>address:</div>
+                                            <div><label> city
+                                                <input th:field="*{address.city}" type="text"
+                                                       name="city">
+                                                <small th:if="${#fields.hasErrors('address.city')}"
+                                                       th:text="${#fields.errors('address.city')}"
+                                                       class="light-font">error</small>
+                                            </label></div>
+                                            <div>label> street
+                                                <input th:field="*{address.street}" type="text"
+                                                       name="street">
+                                                <small th:if="${#fields.hasErrors('address.street')}"
+                                                       th:text="${#fields.errors('address.street')}"
+                                                       class="light-font">error</small>
+                                                </label></div>
+                                            <label> number
+                                                <input th:field="*{address.number}" type="text"
+                                                       class="narrow"
+                                                       name="number">
+                                                <small th:if="${#fields.hasErrors('address.number')}"
+                                                       th:text="${#fields.errors('address.number')}"
+                                                       class="light-font">error</small>
+                                            </label>
+                                            <label> flat number
+                                                <input th:field="*{address.flatNumber}" type="text"
+                                                       class="narrow"
+                                                       name="flatNumber">
+                                                <small th:if="${#fields.hasErrors('address.flatNumber')}"
+                                                       th:text="${#fields.errors('address.flatNumber')}"
+                                                       class="light-font">error</small>
+                                            </label>
+                                        </div>
+                                        <input type="hidden" name="buddy"  th:value="${buddy.id}">
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" id="add" class="btn btn-success">add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </article>
+    <footer>
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="images-references">Background photos by
+                   <span>
+                         <span>Photo by <a
+                                 href="https://unsplash.com/@hngstrm?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                             Henry &amp; Co.</a> on <a
+                                 href="https://unsplash.com/s/photos/wall?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">
+                             Unsplash</a></span>
+                <span>, <a
+                        href="https://unsplash.com/@anniespratt?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Annie Spratt</a> on <a
+                        href="https://unsplash.com/s/photos/old-paper?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>and
+                <span> by <a
+                        href="https://unsplash.com/@yvettedewit?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Yvette de Wit</a>
+                     on <a href="https://unsplash.com/s/photos/music-festival?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+                   </span>
+                </span></div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
