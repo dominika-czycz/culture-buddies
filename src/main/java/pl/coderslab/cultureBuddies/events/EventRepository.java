@@ -17,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT DISTINCT event FROM Event event LEFT JOIN FETCH event.buddies b where event.id = ?1")
     Optional<Event> findEventWithBuddies(Long eventId);
 
-    @Query("SELECT DISTINCT event FROM Event event JOIN FETCH event.buddies b where event.buddy.username LIKE CONCAT(?1,'%') " +
+    @Query("SELECT DISTINCT event FROM Event event LEFT JOIN FETCH event.buddies b where event.buddy.username LIKE CONCAT(?1,'%') " +
             "AND event.title LIKE CONCAT(?2,'%') AND event.address.city LIKE CONCAT(?3,'%')")
     List<Event> findByUsernameTitleAndCity(String keyUsername, String keyTitle, String keyCity);
 
@@ -30,8 +30,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(nativeQuery = true,
             value = "SELECT DISTINCT e.*, b.* FROM events e " +
-                    "JOIN buddies b on e.buddy_id = b.id " +
-                    "JOIN buddies_relations br on b.id = br.buddy_id " +
-                    "WHERE br.buddy_of_id = ?1 ORDER BY e.added DESC LIMIT ?2")
+                    "LEFT JOIN buddies b on e.buddy_id = b.id " +
+                    "LEFT JOIN buddies_relations br on b.id = br.buddy_id " +
+                    "WHERE br.buddy_of_id = ?1 ORDER BY e.added DESC LIMIT ?2 ")
     List<Event> findRecentlyAddedEventsWithBuddies(Long buddyId, int recentlyLimit);
+
+    List<Event> findFirst20ByOrderByDateDesc();
+
+    @Query(nativeQuery = true,
+            value = "SELECT DISTINCT e.*, b.* FROM events e " +
+                    "LEFT JOIN events_buddies eb on e.id = eb.event_id " +
+                    "LEFT JOIN buddies b on e.buddy_id = b.id " +
+                    "WHERE e.buddy_id =?1 ORDER BY e.added DESC LIMIT ?2 ")
+    List<Event> findRecentWhereBuddyId(Long id, int limit);
 }
+

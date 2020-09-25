@@ -12,17 +12,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.email.EmailService;
+import pl.coderslab.cultureBuddies.events.EventService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest(BuddyController.class)
+@WebMvcTest(ProfileController.class)
 @ExtendWith(SpringExtension.class)
 @WithMockUser
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BuddyControllerTest {
+class ProfileControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -33,6 +34,8 @@ class BuddyControllerTest {
     private CityRepository cityRepository;
     @MockBean
     private BuddyRepository buddyRepository;
+    @MockBean
+    private EventService eventService;
 
     @Spy
     private Buddy buddy;

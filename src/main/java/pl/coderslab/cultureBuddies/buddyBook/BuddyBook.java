@@ -6,6 +6,7 @@ import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,7 +33,7 @@ public class BuddyBook {
     private Book book;
     @Transient
     private Long bookId;
-
+    @Size(max = 255)
     private String comment;
     @Range(min = 0, max = 10)
     private Integer rate;

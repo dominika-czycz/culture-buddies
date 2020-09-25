@@ -69,11 +69,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public int countParticipants(Event event) {
-        return buddyService.countParticipants(event);
-    }
-
-    @Override
     public void remove(Long eventId) throws NotExistingRecordException {
         final Event event = findEventById(eventId);
         eventRepository.delete(event);
@@ -121,6 +116,24 @@ public class EventServiceImpl implements EventService {
         return events.stream()
                 .peek(event -> Hibernate.initialize(event.getBuddies()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> findRecentEvents() {
+        return eventRepository.findFirst20ByOrderByDateDesc();
+    }
+
+    @Override
+    @Transactional
+    public List<Event> findRecentOfBuddy(Long id, int recentLimit) {
+        final List<Event> events = eventRepository.findRecentWhereBuddyId(id, recentLimit);
+        return events.stream().peek(event -> Hibernate.initialize(event.getBuddies()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Event> findAllOfBuddy(Buddy buddy) {
+        return eventRepository.findAllByBuddy(buddy);
     }
 
     @Override

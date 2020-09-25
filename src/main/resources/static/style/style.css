@@ -139,6 +139,11 @@ body {
     background-size: auto;
     height: 625px;
 }
+.google-frame{
+    width:600px;
+    height: 450px;
+    border: 0;
+}
 
 .table-background {
     background-image: url(../pictures/annie-spratt-PKq3htZdTto-unsplash.jpg);
@@ -289,6 +294,7 @@ body {
 
 .other-font {
     font-family: "Source Code Pro", serif;
+    line-height: 30px;
     color: black;
 }
 
@@ -423,6 +429,14 @@ small {
     color: wheat;
     font-weight: bold;
     text-transform: uppercase;
+}
+.btn-logout {
+    color: wheat;
+    width: fit-content;
+}
+.btn-logout:hover {
+    color: red;
+    width: fit-content;
 }
 
 .images-references {

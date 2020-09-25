@@ -142,7 +142,25 @@ public class EventController {
         model.addAttribute("recentEvents", events);
         return "/events/recentlyAdded";
     }
-    
+
+    @GetMapping("/recentOfBuddy/{buddyId}")
+    public String prepareRecentOfBuddy(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findById(buddyId);
+        List<Event> events = eventService.findRecentOfBuddy(buddy.getId(), RECENTLY_LIMIT);
+        model.addAttribute(buddy);
+        model.addAttribute("buddyEvents", events);
+        return "/events/buddyEvents";
+    }
+
+    @GetMapping("/buddy/{buddyId}")
+    public String prepareEventOfBuddy(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findById(buddyId);
+        List<Event> events = eventService.findAllOfBuddy(buddy);
+        model.addAttribute(buddy);
+        model.addAttribute("buddyEvents", events);
+        return "/events/buddyEvents";
+    }
+
     @ModelAttribute("types")
     public List<EventType> types() {
         return eventService.findAllEventsTypes();
@@ -174,4 +192,5 @@ public class EventController {
     public String defaultPicture() {
         return "defaultPicture.png";
     }
+
 }

@@ -53,7 +53,8 @@
                                       th:text="${event.eventType.name}"> type</span>
                             </div>
                             <div class="left" th:if="${event.link!=null && event.link.length()>0}">
-                                <a th:href="@{${event.link}}" class="bigger-font normal-weight-font red-link-cookie" >link to event</a>
+                                <a th:href="@{${event.link}}" class="bigger-font normal-weight-font red-link-cookie">link
+                                    to event</a>
                             </div>
                             <div>
                                 <div class="bigger-font bold-font center cookie-font small-margin-top small-margin-bottom">
@@ -81,8 +82,8 @@
                                                 </div>
                                             </td>
                                             <td><a class="red-link normal-weight-font"
-                                                                   th:text="${buddy.username}"
-                                                                   th:href="@{/app/myBuddies/info/__${buddy.id}__}">Buddy</a>
+                                                   th:text="${buddy.username}"
+                                                   th:href="@{/app/myBuddies/info/__${buddy.id}__}">Buddy</a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -91,6 +92,33 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="row">
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="text-center other-font light-font">Address</h4>
+                                <div th:text="${event.address.city}">city</div>
+                                <div>
+                                    <span th:text="${event.address.street}">street</span>
+                                    <span th:text="${event.address.number}">number</span>
+                                    <span th:if="${event.address.flatNumber!=null && !event.address.flatNumber.isBlank()}">
+                                    /<span th:text="${event.address.flatNumber}"></span>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <iframe
+                            class="google-frame"
+                            th:src="@{https://www.google.com/maps/embed/v1/place?key=AIzaSyCixmD3ozDpUtpKxRAkEPs8HqBnLJkwq5s
+                            &q=__${event.address.street}__+${event.address.number},+__${event.address.city}__}"
+                            allowfullscreen="allowfullscreen">
+                    </iframe>
                 </div>
             </div>
             <div class="col-sm-2"></div>

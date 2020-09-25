@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.events;
 
+import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -15,13 +16,13 @@ public interface EventService {
 
     void save(Event event) throws NotExistingRecordException;
 
+    List<Event> findAllOfBuddy(Buddy buddy);
+
     Event findEventByIdWithBuddies(Long eventId) throws NotExistingRecordException;
 
     Event findEventById(Long eventId) throws NotExistingRecordException;
 
     void updateEvent(Event event) throws NotExistingRecordException;
-
-    int countParticipants(Event event);
 
     void remove(Long eventId) throws NotExistingRecordException;
 
@@ -32,4 +33,9 @@ public interface EventService {
     void joinEvent(Long eventId) throws NotExistingRecordException, RelationshipAlreadyCreatedException;
 
     List<Event> findRecentlyAddedByBuddies(int recentlyLimit) throws NotExistingRecordException;
+
+    List<Event> findRecentEvents();
+
+    List<Event> findRecentOfBuddy(Long id, int recentlyLimit);
+
 }

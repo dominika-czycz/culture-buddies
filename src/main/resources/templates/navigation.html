@@ -14,53 +14,61 @@
 </head>
 <body>
 <div th:fragment="dashboard">
-    <ul class="lighter-green medium-font cookie-font center">
-        <li class="nav-item">
-            <a class="lighter-link" th:href="@{/app/board/profile/}">
-                <h3 class="nav-item">my profile</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="lighter-link" th:href="@{/app/myBooks/}">
-                <h3 class="nav-item">my books</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="lighter-link" th:href="@{/app/myBuddies/}">
-                <h3 class="nav-item">my buddies</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="lighter-link" href="/">
-                <h3 class="nav-item">my films</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="lighter-link" href="/">
-                <h3 class="nav-item">my music</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="important-link" th:href="@{/app/myEvents/}">
-                <h2 class="nav-item">events</h2>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="link" href="/">
-                <h3 class="nav-item">change password</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="link" href="/">
-                <h3 class="nav-item">change city</h3>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="yellow-link" href="/">
-                <h3 class="nav-item">log out</h3>
-            </a>
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-sm-10">
+            <ul class="lighter-green medium-font cookie-font center">
+                <li class="nav-item">
+                    <a class="lighter-link" th:href="@{/app/board/profile/}">
+                        <h3 class="nav-item">my profile</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="lighter-link" th:href="@{/app/myBooks/}">
+                        <h3 class="nav-item">my books</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="lighter-link" th:href="@{/app/myBuddies/}">
+                        <h3 class="nav-item">my buddies</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="lighter-link" th:href="@{/app/underConstruction}">
+                        <h3 class="nav-item">my films</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="lighter-link" th:href="@{/app/underConstruction}">
+                        <h3 class="nav-item">my music</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="important-link" th:href="@{/app/myEvents/}">
+                        <h2 class="nav-item">events</h2>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="link" th:href="@{/app/underConstruction}">
+                        <h3 class="nav-item">change password</h3>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="link" th:href="@{/app/underConstruction}">
+                        <h3 class="nav-item">change city</h3>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-2">
+            <ul class="medium-font cookie-font center">
+                <li class="nav-item">
+                    <form class="nav-item" th:action="@{/app/logout}" method="post">
+                        <button type="submit" class="btn btn-logout"><h3>log out</h3></button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 </body>
 </html>

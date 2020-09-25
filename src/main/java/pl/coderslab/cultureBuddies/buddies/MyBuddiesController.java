@@ -9,6 +9,8 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.author.AuthorService;
 import pl.coderslab.cultureBuddies.books.BookService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
+import pl.coderslab.cultureBuddies.events.Event;
+import pl.coderslab.cultureBuddies.events.EventService;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
@@ -20,9 +22,11 @@ import java.util.List;
 @RequestMapping("/app/myBuddies/")
 @RequiredArgsConstructor
 public class MyBuddiesController {
+    private static final int RECENT_LIMIT = 20;
     private final BuddyService buddyService;
     private final AuthorService authorService;
     private final BookService bookService;
+    private final EventService eventService;
 
     @GetMapping
     public String prepareAllPage(Model model) throws NotExistingRecordException {
@@ -97,6 +101,8 @@ public class MyBuddiesController {
     @GetMapping("/info/{buddyId}")
     public String prepareBuddyInfoPage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
         final Buddy buddy = buddyService.findById(buddyId);
+        final List<Event> recentEvents = eventService.findRecentOfBuddy(buddy.getId(), RECENT_LIMIT);
+        model.addAttribute("recentEvents", recentEvents);
         model.addAttribute(buddy);
         return "buddy/info";
     }

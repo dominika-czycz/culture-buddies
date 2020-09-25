@@ -24,45 +24,44 @@
         </div>
     </header>
     <div th:include="navigation::dashboard"></div>
-    <article class="article-background-imgBuddies">
+    <article class="article-background-imgEvents">
         <div class="row padding">
             <div class="col-sm-1"></div>
-            <div class="col-sm-5">
+            <div class="col-sm-8">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom ">Choose from the list:</div>
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Events added by
+                        <div class="small-margin-top"><a th:text="${buddy.username}"
+                                th:href="@{/app/myBuddies/info/__${buddy.id}__}">Buddy</a></div>
+                    </div>
                     <table class="table">
-                        <tr th:each="buddy: ${buddies}">
+                        <tbody>
+                        <tr th:each="event: ${buddyEvents}" class="info-font medium-font">
+                            <td class="center ">
+                                <span th:if="${event.title.length()<15}"><a
+                                        class="red-link"
+                                        th:text="${event.title}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a></span>
+                                <span th:if="${event.title.length()>=15}"><a
+                                        class="red-link"
+                                        th:text="${#strings.substring(event.title,0,15)}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>...</span>
+                            </td>
+                            <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
+                            <td th:text="${event.date}">event date</td>
                             <td>
-                                <div class="small-box">
-                                    <div class="frame">
-                                        <img class="profile-small-img" th:if="${buddy.getPictureUrl()!= null}"
-                                             th:src="@{${profilePictureDir + buddy.pictureUrl}}" alt="profile picture">
-                                        <img class="profile-small-img" th:if="${buddy.getPictureUrl() == null}"
-                                             th:src="@{${profilePictureDir + defaultPicture}}" alt="profile picture">
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="left link medium-font"><a th:text="${buddy.username}"
-                                                                 th:href="@{/app/myBuddies/info/__${buddy.id}__}">Buddy</a>
-                            </td>
-                            <td class="medium-font left">
-                                <span class="info-font" th:text="${buddy.city.name}"></span>
-                            </td>
-                            <td>
-                                <form th:action="@{/app/myBuddies/add}" method="post" th:object="${newBuddy}">
-                                    <input type="text" hidden="hidden" name="buddyId"
-                                           th:value="${buddy.id}"/>
-                                    <button type="submit" class="btn btn-success">add</button>
+                                <form th:action="@{/app/myEvents/join}" method="post">
+                                    <input type="hidden" name="eventId" th:value="${event.id}"/>
+                                    <button type="submit" title="join" class="btn btn-success"> &#129304;</button>
                                 </form>
                             </td>
                         </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
             <div class="col-sm-1"></div>
         </div>
     </article>
-
     <footer>
         <div class="row">
             <div class="col-sm-12">
@@ -80,7 +79,6 @@
             </div>
         </div>
     </footer>
-
 </div>
 </body>
 </html>
