@@ -24,8 +24,67 @@
         </div>
     </header>
     <div th:include="navigation::dashboard"></div>
-    <article class="article-background-imgRegister">
+    <article class="article-background-imgEvents">
         <div class="row padding">
+            <div class="col-sm-2 margin-left">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center other-font light-font">Create new event</h4>
+                        <div class="center">
+                            <button type="button" title="create" class="btn btn-info"><a
+                                    th:href="@{/app/myEvents/add}" class="link other-font">let's do it</a>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        <div th:if="${#httpServletRequest.getParameter('info')}!=null"
+                             th:text="${#httpServletRequest.getParameter('info')}"
+                             class="info-font light-error">
+                            Info
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <form th:action="@{/app/myEvents/search/}" method="POST">
+                            <h4 class="text-center other-font light-font">...or search for events to join:</h4>
+                            <div class="form-group">
+                                <label for="username"></label><input type="text" id="username"
+                                                                     class="form-control"
+                                                                     name="username"
+                                                                     placeholder="username..."/>
+                                <small id="helpUsername" class="light-font">username</small>
+                                <div>
+                                    <label for="title"></label><input type="text" id="title"
+                                                                      class="form-control"
+                                                                      name="title"
+                                                                      placeholder="title..."/>
+                                    <small id="helpTit@le" class="light-font">title</small>
+                                </div>
+                                <div>
+                                    <label for="type"></label>
+                                    <select id="type" name="typeId" class="lighter form-control">
+                                        <option value="">Select type...</option>
+                                        <option th:each="type: ${types}" th:value="${type.id}"
+                                                th:label="${type.name}"></option>
+                                    </select>
+                                    <small id="helpType" class="light-font">types</small>
+                                </div>
+                                <div>
+                                    <label for="city"></label>
+                                    <input type="text" id="city"
+                                           class="form-control"
+                                           name="city"
+                                           placeholder="title..."/>
+                                    <small id="helpCity" class="light-font">city</small>
+                                </div>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="submit" id="search" title="search" class="btn btn-success"> &#128270;
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="col-sm-4 margin-left">
                 <div class="card">
                     <div class="card-header">
@@ -105,69 +164,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-sm-2">
-                <form th:action="@{/app/myEvents/search/}" method="POST">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="text-center other-font light-font">Create new event</h4>
-                            <div class="center">
-                                <button type="button" title="create" class="btn btn-info"><a
-                                        th:href="@{/app/myEvents/add}" class="link other-font">let's do it</a>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-header">
-                            <div th:if="${#httpServletRequest.getParameter('info')}!=null"
-                                 th:text="${#httpServletRequest.getParameter('info')}"
-                                 class="info-font light-error">
-                                Info
-                            </div>
-                            <h4 class="text-center other-font light-font">...or search for events to join:</h4>
-                        </div>
-                        <div class="card-body text-center">
-                            <div class="form-group">
-                                <label for="username"></label><input type="text" id="username"
-                                                                     class="form-control"
-                                                                     name="username"
-                                                                     th:default="default"
-                                                                     placeholder="username..."/>
-                                <small id="helpUsername" class="light-font">username</small>
-                                <div>
-                                    <label for="title"></label><input type="text" id="title"
-                                                                      class="form-control"
-                                                                      name="title"
-                                                                      th:default="default"
-                                                                      placeholder="title..."/>
-                                    <small id="helpTitle" class="light-font">title</small>
-                                </div>
-                                <div>
-                                    <label for="type"></label>
-                                    <select id="type" name="typeId" class="lighter form-control">
-                                        <option value="">Select type...</option>
-                                        <option th:each="type: ${types}" th:value="${type.id}"
-                                                th:label="${type.name}"></option>
-                                    </select>
-                                    <small id="helpType" class="light-font">types</small>
-                                </div>
-                                <div>
-                                    <label for="city"></label>
-                                    <select id="city" name="cityId"
-                                            class="lighter form-control">
-                                        <option value="">Select city...</option>
-                                        <option th:each="city: ${cities}" th:value="${city.id}"
-                                                th:label="${city.name}"></option>
-                                    </select>
-                                    <small id="helpCity" class="light-font">city</small>
-                                </div>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <button type="submit" id="search" title="search" class="btn btn-success"> &#128270;
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+
         </div>
     </article>
     <footer>

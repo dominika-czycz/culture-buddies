@@ -110,8 +110,7 @@ public class BuddyServiceImpl implements BuddyService {
     @Override
     public List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authorsIds)
             throws EmptyKeysException, NotExistingRecordException {
-        if (authorsIds == null || authorsIds.isEmpty()
-                && (username == null || username.isBlank())) {
+        if ((authorsIds == null || authorsIds.isEmpty()) && (username == null || username.isBlank())) {
             throw new EmptyKeysException("At least one keyword cannot be empty!");
         }
         List<Buddy> results = findMatchingBuddies(username, authorsIds);
@@ -227,7 +226,7 @@ public class BuddyServiceImpl implements BuddyService {
 
     private List<Buddy> findMatchingBuddies(String username, List<Integer> authorsIds) throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        if (authorsIds.isEmpty()) {
+        if (authorsIds == null || authorsIds.isEmpty()) {
             return buddyRepository.findNewBuddiesByUsernameStartingWithAndIdNot(username, principalId);
         }
         if (username.isBlank()) {

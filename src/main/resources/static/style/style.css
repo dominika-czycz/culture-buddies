@@ -60,6 +60,16 @@ body {
     color: red;
     text-decoration: none;
 }
+.red-link-cookie {
+    font: 400 130px/0.8rem 'Cookie', Helvetica, sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: darkred;
+}
+.red-link-cookie:hover {
+    color: red;
+    text-decoration: none;
+}
 
 .nav-item {
     display: inline;
@@ -89,7 +99,7 @@ body {
     height: 1200px;
 }
 
-.article-background-imgRegister {
+.article-background-imgEvents {
     background-image: url(../pictures/kinga-cichewicz-aHu_xuRvsZ4-unsplash.jpg);
     background-position: right top, left bottom;
     background-repeat: no-repeat;
@@ -251,6 +261,9 @@ body {
 
 .bold-font {
     font-weight: bold;
+}
+.normal-weight-font {
+    font-weight: normal;
 }
 
 .info-font {

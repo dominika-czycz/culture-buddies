@@ -27,24 +27,33 @@
     <article class="article-background-imgEvents">
         <div class="row padding">
             <div class="col-sm-1"></div>
-            <div class="col-sm-7">
+            <div class="col-sm-5">
                 <div class="table-background around-padding">
-                    <div class="center cookie-font error bigger-font margin-top-bottom">
-                        Are you sure you want to remove
-                        <div class="other-font medium-font small-margin-top small-margin-bottom"
-                             th:text="${event.title}">this item
-                        </div>
-                        from your list?
-                    </div>
-                    <div class="center info-font">
-                        <form th:action="@{/app/myEvents/delete}" th:method="post">
-                            <input type="hidden" name="eventId" th:value="${event.id}">
-                            <button type="submit" class="btn btn-danger">remove</button>
-                        </form>
-                        <button type="button" class="btn btn-info">
-                            <a th:href="@{/app/myEvents/}" class="lighter-link">return</a>
-                        </button>
-                    </div>
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Choose from the list:</div>
+                    <table class="table">
+                        <tbody>
+                        <tr th:each="event: ${eventsToJoin}" class="info-font medium-font">
+                            <td class="center ">
+                                <span th:if="${event.title.length()<15}"><a
+                                        class="red-link"
+                                        th:text="${event.title}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a></span>
+                                <span th:if="${event.title.length()>=15}"><a
+                                        class="red-link"
+                                        th:text="${#strings.substring(event.title,0,15)}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>...</span>
+                            </td>
+                            <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
+                            <td th:text="${event.date}">event date</td>
+                            <td>
+                                <form th:action="@{/app/myEvents/join}" method="post">
+                                    <input type="hidden" name="eventId" th:value="${event.id}"/>
+                                    <button type="submit" title="join" class="btn btn-success"> &#129304;</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="col-sm-1"></div>
@@ -67,7 +76,6 @@
             </div>
         </div>
     </footer>
-
 </div>
 </body>
 </html>

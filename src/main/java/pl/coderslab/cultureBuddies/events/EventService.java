@@ -1,6 +1,8 @@
 package pl.coderslab.cultureBuddies.events;
 
+import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public interface EventService {
 
     void save(Event event) throws NotExistingRecordException;
 
+    Event findEventByIdWithBuddies(Long eventId) throws NotExistingRecordException;
+
     Event findEventById(Long eventId) throws NotExistingRecordException;
 
     void updateEvent(Event event) throws NotExistingRecordException;
@@ -22,4 +26,8 @@ public interface EventService {
     void remove(Long eventId) throws NotExistingRecordException;
 
     void leave(Long eventId) throws NotExistingRecordException;
+
+    List<Event> findByUsernameTitleTypeIdOrCity(String username, String title, Long typeId, String city) throws EmptyKeysException, NotExistingRecordException;
+
+    void joinEvent(Long eventId) throws NotExistingRecordException, RelationshipAlreadyCreatedException;
 }

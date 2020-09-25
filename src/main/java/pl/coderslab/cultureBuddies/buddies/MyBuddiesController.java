@@ -40,7 +40,7 @@ public class MyBuddiesController {
 
     @PostMapping("/search")
     public String prepareResultsPage(@RequestParam String username,
-                                     @ModelAttribute(name = "authorsIds") ArrayList<Integer> authors,
+                                     @RequestParam(name = "authorsIds", required = false) ArrayList<Integer> authors,
                                      Model model) throws EmptyKeysException, NotExistingRecordException {
         log.debug("keywords: username {}, authors  {}", username, authors);
         log.info("Looking for buddies...");
@@ -124,9 +124,7 @@ public class MyBuddiesController {
         return "/buddy/buddyAuthor";
     }
 
-
     @ModelAttribute("profilePictureDir")
-
     public String profilePictureDir() {
         return "/pictures/buddyPictures/";
     }
