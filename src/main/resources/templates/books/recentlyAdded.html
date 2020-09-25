@@ -13,6 +13,7 @@
     <link th:href='@{http://fonts.googleapis.com/css?family=Cookie}' rel='stylesheet' type='text/css'/>
 </head>
 <body>
+<
 <div class="container-fluid">
     <header class="jumbotron darker header-background-img">
         <div class="row">
@@ -26,46 +27,37 @@
     <div th:include="navigation::dashboard"></div>
     <article class="article-background-imgBooks">
         <div class="row padding">
-            <div class="col-sm-2"></div>
+            <div class="col-sm-1"></div>
             <div class="col-sm-5">
-                <div class="table-background padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom ">Your buddies say about
-                        <span class="other-font medium-font" th:text="${book.title}">title</span>
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom">Recently added by your friends:
                     </div>
-                    <div th:if="${averageRating!=null}" class="center cookie-font bigger-font small-margin-bottom ">
-                        (average rating
-                        <span th:text="${#numbers.formatDecimal(averageRating, 0, 'COMMA', 1, 'POINT')}">average rating</span>)
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-8">
-                            <dl>
-                                <div th:each="rating : ${ratings}" class="margin-bottom">
-                                    <dt class="small-margin-bottom left">
-                                        <a th:href="@{/app/myBuddies/info/__${rating.id.buddyId}__}"
-                                           class="red-link list-font" th:text="${rating.buddy.username}">
-                                            Buddy username</a>
-                                    </dt>
-                                    <dd>
-                                        <span class="bigger-font bold-font left cookie-font">(<span
-                                                th:text="${rating.rate}"> rate </span>x &#129304;)</span>
-                                        <span class="info-font right"
-                                              th:text="${rating.comment}"> Comment </span>
-                                    </dd>
-                                </div>
-                            </dl>
+                    <table class="table striped">
+                        <tbody>
+                        <div th:each="bookWithOpinion: ${booksWithOpinion}">
+                            <tr class="other-font">
+                                <td class="medium-font center">
+                                    <span th:text="${bookWithOpinion.buddy.username}">
+                                        username
+                                    </span>:
+                                </td>
+                                <td class="right"><a class="red-link"
+                                                     th:href="@{/app/myBooks/infoRecently/__${bookWithOpinion.id.bookId}__}"
+                                                     th:text="${bookWithOpinion.book.title}">Title</a>
+                                </td>
+                                <td>by
+                                    <span th:each="author: ${bookWithOpinion.book.authors}">
+                                        <span th:text="${author.fullName}">
+                                        </span>,
+                                    </span>
+                                </td>
+                            </tr>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="box">
-                                <div>
-                                    <img class="book-img" th:src="@{${book.getThumbnailLink()}}" alt="book photo"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-1"></div>
         </div>
     </article>
     <footer>
@@ -85,6 +77,7 @@
             </div>
         </div>
     </footer>
+
 </div>
 </body>
 </html>

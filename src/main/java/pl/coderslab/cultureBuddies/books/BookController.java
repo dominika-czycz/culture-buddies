@@ -24,6 +24,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class BookController {
+    private static final int RECENTLY_LIMIT = 20;
     private final BookService bookService;
     private final BuddyBookService buddyBookService;
 
@@ -66,7 +67,8 @@ public class BookController {
         return prepareResultsPage(title, author, model, maxPage, pageNo);
     }
 
-    private String prepareResultsPage(String title, String author, Model model, int maxPage, int pageNo) throws NotExistingRecordException, BadHttpRequest {
+    private String prepareResultsPage(String title, String author, Model model, int maxPage, int pageNo)
+            throws NotExistingRecordException, BadHttpRequest {
         if (pageNo > maxPage) {
             throw new NotExistingRecordException("No more results to your search!");
         }
@@ -83,20 +85,24 @@ public class BookController {
 
     @PostMapping("/add")
     public String processAddPage(Book book, Model model)
-            throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
+            throws NotExistingRecordException, InvalidDataFromExternalRestApiException,
+            RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  {} and principal...", book);
         return addBookToBuddy(model, book);
     }
 
     @PostMapping("/addFromBuddy")
     public String processAddBookFromBuddy(@RequestParam Long bookId, Model model)
-            throws NotExistingRecordException, InvalidDataFromExternalRestApiException, RelationshipAlreadyCreatedException {
+            throws NotExistingRecordException, InvalidDataFromExternalRestApiException,
+            RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  book with id {} and principal...", bookId);
         final Book book = bookService.findById(bookId);
         return addBookToBuddy(model, book);
     }
 
-    private String addBookToBuddy(Model model, Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
+    private String addBookToBuddy(Model model, Book book)
+            throws InvalidDataFromExternalRestApiException, NotExistingRecordException,
+            RelationshipAlreadyCreatedException {
         final BuddyBook buddyBook = bookService.addBookToBuddy(book);
         log.debug("BuddyBook {}", buddyBook);
         model.addAttribute("buddyBookWithId", buddyBook);
@@ -106,7 +112,8 @@ public class BookController {
     }
 
     @PostMapping("/rate")
-    public String processAddPage(@Valid BuddyBook buddyBook, BindingResult result, Model model) throws NotExistingRecordException {
+    public String processAddPage(@Valid BuddyBook buddyBook, BindingResult result)
+            throws NotExistingRecordException {
         log.debug("Preparing to update entity {}.", buddyBook);
         if (result.hasErrors()) {
             log.warn("Entity {} has failed validation! Return to rate view", buddyBook);
@@ -137,7 +144,8 @@ public class BookController {
     }
 
     @GetMapping("/edit/{bookId}")
-    public String prepareEditPage(@PathVariable Long bookId, @RequestParam Long authorId, Model model) throws NotExistingRecordException {
+    public String prepareEditPage(@PathVariable Long bookId, @RequestParam Long authorId, Model model)
+            throws NotExistingRecordException {
         log.debug("Preparing edit page of relation between between principal and book with id {}", bookId);
         final BuddyBook buddyBook = buddyBookService.findRelationWithPrincipalByBookId(bookId);
         log.debug("Found entities relation:  {}.", buddyBook);
@@ -164,6 +172,25 @@ public class BookController {
 
     @GetMapping("/info/{bookId}")
     public String prepareInfoPage(@PathVariable Long bookId, Model model) throws NotExistingRecordException {
+        helpPrepareInfoPage(bookId, model);
+        return "/books/info";
+    }
+
+    @GetMapping("/recentlyAdded")
+    public String prepareRecentlyAdded(Model model) throws NotExistingRecordException {
+        List<BuddyBook> buddyBooks =
+                buddyBookService.findRecentlyAddedByBuddies(RECENTLY_LIMIT);
+        model.addAttribute("booksWithOpinion", buddyBooks);
+        return "/books/recentlyAdded";
+    }
+
+    @GetMapping("/infoRecently/{bookId}")
+    public String prepareInfoRecentlyAddedBookPage(@PathVariable Long bookId, Model model) throws NotExistingRecordException {
+        helpPrepareInfoPage(bookId, model);
+        return "/books/infoRecently";
+    }
+
+    private void helpPrepareInfoPage(Long bookId, Model model) throws NotExistingRecordException {
         final Book book = bookService.findByIdWithAuthors(bookId);
         final List<BuddyBook> ratings = buddyBookService.findAllPrincipalBuddiesBookRatings(bookId);
         if (ratings.size() > 0) {
@@ -172,7 +199,6 @@ public class BookController {
         }
         model.addAttribute(book);
         model.addAttribute("ratings", ratings);
-        return "/books/info";
     }
 }
 

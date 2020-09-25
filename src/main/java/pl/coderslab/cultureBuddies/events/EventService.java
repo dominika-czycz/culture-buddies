@@ -30,4 +30,6 @@ public interface EventService {
     List<Event> findByUsernameTitleTypeIdOrCity(String username, String title, Long typeId, String city) throws EmptyKeysException, NotExistingRecordException;
 
     void joinEvent(Long eventId) throws NotExistingRecordException, RelationshipAlreadyCreatedException;
+
+    List<Event> findRecentlyAddedByBuddies(int recentlyLimit) throws NotExistingRecordException;
 }

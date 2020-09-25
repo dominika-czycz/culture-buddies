@@ -29,8 +29,18 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-5">
                 <div class="table-background padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom ">Your buddies say about
-                        <span class="other-font medium-font" th:text="${book.title}">title</span>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <div class="center cookie-font bigger-font small-margin-bottom ">Your buddies say about
+                                <span class="other-font medium-font" th:text="${book.title}">title</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <form th:action="@{/app/myBooks/addFromBuddy}" method="post">
+                                <input type="hidden" name="bookId" th:value="${book.id}">
+                                <button type="submit" class="btn btn-success">add</button>
+                            </form>
+                        </div>
                     </div>
                     <div th:if="${averageRating!=null}" class="center cookie-font bigger-font small-margin-bottom ">
                         (average rating
@@ -38,7 +48,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-1"></div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <dl>
                                 <div th:each="rating : ${ratings}" class="margin-bottom">
                                     <dt class="small-margin-bottom left">
@@ -65,7 +75,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-2"></div>
         </div>
     </article>
     <footer>

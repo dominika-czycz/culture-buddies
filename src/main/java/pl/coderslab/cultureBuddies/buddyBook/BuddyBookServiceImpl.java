@@ -2,15 +2,18 @@ package pl.coderslab.cultureBuddies.buddyBook;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
+import pl.coderslab.cultureBuddies.buddies.RelationStatusRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -18,8 +21,10 @@ import java.util.Optional;
 public class BuddyBookServiceImpl implements BuddyBookService {
     private final BuddyBookRepository buddyBookRepository;
     private final BuddyService buddyService;
+    private final RelationStatusRepository relationStatusRepository;
 
     @Override
+
     public List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy) {
         return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
     }
@@ -38,6 +43,19 @@ public class BuddyBookServiceImpl implements BuddyBookService {
                 .mapToInt(BuddyBook::getRate)
                 .average()
                 .orElseThrow(new NotExistingRecordException("Ratings does not exist!"));
+    }
+
+    @Override
+    @Transactional
+    public List<BuddyBook> findRecentlyAddedByBuddies(int limit) throws NotExistingRecordException {
+        final Buddy principal = buddyService.getPrincipal();
+        RelationStatus relationStatus = relationStatusRepository.findFirstByName("buddies")
+                .orElseThrow(new NotExistingRecordException("Relation status buddies does not exist"));
+        final List<BuddyBook> buddyBooks = buddyBookRepository
+                .findRecentlyAddedBuddyBookWithBookAndBuddiesLimit(principal.getId(), relationStatus.getId(), limit);
+        return buddyBooks.stream()
+                .peek(buddyBook -> Hibernate.initialize(buddyBook.getBook().getAuthors()))
+                .collect(Collectors.toList());
     }
 
     @Override

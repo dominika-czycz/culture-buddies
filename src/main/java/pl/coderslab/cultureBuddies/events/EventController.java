@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
-import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -22,8 +21,9 @@ import java.util.List;
 @RequestMapping("/app/myEvents/")
 public class EventController {
     private final EventService eventService;
-    private final CityRepository cityRepository;
     private final BuddyService buddyService;
+    private static final int RECENTLY_LIMIT = 20;
+
 
     @GetMapping
     public String prepareAllPage() throws NotExistingRecordException {
@@ -136,6 +136,13 @@ public class EventController {
         return "redirect:/app/myEvents/";
     }
 
+    @GetMapping("/recentlyAdded")
+    public String prepareRecentlyAdded(Model model) throws NotExistingRecordException {
+        List<Event> events = eventService.findRecentlyAddedByBuddies(RECENTLY_LIMIT);
+        model.addAttribute("recentEvents", events);
+        return "/events/recentlyAdded";
+    }
+    
     @ModelAttribute("types")
     public List<EventType> types() {
         return eventService.findAllEventsTypes();

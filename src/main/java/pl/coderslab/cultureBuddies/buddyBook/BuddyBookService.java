@@ -6,6 +6,8 @@ import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import java.util.List;
 
 public interface BuddyBookService {
+    List<BuddyBook> findRecentlyAddedByBuddies(int limit) throws NotExistingRecordException;
+
     void updateBuddyBook(BuddyBook buddyBook) throws NotExistingRecordException;
 
 
@@ -18,4 +20,5 @@ public interface BuddyBookService {
     List<BuddyBook> findAllPrincipalBuddiesBookRatings(Long bookId) throws NotExistingRecordException;
 
     double countRating(List<BuddyBook> ratings) throws NotExistingRecordException;
+
 }

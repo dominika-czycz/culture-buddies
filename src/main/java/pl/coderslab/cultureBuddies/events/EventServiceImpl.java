@@ -2,6 +2,7 @@ package pl.coderslab.cultureBuddies.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
@@ -12,6 +13,7 @@ import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedExceptio
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -109,6 +111,16 @@ public class EventServiceImpl implements EventService {
         final Buddy principal2 = buddyService.getPrincipalWithEvents();
         event.addBuddy(principal2);
         eventRepository.save(event);
+    }
+
+    @Override
+    @Transactional
+    public List<Event> findRecentlyAddedByBuddies(int recentlyLimit) throws NotExistingRecordException {
+        final Buddy principal = buddyService.getPrincipal();
+        final List<Event> events = eventRepository.findRecentlyAddedEventsWithBuddies(principal.getId(), recentlyLimit);
+        return events.stream()
+                .peek(event -> Hibernate.initialize(event.getBuddies()))
+                .collect(Collectors.toList());
     }
 
     @Override

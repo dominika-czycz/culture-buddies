@@ -24,48 +24,43 @@
         </div>
     </header>
     <div th:include="navigation::dashboard"></div>
-    <article class="article-background-imgBooks">
+    <article class="article-background-imgEvents">
         <div class="row padding">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-5">
-                <div class="table-background padding">
-                    <div class="center cookie-font bigger-font small-margin-bottom ">Your buddies say about
-                        <span class="other-font medium-font" th:text="${book.title}">title</span>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8">
+                <div class="table-background around-padding">
+                    <div class="center cookie-font bigger-font small-margin-bottom ">Recently added by your buddies:
                     </div>
-                    <div th:if="${averageRating!=null}" class="center cookie-font bigger-font small-margin-bottom ">
-                        (average rating
-                        <span th:text="${#numbers.formatDecimal(averageRating, 0, 'COMMA', 1, 'POINT')}">average rating</span>)
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-8">
-                            <dl>
-                                <div th:each="rating : ${ratings}" class="margin-bottom">
-                                    <dt class="small-margin-bottom left">
-                                        <a th:href="@{/app/myBuddies/info/__${rating.id.buddyId}__}"
-                                           class="red-link list-font" th:text="${rating.buddy.username}">
-                                            Buddy username</a>
-                                    </dt>
-                                    <dd>
-                                        <span class="bigger-font bold-font left cookie-font">(<span
-                                                th:text="${rating.rate}"> rate </span>x &#129304;)</span>
-                                        <span class="info-font right"
-                                              th:text="${rating.comment}"> Comment </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="box">
-                                <div>
-                                    <img class="book-img" th:src="@{${book.getThumbnailLink()}}" alt="book photo"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr th:each="event: ${recentEvents}" class="info-font medium-font">
+                            <td class="center link"><a th:text="${event.buddy.username}"
+                                                       th:href="@{/app/myBuddies/info/__${event.buddy.id}__}">Buddy</a>
+                            </td>
+                            <td class="center ">
+                                <span th:if="${event.title.length()<15}"><a
+                                        class="red-link"
+                                        th:text="${event.title}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a></span>
+                                <span th:if="${event.title.length()>=15}"><a
+                                        class="red-link"
+                                        th:text="${#strings.substring(event.title,0,15)}"
+                                        th:href="@{/app/myEvents/info/__${event.id}__}">Title</a>...</span>
+                            </td>
+                            <td><span th:text="${event.buddies.size()}"></span> X &#128526;</td>
+                            <td th:text="${event.date}">event date</td>
+                            <td>
+                                <form th:action="@{/app/myEvents/join}" method="post">
+                                    <input type="hidden" name="eventId" th:value="${event.id}"/>
+                                    <button type="submit" title="join" class="btn btn-success"> &#129304;</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-1"></div>
         </div>
     </article>
     <footer>

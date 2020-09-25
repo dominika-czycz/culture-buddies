@@ -29,4 +29,19 @@ public interface BuddyBookRepository extends JpaRepository<BuddyBook, Long> {
                     "br.status_id = ?3")
     @Transactional
     List<BuddyBook> findALlPrincipalBuddiesBookRatings(Long bookId, Long principalId, Long statusId);
+
+    @Query(nativeQuery = true,
+            value = "SELECT DISTINCT bb.*, b3.*, a.* FROM buddies_books bb " +
+                    "JOIN books on bb.book_id = books.id JOIN author_book ab on books.id = ab.book_id " +
+                    "JOIN authors a on ab.author_id = a.id " +
+                    "JOIN buddies b2 on bb.buddy_id = b2.id " +
+                    "JOIN buddies_relations br on b2.id = br.buddy_id " +
+                    "JOIN buddies b3 ON b3.id = br.buddy_of_id  " +
+                    "WHERE   " +
+                    "br.buddy_of_id = ?1 " +
+                    "AND " +
+                    "br.status_id = ?2 " +
+                    "ORDER BY bb.added DESC LIMIT ?3")
+    List<BuddyBook> findRecentlyAddedBuddyBookWithBookAndBuddiesLimit(Long buddyId, Long statusId, int limit);
+
 }
