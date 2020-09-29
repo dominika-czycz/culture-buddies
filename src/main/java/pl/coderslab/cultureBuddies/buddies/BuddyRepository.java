@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.cultureBuddies.events.Event;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,7 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
                     "LEFT JOIN buddies_relations br on b.id = br.buddy_id " +
                     "WHERE ab.author_id in (?1) AND b.id <> ?2 " +
                     "AND ( br.buddy_of_id <> ?2 ||  br.buddy_of_id is null)")
-    List<Buddy> findNewBuddiesByAuthors(Collection<Integer> authorsIds, Long excludedBuddyId);
+    List<Buddy> findNewBuddiesByAuthors(ArrayList<Long> authorsIds, Long excludedBuddyId);
 
     @Query(nativeQuery = true,
             value = "SELECT DISTINCT b.* FROM buddies b  " +
@@ -45,7 +46,7 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
                     "WHERE ab.author_id in (?1) AND b.id <> ?3 " +
                     "AND ( br.buddy_of_id <> ?3 ||  br.buddy_of_id is null) " +
                     "AND b.username LIKE CONCAT(?2 ,'%') ")
-    List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(Collection<Integer> authorsIds, String username, Long excludedBuddyId);
+    List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(ArrayList<Long> authorsIds, String username, Long excludedBuddyId);
 
     int countAllByEvents(Event event);
 

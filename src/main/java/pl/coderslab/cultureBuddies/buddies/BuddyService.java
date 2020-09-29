@@ -11,6 +11,7 @@ import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BuddyService {
@@ -28,7 +29,7 @@ public interface BuddyService {
 
     List<Buddy> getBuddiesInvitingPrincipal() throws NotExistingRecordException;
 
-    List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authors) throws EmptyKeysException, NotExistingRecordException;
+    List<Buddy> findByUsernameAndAuthors(String username, ArrayList<Long> authors) throws EmptyKeysException, NotExistingRecordException;
 
     void inviteBuddy(Long buddyId) throws NotExistingRecordException;
 

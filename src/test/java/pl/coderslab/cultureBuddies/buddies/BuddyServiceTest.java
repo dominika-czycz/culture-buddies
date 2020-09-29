@@ -14,6 +14,7 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.Role;
@@ -21,6 +22,7 @@ import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +42,8 @@ class BuddyServiceTest {
     private RoleRepository roleRepositoryMock;
     @MockBean
     private BuddyBookRepository buddyBookRepositoryMock;
+    @MockBean
+    private RelationStatusRepository relationStatusRepositoryMock;
     @Autowired
     private BuddyService testObject;
     @Spy
@@ -66,6 +70,7 @@ class BuddyServiceTest {
         savedBuddy = unsavedBuddy.toBuilder()
                 .id(10L).build();
         when(buddyRepositoryMock.save(unsavedBuddy)).thenReturn(savedBuddy);
+        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy")).thenReturn(Optional.ofNullable(savedBuddy));
     }
 
     @Test
@@ -77,7 +82,7 @@ class BuddyServiceTest {
         when(buddyBookRepositoryMock.findByBookAndBuddy(book, savedBuddy))
                 .thenReturn(Optional.of(buddyBook));
         assertThrows(RelationshipAlreadyCreatedException.class,
-                ()->testObject.addBookToPrincipalBuddy(book));
+                () -> testObject.addBookToPrincipalBuddy(book));
     }
 
     @Test
@@ -101,7 +106,7 @@ class BuddyServiceTest {
 
     @Test
     public void whenSavingBuddyAndPicture_thenBuddyAndPictureSaved() throws IOException {
-        MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture" .getBytes());
+        MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
         //when
         final boolean isSaved = testObject.save(profilePicture, unsavedBuddy);
         //then
@@ -177,12 +182,25 @@ class BuddyServiceTest {
 
     @Test
     @WithMockUser(username = "testUsername")
-    public void givenUsername_whenGettingUsername_thenUsernameGot() {
+    public void givenPrincipalUsername_whenGettingUsername_thenUsernameGot() {
         //given
         String excepted = "testUsername";
         //when
         final String principalUsername = testObject.getPrincipalUsername();
         //then
         assertThat(principalUsername, is(excepted));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void whenGettingBuddiesOfPrincipal_thenBuddiesGot() throws NotExistingRecordException {
+        RelationStatus buddiesStatus = new RelationStatus(7L, "buddies");
+        final List<Buddy> buddies = List.of(this.buddySpy);
+        when(relationStatusRepositoryMock.findFirstByName("buddies"))
+                .thenReturn(Optional.of(buddiesStatus));
+        when(buddyRepositoryMock.findAllBuddiesOfBuddyWithIdWhereRelationId(savedBuddy.getId(), buddiesStatus.getId()))
+                .thenReturn(buddies);
+        final List<Buddy> principalBuddies = testObject.getBuddiesOfPrincipal();
+        assertThat(principalBuddies, is(buddies));
     }
 }

@@ -14,7 +14,8 @@ import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.email.EmailService;
 import pl.coderslab.cultureBuddies.events.EventService;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

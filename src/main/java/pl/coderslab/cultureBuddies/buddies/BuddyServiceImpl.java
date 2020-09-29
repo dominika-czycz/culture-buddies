@@ -21,6 +21,7 @@ import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedExceptio
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,7 +109,7 @@ public class BuddyServiceImpl implements BuddyService {
 
     @Transactional
     @Override
-    public List<Buddy> findByUsernameAndAuthors(String username, List<Integer> authorsIds)
+    public List<Buddy> findByUsernameAndAuthors(String username, ArrayList<Long> authorsIds)
             throws EmptyKeysException, NotExistingRecordException {
         if ((authorsIds == null || authorsIds.isEmpty()) && (username == null || username.isBlank())) {
             throw new EmptyKeysException("At least one keyword cannot be empty!");
@@ -224,7 +225,7 @@ public class BuddyServiceImpl implements BuddyService {
         return buddyRelation;
     }
 
-    private List<Buddy> findMatchingBuddies(String username, List<Integer> authorsIds) throws NotExistingRecordException {
+    private List<Buddy> findMatchingBuddies(String username, ArrayList<Long> authorsIds) throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
         if (authorsIds == null || authorsIds.isEmpty()) {
             return buddyRepository.findNewBuddiesByUsernameStartingWithAndIdNot(username, principalId);

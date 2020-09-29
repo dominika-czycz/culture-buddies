@@ -38,13 +38,12 @@ public class MyBuddiesController {
         model.addAttribute("buddies", buddies);
         model.addAttribute("authors", authors);
         model.addAttribute("inviting", inviting);
-        model.addAttribute("newBuddy", new Buddy());
         return "/buddy/myBuddies";
     }
 
     @PostMapping("/search")
-    public String prepareResultsPage(@RequestParam String username,
-                                     @RequestParam(name = "authorsIds", required = false) ArrayList<Integer> authors,
+    public String prepareResultsPage(@RequestParam(required = false) String username,
+                                     @RequestParam(name = "authorsIds", required = false) ArrayList<Long> authors,
                                      Model model) throws EmptyKeysException, NotExistingRecordException {
         log.debug("keywords: username {}, authors  {}", username, authors);
         log.info("Looking for buddies...");
@@ -104,7 +103,7 @@ public class MyBuddiesController {
         final List<Event> recentEvents = eventService.findRecentOfBuddy(buddy.getId(), RECENT_LIMIT);
         model.addAttribute("recentEvents", recentEvents);
         model.addAttribute(buddy);
-        return "buddy/info";
+        return "/buddy/info";
     }
 
     @GetMapping("/books/{buddyId}")

@@ -26,7 +26,7 @@ public class EventController {
 
 
     @GetMapping
-    public String prepareAllPage() throws NotExistingRecordException {
+    public String prepareAllPage() {
         log.info("Preparing events page...");
         return "/events/events";
     }
