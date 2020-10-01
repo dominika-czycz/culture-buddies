@@ -116,7 +116,7 @@ public class BookServiceImpl implements BookService {
     private List<BuddyBook> findBooksRateWhereAuthorIdAndBuddyUsername(Long authorId, String username) throws NotExistingRecordException {
         if (authorService.checkIfAuthorExists(authorId)) {
             final Buddy buddy = buddyService.findByUsername(username);
-            return buddyBookService.getRatingWhereAuthorIdAndBuddy(authorId, buddy);
+            return buddyBookService.getRatingsWhereAuthorIdAndBuddy(authorId, buddy);
         }
         throw new NotExistingRecordException("Author with id " + authorId + " does not exist!");
     }

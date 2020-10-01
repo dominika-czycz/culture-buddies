@@ -42,6 +42,6 @@ public interface BuddyBookRepository extends JpaRepository<BuddyBook, Long> {
                     "AND " +
                     "br.status_id = ?2 " +
                     "ORDER BY bb.added DESC LIMIT ?3")
-    List<BuddyBook> findRecentlyAddedBuddyBookWithBookAndBuddiesLimit(Long buddyId, Long statusId, int limit);
+    List<BuddyBook> findRecentlyAddedBuddyBookWithBookAndBuddiesLimitTo(Long buddyId, Long statusId, int limit);
 
 }

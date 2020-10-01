@@ -124,13 +124,13 @@ class BookServiceTest {
     @Test
     public void givenAuthorIdAndBuddyUsername_whenSearchingBooksRate_thenBooksListBeingSearched() throws NotExistingRecordException {
         //given
-        when(buddyBookServiceMock.getRatingWhereAuthorIdAndBuddy(author.getId(), buddy))
+        when(buddyBookServiceMock.getRatingsWhereAuthorIdAndBuddy(author.getId(), buddy))
                 .thenReturn(Collections.singletonList(buddyBook));
         when(buddyServiceMock.getPrincipalUsername()).thenReturn("testBuddy");
         //when
         testObj.findBooksRateOfPrincipalByAuthorId(author.getId());
         //then
-        verify(buddyBookServiceMock).getRatingWhereAuthorIdAndBuddy(author.getId(), buddy);
+        verify(buddyBookServiceMock).getRatingsWhereAuthorIdAndBuddy(author.getId(), buddy);
     }
 
     @Test

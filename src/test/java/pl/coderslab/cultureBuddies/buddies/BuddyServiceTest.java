@@ -302,8 +302,12 @@ class BuddyServiceTest {
     @WithMockUser(username = "bestBuddy")
     public void givenBuddyId_whenBlockBuddy_thenBuddyIsBlocked() throws NotExistingRecordException {
         //given
-        RelationStatus blockingStatus = new RelationStatus(1L, "blocking");
-        RelationStatus blockedStatus = new RelationStatus(2L, "blocked");
+        RelationStatus blockingStatus = new RelationStatus();
+        blockingStatus.setId(1L);
+        blockingStatus.setName("blocking");
+        RelationStatus blockedStatus = new RelationStatus();
+        blockedStatus.setId(2L);
+        blockedStatus.setName("blocked");
         principalSomeBuddyRelation.setStatus(blockingStatus);
         someBuddyPrincipalRelation.setStatus(blockedStatus);
         when(relationStatusRepositoryMock.findFirstByName("blocking"))

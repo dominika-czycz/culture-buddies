@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventType {

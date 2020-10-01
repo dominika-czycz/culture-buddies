@@ -41,7 +41,7 @@ public interface BuddyService {
 
     void block(Long buddyId) throws NotExistingRecordException;
 
-    RelationStatus getStatusId(String relationName) throws NotExistingRecordException;
+    RelationStatus getStatus(String relationName) throws NotExistingRecordException;
 
     Buddy getPrincipalWithEvents() throws NotExistingRecordException;
 

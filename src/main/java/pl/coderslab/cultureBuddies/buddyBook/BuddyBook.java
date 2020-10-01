@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @ToString
 public class BuddyBook {
     @EmbeddedId

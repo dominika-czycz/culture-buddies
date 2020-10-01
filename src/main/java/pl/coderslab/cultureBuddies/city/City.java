@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
-@Builder
 @ToString
 public class City {
     @Id

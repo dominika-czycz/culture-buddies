@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
-@Builder
 @ToString
 public class RelationStatus {
     @Id

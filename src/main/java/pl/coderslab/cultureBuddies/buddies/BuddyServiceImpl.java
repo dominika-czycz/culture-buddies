@@ -14,7 +14,6 @@ import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyBuddyId;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
-import pl.coderslab.cultureBuddies.events.Event;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
@@ -96,14 +95,14 @@ public class BuddyServiceImpl implements BuddyService {
     @Override
     public List<Buddy> getBuddiesOfPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        final RelationStatus buddies = getStatusId("buddies");
+        final RelationStatus buddies = getStatus("buddies");
         return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, buddies.getId());
     }
 
     @Override
     public List<Buddy> getBuddiesInvitingPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        final RelationStatus inviting = getStatusId("inviting");
+        final RelationStatus inviting = getStatus("inviting");
         return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, inviting.getId());
     }
 
@@ -158,7 +157,7 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
+    public RelationStatus getStatus(String relationName) throws NotExistingRecordException {
         return relationStatusRepository.findFirstByName(relationName)
                 .orElseThrow(new NotExistingRecordException("Status " + relationName + " does not exist! Contact administrator!"));
     }
@@ -183,7 +182,7 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     private BuddyRelation saveBuddyRelation(Buddy who, Buddy whom, String relationName) throws NotExistingRecordException {
-        final RelationStatus relationStatus = getStatusId(relationName);
+        final RelationStatus relationStatus = getStatus(relationName);
         final Optional<BuddyRelation> relation = getBuddyRelationFromDb(who, whom);
         final BuddyRelation buddyRelation = relation.orElseGet(() -> createBuddyRelation(who, whom));
         buddyRelation.setStatus(relationStatus);

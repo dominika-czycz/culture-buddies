@@ -15,7 +15,7 @@ public interface BuddyBookService {
 
     void remove(Long bookId) throws NotExistingRecordException;
 
-    List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy);
+    List<BuddyBook> getRatingsWhereAuthorIdAndBuddy(Long authorId, Buddy buddy);
 
     List<BuddyBook> findAllPrincipalBuddiesBookRatings(Long bookId) throws NotExistingRecordException;
 

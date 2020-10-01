@@ -25,14 +25,14 @@ public class BuddyBookServiceImpl implements BuddyBookService {
 
     @Override
 
-    public List<BuddyBook> getRatingWhereAuthorIdAndBuddy(Long authorId, Buddy buddy) {
+    public List<BuddyBook> getRatingsWhereAuthorIdAndBuddy(Long authorId, Buddy buddy) {
         return buddyBookRepository.findRatingWhereAuthorIdAndBuddyId(authorId, buddy.getId());
     }
 
     @Override
     public List<BuddyBook> findAllPrincipalBuddiesBookRatings(Long bookId) throws NotExistingRecordException {
         final Buddy principal = buddyService.getPrincipal();
-        final RelationStatus buddies = buddyService.getStatusId("buddies");
+        final RelationStatus buddies = buddyService.getStatus("buddies");
         return buddyBookRepository.
                 findALlPrincipalBuddiesBookRatings(bookId, principal.getId(), buddies.getId());
     }
@@ -52,7 +52,7 @@ public class BuddyBookServiceImpl implements BuddyBookService {
         RelationStatus relationStatus = relationStatusRepository.findFirstByName("buddies")
                 .orElseThrow(new NotExistingRecordException("Relation status buddies does not exist"));
         final List<BuddyBook> buddyBooks = buddyBookRepository
-                .findRecentlyAddedBuddyBookWithBookAndBuddiesLimit(principal.getId(), relationStatus.getId(), limit);
+                .findRecentlyAddedBuddyBookWithBookAndBuddiesLimitTo(principal.getId(), relationStatus.getId(), limit);
         return buddyBooks.stream()
                 .peek(buddyBook -> Hibernate.initialize(buddyBook.getBook().getAuthors()))
                 .collect(Collectors.toList());
