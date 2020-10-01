@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(of = "id")
 public class BuddyRelation {
     @EmbeddedId
     private BuddyBuddyId id = new BuddyBuddyId();

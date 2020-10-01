@@ -14,17 +14,18 @@ import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
+import pl.coderslab.cultureBuddies.buddyBuddy.BuddyBuddyId;
+import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
+import pl.coderslab.cultureBuddies.events.Event;
+import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.Role;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -44,6 +45,8 @@ class BuddyServiceTest {
     private BuddyBookRepository buddyBookRepositoryMock;
     @MockBean
     private RelationStatusRepository relationStatusRepositoryMock;
+    @MockBean
+    private BuddyRelationRepository buddyRelationRepositoryMock;
     @Autowired
     private BuddyService testObject;
     @Spy
@@ -55,6 +58,14 @@ class BuddyServiceTest {
 
     private Buddy unsavedBuddy;
     private Buddy savedBuddy;
+    private final List<Buddy> expectedBuddies = new ArrayList<>();
+    private Buddy someBuddy;
+    private final RelationStatus buddiesStatus = new RelationStatus(7L, "buddies");
+    private final RelationStatus invitingStatus = new RelationStatus(5L, "inviting");
+    private BuddyRelation someBuddyPrincipalRelation;
+    private BuddyRelation principalSomeBuddyRelation;
+    private final BuddyBuddyId principalSomeBuddyRelationId = new BuddyBuddyId();
+    private final BuddyBuddyId someBuddyPrincipalRelationId = new BuddyBuddyId();
 
 
     @BeforeEach
@@ -69,18 +80,47 @@ class BuddyServiceTest {
                 .build();
         savedBuddy = unsavedBuddy.toBuilder()
                 .id(10L).build();
+        someBuddy = Buddy.builder()
+                .username("someBuddy")
+                .id(333L).build();
+        expectedBuddies.add(someBuddy);
+
+        when(relationStatusRepositoryMock.findFirstByName("inviting"))
+                .thenReturn(Optional.of(invitingStatus));
+        when(relationStatusRepositoryMock.findFirstByName("buddies"))
+                .thenReturn(Optional.of(buddiesStatus));
+
         when(buddyRepositoryMock.save(unsavedBuddy)).thenReturn(savedBuddy);
-        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy")).thenReturn(Optional.ofNullable(savedBuddy));
+        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy"))
+                .thenReturn(Optional.ofNullable(savedBuddy));
+        when(buddyRepositoryMock.findById(someBuddy.getId()))
+                .thenReturn(Optional.ofNullable(someBuddy));
+
+
+        someBuddyPrincipalRelationId.setBuddyId(someBuddy.getId());
+        someBuddyPrincipalRelationId.setBuddyOfId(savedBuddy.getId());
+        principalSomeBuddyRelationId.setBuddyId(savedBuddy.getId());
+        principalSomeBuddyRelationId.setBuddyOfId(someBuddy.getId());
+        someBuddyPrincipalRelation = BuddyRelation.builder()
+                .id(someBuddyPrincipalRelationId)
+                .status(buddiesStatus).build();
+        principalSomeBuddyRelation = BuddyRelation.builder()
+                .id(principalSomeBuddyRelationId)
+                .status(buddiesStatus).build();
+
+        when(buddyRelationRepositoryMock.findById(someBuddyPrincipalRelationId))
+                .thenReturn(Optional.ofNullable(someBuddyPrincipalRelation));
+        when(buddyRelationRepositoryMock.findById(principalSomeBuddyRelationId))
+                .thenReturn(Optional.ofNullable(principalSomeBuddyRelation));
     }
 
     @Test
     @WithMockUser("bestBuddy")
     public void givenBookAlreadyAssignedToPrincipal_whenAddingBookToPrincipal_thenRelationAlreadyCreatedException() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
         //given
-        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy"))
-                .thenReturn(Optional.ofNullable(savedBuddy));
         when(buddyBookRepositoryMock.findByBookAndBuddy(book, savedBuddy))
                 .thenReturn(Optional.of(buddyBook));
+        //when, then
         assertThrows(RelationshipAlreadyCreatedException.class,
                 () -> testObject.addBookToPrincipalBuddy(book));
     }
@@ -107,21 +147,23 @@ class BuddyServiceTest {
     @Test
     public void whenSavingBuddyAndPicture_thenBuddyAndPictureSaved() throws IOException {
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
+        Buddy buddyWithPicture = unsavedBuddy.toBuilder().username("Some buddy").build();
         //when
-        final boolean isSaved = testObject.save(profilePicture, unsavedBuddy);
+        final boolean isSaved = testObject.save(profilePicture, buddyWithPicture);
         //then
-        verify(buddyRepositoryMock, atLeastOnce()).save(unsavedBuddy);
-        verify(pictureServiceMock, atLeastOnce()).save(profilePicture, unsavedBuddy);
+        verify(buddyRepositoryMock).save(buddyWithPicture);
+        verify(pictureServiceMock).save(profilePicture, buddyWithPicture);
         assertTrue(isSaved);
     }
 
     @Test
     public void whenSavingBuddyWithoutPicture_thenBuddySaved() throws IOException {
         //when
-        final boolean isSaved = testObject.save(null, unsavedBuddy);
+        Buddy buddyWithoutPicture = unsavedBuddy.toBuilder().username("buddy without picture").build();
+        final boolean isSaved = testObject.save(null, buddyWithoutPicture);
         //then
-        verify(buddyRepositoryMock, atLeastOnce()).save(unsavedBuddy);
-        verify(pictureServiceMock, atLeastOnce()).save(null, unsavedBuddy);
+        verify(buddyRepositoryMock).save(buddyWithoutPicture);
+        verify(pictureServiceMock).save(null, buddyWithoutPicture);
         assertTrue(isSaved);
     }
 
@@ -141,17 +183,18 @@ class BuddyServiceTest {
         when(buddyRepositoryMock.save(buddySpy)).thenReturn(savedSpy);
         final boolean isSaved = testObject.save(null, buddySpy);
         //then
-        verify(buddyRepositoryMock, atLeastOnce()).save(buddySpy);
-        verify(buddySpy, atLeastOnce()).addRole(roleUser);
+        verify(buddyRepositoryMock).save(buddySpy);
+        verify(buddySpy).addRole(roleUser);
         assertTrue(isSaved);
     }
 
     @Test
     public void whenNonUniqueUsername_thenBuddyNotSaved() throws IOException {
         //given
-        final Buddy nonUnique = unsavedBuddy.toBuilder().build();
+        Buddy uniqueBuddy = unsavedBuddy.toBuilder().username("uniqueUsername").build();
+        final Buddy nonUnique = uniqueBuddy.toBuilder().build();
         //when
-        final boolean isSavedUniqueBuddy = testObject.save(null, unsavedBuddy);
+        final boolean isSavedUniqueBuddy = testObject.save(null, uniqueBuddy);
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(nonUnique.getUsername())).thenReturn(Optional.of(savedBuddy));
         final boolean isSavedDuplicatedBuddy = testObject.save(null, nonUnique);
         //then
@@ -163,28 +206,26 @@ class BuddyServiceTest {
     @Test
     public void whenFindingBuddyByUsername_thenBuddyFound() throws NotExistingRecordException {
         //when
-        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(savedBuddy.getUsername()))
-                .thenReturn(Optional.ofNullable(savedBuddy));
         final Buddy foundBuddy = testObject.findByUsername(savedBuddy.getUsername());
-        assertThat(foundBuddy, is(savedBuddy));
-        verify(buddyRepositoryMock, atLeastOnce()).findFirstByUsernameIgnoringCase(savedBuddy.getUsername());
-    }
-
-    @Test
-    public void whenBuddyNotFound_thenThrowsNonExistingNameException() {
-        //when
-        when(buddyRepositoryMock.findFirstByUsernameIgnoringCase(savedBuddy.getUsername()))
-                .thenReturn(Optional.empty());
         //then
-        assertThrows(NotExistingRecordException.class,
-                () -> testObject.findByUsername(savedBuddy.getUsername()));
+        assertThat(foundBuddy, is(savedBuddy));
+        verify(buddyRepositoryMock).findFirstByUsernameIgnoringCase(savedBuddy.getUsername());
     }
 
     @Test
-    @WithMockUser(username = "testUsername")
+    public void givenNotExistingUsername_whenBuddyNotFound_thenThrowsNonExistingNameException() {
+        //given
+        String notExisting = "not existing buddy";
+        //when, then
+        assertThrows(NotExistingRecordException.class,
+                () -> testObject.findByUsername(notExisting));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
     public void givenPrincipalUsername_whenGettingUsername_thenUsernameGot() {
         //given
-        String excepted = "testUsername";
+        String excepted = "bestBuddy";
         //when
         final String principalUsername = testObject.getPrincipalUsername();
         //then
@@ -194,13 +235,170 @@ class BuddyServiceTest {
     @Test
     @WithMockUser(username = "bestBuddy")
     public void whenGettingBuddiesOfPrincipal_thenBuddiesGot() throws NotExistingRecordException {
-        RelationStatus buddiesStatus = new RelationStatus(7L, "buddies");
-        final List<Buddy> buddies = List.of(this.buddySpy);
-        when(relationStatusRepositoryMock.findFirstByName("buddies"))
-                .thenReturn(Optional.of(buddiesStatus));
+        //given
+
         when(buddyRepositoryMock.findAllBuddiesOfBuddyWithIdWhereRelationId(savedBuddy.getId(), buddiesStatus.getId()))
-                .thenReturn(buddies);
+                .thenReturn(expectedBuddies);
+        //when
         final List<Buddy> principalBuddies = testObject.getBuddiesOfPrincipal();
-        assertThat(principalBuddies, is(buddies));
+        //then
+        assertThat(principalBuddies, is(expectedBuddies));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void whenGetBuddiesInvitingPrincipal_thenBuddiesAreGotten() throws NotExistingRecordException {
+        //given
+
+        when(buddyRepositoryMock.findAllBuddiesOfBuddyWithIdWhereRelationId(savedBuddy.getId(), invitingStatus.getId()))
+                .thenReturn(expectedBuddies);
+        //when
+        final List<Buddy> buddiesInvitingPrincipal = testObject.getBuddiesInvitingPrincipal();
+        //then
+        verify(buddyRepositoryMock)
+                .findAllBuddiesOfBuddyWithIdWhereRelationId(savedBuddy.getId(), invitingStatus.getId());
+        assertThat(buddiesInvitingPrincipal, is(expectedBuddies));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void givenUsernameAndAuthorsIds_whenSearchForBuddies_thenBuddiesAreSearched() throws EmptyKeysException, NotExistingRecordException {
+        //given
+        String username = "someBuddy";
+        final ArrayList<Long> authorsIds = new ArrayList<>(List.of(1L, 2L));
+        when(buddyRepositoryMock.findNewBuddiesByAuthorsAndUsernameLike(authorsIds, username, savedBuddy.getId()))
+                .thenReturn(expectedBuddies);
+        //when
+        final List<Buddy> actual = testObject.findByUsernameAndAuthors(username, authorsIds);
+        //then
+        verify(buddyRepositoryMock)
+                .findNewBuddiesByAuthorsAndUsernameLike(authorsIds, username, savedBuddy.getId());
+
+        assertThat(actual, is(expectedBuddies));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void notGivenAnyKeysToSearch_whenSearchForBuddies_thenEmptyKeysException() throws EmptyKeysException, NotExistingRecordException {
+        //given
+        String username = null;
+        final ArrayList<Long> authorsIds = null;
+        //when, then
+        assertThrows(EmptyKeysException.class,
+                () -> testObject.findByUsernameAndAuthors(username, authorsIds));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void givenBuddyId_whenDeleteBuddy_thenBuddyIsDeleted() throws NotExistingRecordException {
+        //when
+        testObject.deleteBuddy(someBuddy.getId());
+        //then
+        verify(buddyRelationRepositoryMock).delete(Objects.requireNonNull(someBuddyPrincipalRelation));
+        verify(buddyRelationRepositoryMock).delete(Objects.requireNonNull(principalSomeBuddyRelation));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void givenBuddyId_whenBlockBuddy_thenBuddyIsBlocked() throws NotExistingRecordException {
+        //given
+        RelationStatus blockingStatus = new RelationStatus(1L, "blocking");
+        RelationStatus blockedStatus = new RelationStatus(2L, "blocked");
+        principalSomeBuddyRelation.setStatus(blockingStatus);
+        someBuddyPrincipalRelation.setStatus(blockedStatus);
+        when(relationStatusRepositoryMock.findFirstByName("blocking"))
+                .thenReturn(Optional.of(blockingStatus));
+        when(relationStatusRepositoryMock.findFirstByName("blocked"))
+                .thenReturn(Optional.of(blockedStatus));
+        when(buddyRelationRepositoryMock.save(principalSomeBuddyRelation))
+                .thenReturn(principalSomeBuddyRelation);
+        when(buddyRelationRepositoryMock.save(someBuddyPrincipalRelation))
+                .thenReturn(someBuddyPrincipalRelation);
+        //when
+        testObject.block(someBuddy.getId());
+        //then
+        verify(buddyRelationRepositoryMock).save(principalSomeBuddyRelation);
+        verify(buddyRelationRepositoryMock).save(someBuddyPrincipalRelation);
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void givenBuddyId_whenInviteBuddy_thenBuddyIsInvited() throws NotExistingRecordException {
+        //given
+        final RelationStatus invitedStatus = new RelationStatus(6L, "invited");
+        when(relationStatusRepositoryMock.findFirstByName("invited"))
+                .thenReturn(Optional.of(invitedStatus));
+        principalSomeBuddyRelation.setStatus(invitingStatus);
+        someBuddyPrincipalRelation.setStatus(invitedStatus);
+
+        when(buddyRelationRepositoryMock.save(principalSomeBuddyRelation))
+                .thenReturn(principalSomeBuddyRelation);
+        when(buddyRelationRepositoryMock.save(someBuddyPrincipalRelation))
+                .thenReturn(someBuddyPrincipalRelation);
+        //when
+        testObject.inviteBuddy(someBuddy.getId());
+        //then
+        verify(buddyRelationRepositoryMock).save(principalSomeBuddyRelation);
+        verify(buddyRelationRepositoryMock).save(someBuddyPrincipalRelation);
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void givenBuddyId_whenAcceptBuddy_thenBuddiesRelationIsSaved() throws NotExistingRecordException {
+        //given
+        principalSomeBuddyRelation.setStatus(buddiesStatus);
+        someBuddyPrincipalRelation.setStatus(buddiesStatus);
+
+        when(buddyRelationRepositoryMock.save(principalSomeBuddyRelation))
+                .thenReturn(principalSomeBuddyRelation);
+        when(buddyRelationRepositoryMock.save(someBuddyPrincipalRelation))
+                .thenReturn(someBuddyPrincipalRelation);
+        //when
+        testObject.acceptBuddy(someBuddy.getId());
+        //then
+        verify(buddyRelationRepositoryMock).save(principalSomeBuddyRelation);
+        verify(buddyRelationRepositoryMock).save(someBuddyPrincipalRelation);
+    }
+
+    @Test
+    public void givenBuddyId_whenFindById_thenBuddyIsSearched() throws NotExistingRecordException {
+        Long buddyId = someBuddy.getId();
+        final Buddy actual = testObject.findById(buddyId);
+        verify(buddyRepositoryMock).findById(buddyId);
+        assertThat(actual, is(someBuddy));
+    }
+
+    @Test
+    @WithMockUser(username = "bestBuddy")
+    public void whenGetPrincipalWithEvents_thenPrincipalWithEventsIsSearched() throws NotExistingRecordException {
+        savedBuddy.setEvents(Set.of(new Event()));
+        when(buddyRepositoryMock.findByIdWithEvents(savedBuddy.getId()))
+                .thenReturn(Optional.ofNullable(savedBuddy));
+        final Buddy actual = testObject.getPrincipalWithEvents();
+        verify(buddyRepositoryMock).findByIdWithEvents(savedBuddy.getId());
+        assertThat(actual, is(savedBuddy));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

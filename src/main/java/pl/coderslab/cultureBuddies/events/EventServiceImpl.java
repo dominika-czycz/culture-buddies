@@ -97,14 +97,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void joinEvent(Long eventId) throws NotExistingRecordException, RelationshipAlreadyCreatedException {
-        final Buddy principal = buddyService.getPrincipal();
+        final Buddy principal = buddyService.getPrincipalWithEvents();
         Optional<Event> alreadyJoined = eventRepository.findEventByBuddies(principal, eventId);
         if (alreadyJoined.isPresent()) {
             throw new RelationshipAlreadyCreatedException("You have already joined the event");
         }
         final Event event = findEventByIdWithBuddies(eventId);
-        final Buddy principal2 = buddyService.getPrincipalWithEvents();
-        event.addBuddy(principal2);
+        event.addBuddy(principal);
         eventRepository.save(event);
     }
 
@@ -125,8 +124,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public List<Event> findRecentOfBuddy(Long id, int recentLimit) {
-        final List<Event> events = eventRepository.findRecentWhereBuddyId(id, recentLimit);
+    public List<Event> findRecentOfBuddy(Long buddyId, int recentLimit) {
+        final List<Event> events = eventRepository.findRecentWhereBuddyId(buddyId, recentLimit);
         return events.stream().peek(event -> Hibernate.initialize(event.getBuddies()))
                 .collect(Collectors.toList());
     }

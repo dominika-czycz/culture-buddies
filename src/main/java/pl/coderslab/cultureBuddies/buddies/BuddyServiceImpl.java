@@ -143,7 +143,6 @@ public class BuddyServiceImpl implements BuddyService {
     @Transactional
     public void inviteBuddy(Long buddyId) throws NotExistingRecordException {
         savePrincipalBuddyRelations(buddyId, "inviting", "invited");
-
     }
 
     @Override
@@ -158,11 +157,23 @@ public class BuddyServiceImpl implements BuddyService {
                 .orElseThrow(new NotExistingRecordException("Buddy with id " + buddyId + "does not exist!"));
     }
 
-    private void savePrincipalBuddyRelations(Long buddyId, String principalIsDoing, String buddyIsDone) throws NotExistingRecordException {
-        final Buddy blocked = getBuddy(buddyId);
+    @Override
+    public RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
+        return relationStatusRepository.findFirstByName(relationName)
+                .orElseThrow(new NotExistingRecordException("Status " + relationName + " does not exist! Contact administrator!"));
+    }
+
+    @Override
+    public Buddy getPrincipalWithEvents() throws NotExistingRecordException {
         final Buddy principal = getPrincipal();
-        final BuddyRelation savedBlocking = saveBuddyRelation(principal, blocked, principalIsDoing);
-        final BuddyRelation savedBlocked = saveBuddyRelation(blocked, principal, buddyIsDone);
+        return getBuddyWIthEvents(principal);
+    }
+
+    private void savePrincipalBuddyRelations(Long buddyId, String principalIsDoing, String buddyIsDone) throws NotExistingRecordException {
+        final Buddy otherBuddy = getBuddy(buddyId);
+        final Buddy principal = getPrincipal();
+        final BuddyRelation savedBlocking = saveBuddyRelation(principal, otherBuddy, principalIsDoing);
+        final BuddyRelation savedBlocked = saveBuddyRelation(otherBuddy, principal, buddyIsDone);
         log.debug("Entities {}, {} have been saved.", savedBlocking, savedBlocked);
     }
 
@@ -178,31 +189,6 @@ public class BuddyServiceImpl implements BuddyService {
         buddyRelation.setStatus(relationStatus);
         return buddyRelationRepository.save(buddyRelation);
     }
-
-    @Override
-    public RelationStatus getStatusId(String relationName) throws NotExistingRecordException {
-        return relationStatusRepository.findFirstByName(relationName)
-                .orElseThrow(new NotExistingRecordException("Status" + relationName + "does not exist! Contact administrator!"));
-    }
-
-    @Override
-    public int countParticipants(Event event) {
-        return buddyRepository.countAllByEvents(event);
-    }
-
-    @Override
-    public void removeEvent(Buddy principal) throws NotExistingRecordException {
-        final Buddy buddy = getBuddyWIthEvents(principal);
-        buddy.setEvents(buddy.getEvents());
-        buddyRepository.save(buddy);
-    }
-
-    @Override
-    public Buddy getPrincipalWithEvents() throws NotExistingRecordException {
-        final Buddy principal = getPrincipal();
-        return getBuddyWIthEvents(principal);
-    }
-
 
     private Buddy getBuddyWIthEvents(Buddy principal) throws NotExistingRecordException {
         final Optional<Buddy> buddyWithEvents = buddyRepository.findByIdWithEvents(principal.getId());

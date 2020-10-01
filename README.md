@@ -91,19 +91,19 @@ Created by [@dominika-czycz](https://github.com/dominika-czycz)
 ## Database structure
 
 ## Figures
-######Fig. 1 Profile page 
-######Fig. 2 My books page
-######Fig. 3 Author page 
-######Fig. 4 Searching for a new book 
-######Fig. 5 Searching for a new book 
+###### Fig. 1 Profile page 
+###### Fig. 2 My books page
+###### Fig. 3 Author page 
+###### Fig. 4 Searching for a new book 
+###### Fig. 5 Searching for a new book 
 
-######Fig. 6 Adding and rating a new book 
-######Fig. 7 Removing a book with confirmation 
-######Fig. 8 List of buddies' opinions about the book 
-######Fig. 9 My events page 
-######Fig. 10 Buddy's events page 
-######Fig. 11 My buddies page 
-######Fig .12 My buddy page 
+###### Fig. 6 Adding and rating a new book 
+###### Fig. 7 Removing a book with confirmation 
+###### Fig. 8 List of buddies' opinions about the book 
+###### Fig. 9 My events page 
+###### Fig. 10 Buddy's events page 
+###### Fig. 11 My buddies page 
+###### Fig .12 My buddy page 
 
 ## Source
 ### profile pictures sources:

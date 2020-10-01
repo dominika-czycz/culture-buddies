@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Embeddable
 @Data
 @ToString
+@EqualsAndHashCode(of = {"buddyId", "buddyOfId"})
 public class BuddyBuddyId implements Serializable {
     @Column(name = "buddy_id")
     private Long buddyId;

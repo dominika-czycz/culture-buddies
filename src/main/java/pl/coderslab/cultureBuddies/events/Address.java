@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @ToString
 public class Address {
     @Id
