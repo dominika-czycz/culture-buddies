@@ -5,5 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface PictureService {
-    public boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException;
+    void save(MultipartFile profilePicture, Buddy buddy) throws IOException;
+
+    String getPicture(Buddy buddy);
 }

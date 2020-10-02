@@ -46,7 +46,6 @@ class ProfileControllerTest {
     public void whenAppUsernameUrl_thenBuddyWithProfileUrlFieldInModelAttributes_AndProfileView() throws Exception {
         //given
         buddy.setUsername(username);
-        buddy.setPictureUrl(username + ".jpg");
         buddy.setEmail("test@test");
         when(buddyServiceMock.findByUsername(username)).thenReturn(buddy);
 

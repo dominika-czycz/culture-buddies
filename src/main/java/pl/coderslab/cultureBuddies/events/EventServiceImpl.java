@@ -13,6 +13,7 @@ import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedExceptio
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,7 +139,20 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event findEventByIdWithBuddies(Long eventId) throws NotExistingRecordException {
         Optional<Event> event = eventRepository.findEventWithBuddies(eventId);
-        return event.orElseThrow(new NotExistingRecordException("Event wiht id " + eventId + " does not exist"));
+        final Event eventWithBuddies = event
+                .orElseThrow(new NotExistingRecordException("Event with id " + eventId + " does not exist"));
+        convertBuddiesPictures(eventWithBuddies);
+        return eventWithBuddies;
+    }
+
+    private void convertBuddiesPictures(Event eventWithBuddies) {
+        if (eventWithBuddies.getBuddies() != null) {
+            final Set<Buddy> buddies = eventWithBuddies.getBuddies()
+                    .stream()
+                    .peek(buddyService::setProfilePicture)
+                    .collect(Collectors.toSet());
+            eventWithBuddies.setBuddies(buddies);
+        }
     }
 
     @Override

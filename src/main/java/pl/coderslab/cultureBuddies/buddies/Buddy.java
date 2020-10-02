@@ -51,7 +51,11 @@ public class Buddy {
     @Column(nullable = false)
     private String email;
 
-    private String pictureUrl;
+    @Lob
+    private byte[] picture;
+
+    @Transient
+    private String profileImage;
 
     @NotNull
     @ManyToOne

@@ -101,8 +101,10 @@ public class MyBuddiesController {
     public String prepareBuddyInfoPage(@PathVariable Long buddyId, Model model) throws NotExistingRecordException {
         final Buddy buddy = buddyService.findById(buddyId);
         final List<Event> recentEvents = eventService.findRecentOfBuddy(buddy.getId(), RECENT_LIMIT);
+        final String picture = buddyService.getPicture(buddy);
         model.addAttribute("recentEvents", recentEvents);
         model.addAttribute(buddy);
+        model.addAttribute("picture", picture);
         return "/buddy/info";
     }
 
@@ -129,14 +131,9 @@ public class MyBuddiesController {
         return "/buddy/buddyAuthor";
     }
 
-    @ModelAttribute("profilePictureDir")
-    public String profilePictureDir() {
-        return "/pictures/buddyPictures/";
-    }
-
     @ModelAttribute("defaultPicture")
     public String defaultPicture() {
-        return "defaultPicture.png";
+        return "/pictures/buddyPictures/defaultPicture.png";
     }
 
 }

@@ -116,7 +116,7 @@ class BuddyServiceTest {
 
     @Test
     @WithMockUser("bestBuddy")
-    public void givenBookAlreadyAssignedToPrincipal_whenAddingBookToPrincipal_thenRelationAlreadyCreatedException() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
+    public void givenBookAlreadyAssignedToPrincipal_whenAddingBookToPrincipal_thenRelationAlreadyCreatedException() {
         //given
         when(buddyBookRepositoryMock.findByBookAndBuddy(book, savedBuddy))
                 .thenReturn(Optional.of(buddyBook));
@@ -279,7 +279,7 @@ class BuddyServiceTest {
 
     @Test
     @WithMockUser(username = "bestBuddy")
-    public void notGivenAnyKeysToSearch_whenSearchForBuddies_thenEmptyKeysException() throws EmptyKeysException, NotExistingRecordException {
+    public void notGivenAnyKeysToSearch_whenSearchForBuddies_thenEmptyKeysException() {
         //given
         String username = null;
         final ArrayList<Long> authorsIds = null;

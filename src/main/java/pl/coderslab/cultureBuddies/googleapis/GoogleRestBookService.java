@@ -58,7 +58,7 @@ public class GoogleRestBookService implements RestBooksService {
         if (resultsNumber == null || resultsNumber.getTotalItems() == 0) {
             throw new NotExistingRecordException("Nothing matches your search");
         }
-        final Integer totalItems = resultsNumber.getTotalItems();;
+        final Integer totalItems = resultsNumber.getTotalItems();
         final int maxPageNum = totalItems / RESULTS_ON_PAGE;
         final int maxPage = (totalItems % RESULTS_ON_PAGE == 0) ? maxPageNum - 1 : maxPageNum;
         log.debug("total items: {}, max page:  {}",totalItems, maxPage);

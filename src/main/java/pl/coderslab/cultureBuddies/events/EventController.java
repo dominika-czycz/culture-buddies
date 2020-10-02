@@ -99,7 +99,6 @@ public class EventController {
         return "redirect:/app/myEvents/";
     }
 
-
     private boolean isNotValid(Event event, BindingResult result) {
         if (result.hasErrors()) {
             log.warn("Entity {} fails validation.", event);
@@ -182,15 +181,9 @@ public class EventController {
         return eventService.getJoinedEvents();
     }
 
-    @ModelAttribute("profilePictureDir")
-
-    public String profilePictureDir() {
-        return "/pictures/buddyPictures/";
-    }
-
     @ModelAttribute("defaultPicture")
     public String defaultPicture() {
-        return "defaultPicture.png";
+        return "/pictures/buddyPictures/defaultPicture.png";
     }
 
 }

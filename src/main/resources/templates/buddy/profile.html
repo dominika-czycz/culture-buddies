@@ -39,9 +39,11 @@
                                 <button type="button" class="btn"><a th:href="@{/app/myBooks/recentlyAdded/}"
                                                                      class="red-link bigger-font">books</a>
                                 </button>
-                                <button type="button" class="btn"><a th:href="@{/app/underConstruction}" class="red-link bigger-font">music</a>
+                                <button type="button" class="btn"><a th:href="@{/app/underConstruction}"
+                                                                     class="red-link bigger-font">music</a>
                                 </button>
-                                <button type="button" class="btn"><a th:href="@{/app/underConstruction}" class="red-link bigger-font">films</a>
+                                <button type="button" class="btn"><a th:href="@{/app/underConstruction}"
+                                                                     class="red-link bigger-font">films</a>
                                 </button>
                             </div>
                         </div>
@@ -79,10 +81,10 @@
             <div class="col-sm-3">
                 <div class="box">
                     <div class="frame">
-                        <img class="profile-img" th:if="${buddy.getPictureUrl()!= null}"
-                             th:src="@{${profilePictureDir + buddy.pictureUrl}}" alt="profile picture">
-                        <img class="profile-img" th:if="${buddy.getPictureUrl() == null}"
-                             th:src="@{${profilePictureDir + defaultPicture}}" alt="profile picture">
+                        <img class="profile-img" th:if="${picture != null && !picture.isBlank()}"
+                             th:src="*{'data:image/png;base64,'+ picture}" alt="profile picture">
+                        <img class="profile-img" th:if="${picture == null|| picture.isBlank()}"
+                             th:src="@{${defaultPicture}}" alt="profile picture">
                     </div>
                     <div th:text="${buddy.username}" class="profile-picture-font small-margin-top">username</div>
                 </div>

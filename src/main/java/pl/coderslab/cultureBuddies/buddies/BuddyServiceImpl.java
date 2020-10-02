@@ -168,6 +168,16 @@ public class BuddyServiceImpl implements BuddyService {
         return getBuddyWIthEvents(principal);
     }
 
+    @Override
+    public String getPicture(Buddy buddy) {
+        return pictureService.getPicture(buddy);
+    }
+
+    @Override
+    public void setProfilePicture(Buddy buddy) {
+        buddy.setProfileImage(getPicture(buddy));
+    }
+
     private void savePrincipalBuddyRelations(Long buddyId, String principalIsDoing, String buddyIsDone) throws NotExistingRecordException {
         final Buddy otherBuddy = getBuddy(buddyId);
         final Buddy principal = getPrincipal();

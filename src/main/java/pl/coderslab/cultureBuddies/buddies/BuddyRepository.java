@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import pl.coderslab.cultureBuddies.events.Event;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,8 +46,6 @@ public interface BuddyRepository extends JpaRepository<Buddy, Long> {
                     "AND ( br.buddy_of_id <> ?3 ||  br.buddy_of_id is null) " +
                     "AND b.username LIKE CONCAT(?2 ,'%') ")
     List<Buddy> findNewBuddiesByAuthorsAndUsernameLike(ArrayList<Long> authorsIds, String username, Long excludedBuddyId);
-
-    int countAllByEvents(Event event);
 
     @Query("SELECT DISTINCT b from Buddy b LEFT JOIN FETCH b.events e where b.id=?1")
     Optional<Buddy> findByIdWithEvents(Long id);

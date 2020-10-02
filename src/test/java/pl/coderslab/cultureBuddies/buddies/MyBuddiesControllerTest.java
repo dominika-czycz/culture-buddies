@@ -54,7 +54,7 @@ class MyBuddiesControllerTest {
     @MockBean
     private BuddyConverter buddyConverter;
     private final List<Buddy> buddies = new ArrayList<>();
-    String username = "someBuddy";
+    final String username = "someBuddy";
     private final Long buddyId = 10L;
     private static final int RECENT_LIMIT = 20;
     private Buddy buddy;

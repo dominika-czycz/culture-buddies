@@ -235,19 +235,20 @@ class EventControllerTest {
         when(buddyServiceMock.findById(buddy.getId())).thenReturn(buddy);
         when(eventServiceMock.findRecentOfBuddy(buddy.getId(), RECENTLY_LIMIT))
                 .thenReturn(buddyEvents);
-        mockMvc.perform(get("/app/myEvents/recentOfBuddy/"+buddy.getId()))
+        mockMvc.perform(get("/app/myEvents/recentOfBuddy/" + buddy.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("buddyEvents", buddyEvents))
                 .andExpect(view().name("/events/buddyEvents"));
         verify(eventServiceMock).findRecentOfBuddy(buddy.getId(), RECENTLY_LIMIT);
     }
+
     @Test
     public void givenBuddyId_whenGetBuddy_thenBuddyEventsView() throws Exception {
         List<Event> buddyEvents = List.of(savedEvent);
         when(buddyServiceMock.findById(buddy.getId())).thenReturn(buddy);
         when(eventServiceMock.findAllOfBuddy(buddy))
                 .thenReturn(buddyEvents);
-        mockMvc.perform(get("/app/myEvents/buddy/"+buddy.getId()))
+        mockMvc.perform(get("/app/myEvents/buddy/" + buddy.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("buddyEvents", buddyEvents))
                 .andExpect(view().name("/events/buddyEvents"));

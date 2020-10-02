@@ -1,9 +1,7 @@
 package pl.coderslab.cultureBuddies.buddyBook;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

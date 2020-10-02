@@ -104,8 +104,6 @@ class BuddyRepositoryTest {
                 .lastName("Nowak")
                 .firstName("Piotr")
                 .build();
-        final Author savedAuthor = testEm.persist(author);
-        final Author savedAuthor2 = testEm.persist(author2);
         testEm.persist(validTestBuddy);
         testEm.flush();
         testEm.clear();

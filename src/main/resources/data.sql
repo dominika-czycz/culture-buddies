@@ -115,7 +115,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `buddies` WRITE;
 /*!40000 ALTER TABLE `buddies` DISABLE KEYS */;
-INSERT INTO `buddies` VALUES (1,'dominika.czycz@gmail.com',_binary '','Kowalska','Anna','$2a$10$vVX7RwazC5r3j7UBDbp.ueoQFxGdL1IQ6tM4cxCTO2Jkeam9lsjUS','annaKowal.jpg','annaKowal',1),(2,'dominika.czycz@gmail.com',_binary '','Mazur','Piotr','$2a$10$VRVE9e/kjG1YazExhTHfzu22iunj0HOyq39JfmX/MTEDH7GbqPJwS','Mazur.jpg','Mazur',1),(3,'dominika.czycz@gmail.com',_binary '','Wojciechowska','Ola','$2a$10$tnvxcyLmxn1DzMwS0lyYRefP/J.jZbkIVlswDrRHOcKo4WbfvQC2y','koala.jpg','koala',1),(4,'dominika.czycz@gmail.com',_binary '','Adamski','Adam','$2a$10$.ky1BsSbu8JORN6Jrh/OrOEBulhnAafIYXXdpxJxZDGSo9eHWk1Oi','adamski.jpg','adamski',1);
+INSERT INTO `buddies` (id, email, enabled, last_name, name, password, username, city_id) VALUES (1,'dominika.czycz@gmail.com',_binary '','Kowalska','Anna','$2a$10$vVX7RwazC5r3j7UBDbp.ueoQFxGdL1IQ6tM4cxCTO2Jkeam9lsjUS','annaKowal',1),(2,'dominika.czycz@gmail.com',_binary '','Mazur','Piotr','$2a$10$VRVE9e/kjG1YazExhTHfzu22iunj0HOyq39JfmX/MTEDH7GbqPJwS','Mazur',1),(3,'dominika.czycz@gmail.com',_binary '','Wojciechowska','Ola','$2a$10$tnvxcyLmxn1DzMwS0lyYRefP/J.jZbkIVlswDrRHOcKo4WbfvQC2y','koala',1),(4,'dominika.czycz@gmail.com',_binary '','Adamski','Adam','$2a$10$.ky1BsSbu8JORN6Jrh/OrOEBulhnAafIYXXdpxJxZDGSo9eHWk1Oi','adamski',1);
 /*!40000 ALTER TABLE `buddies` ENABLE KEYS */;
 UNLOCK TABLES;
 

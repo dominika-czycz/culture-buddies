@@ -89,7 +89,7 @@ class BookServiceTest {
     }
 
     @Test
-    public void givenInvalidBookFromExternalApi_whenSaved_thenInvalidDataFromExternalApiException() throws RelationshipAlreadyCreatedException, InvalidDataFromExternalRestApiException, NotExistingRecordException {
+    public void givenInvalidBookFromExternalApi_whenSaved_thenInvalidDataFromExternalApiException() {
         //given
         when(bookRepositoryMock.findFirstByIdentifier(book.getIdentifier())).thenReturn(Optional.empty());
         when(bookRepositoryMock.save(book)).thenThrow(ConstraintViolationException.class);
@@ -200,7 +200,7 @@ class BookServiceTest {
         verify(authorServiceMock).findById(authorId);
     }
     @Test
-    public void givenBookId_whenGettingBookWithAuhtorsById_thenBookBeingSearched() throws NotExistingRecordException {
+    public void givenBookId_whenGettingBookWithAuhtorsById_thenBookBeingSearched() {
         //given
         final long bookId = 10L;
         book.setId(bookId);

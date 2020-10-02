@@ -104,10 +104,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findBooksByUsernameAndAuthorId(String username, Long authorId) throws NotExistingRecordException {
+    public void findBooksByUsernameAndAuthorId(String username, Long authorId) throws NotExistingRecordException {
         final Buddy buddy = buddyService.findByUsername(username);
         if (authorService.checkIfAuthorExists(authorId)) {
-            return bookRepository.findByAuthorIdAndBookId(authorId, buddy.getId());
+            bookRepository.findByAuthorIdAndBookId(authorId, buddy.getId());
+            return;
         }
         throw new NotExistingRecordException("Author with id " + authorId + " does not exist!");
     }

@@ -71,12 +71,12 @@
                                                 <div class="small-box">
                                                     <div class="frame">
                                                         <img class="profile-small-img"
-                                                             th:if="${buddy.getPictureUrl()!= null}"
-                                                             th:src="@{${profilePictureDir + buddy.pictureUrl}}"
+                                                             th:if="${buddy.profileImage != null && !buddy.profileImage.isBlank()}"
+                                                             th:src="*{'data:image/png;base64,'+ buddy.profileImage}"
                                                              alt="profile picture">
                                                         <img class="profile-small-img"
-                                                             th:if="${buddy.getPictureUrl() == null}"
-                                                             th:src="@{${profilePictureDir + defaultPicture}}"
+                                                             th:if="${buddy.profileImage== null|| buddy.profileImage.isBlank()}"
+                                                             th:src="@{${defaultPicture}}"
                                                              alt="profile picture">
                                                     </div>
                                                 </div>

@@ -2,7 +2,6 @@ package pl.coderslab.cultureBuddies.author;
 
 import lombok.*;
 import pl.coderslab.cultureBuddies.books.Book;
-import pl.coderslab.cultureBuddies.buddies.Buddy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

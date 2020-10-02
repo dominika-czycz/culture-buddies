@@ -41,7 +41,7 @@ class GoogleRestBookServiceTest {
 
 
     @Test
-    public void givenBookTitle_whenLookingForBookWithTitle_thenBooksAreFound() throws NotExistingRecordException, BadHttpRequest, UnsupportedEncodingException {
+    public void givenBookTitle_whenLookingForBookWithTitle_thenBooksAreFound() throws NotExistingRecordException, BadHttpRequest {
         //when
         final List<BookFromGoogle> googleBooksListByTitle = testObj.getGoogleBooksList(EXISTING_TITLE, "", 0);
 

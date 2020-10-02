@@ -3,62 +3,66 @@ package pl.coderslab.cultureBuddies.buddies;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class ProfilePictureServiceTest {
     @Autowired
     private PictureService testObj;
-    private Buddy buddyToSave;
+    @Spy
+    private Buddy buddySpy;
 
     @BeforeEach
     public void setup() {
-        buddyToSave = Buddy.builder()
-                .username("bestBuddy")
-                .email("test@gmail.com")
-                .name("Anna")
-                .lastName("Kowalska")
-                .password("annaKowalska")
-                .build();
+        buddySpy.setUsername("bestBuddy");
+        buddySpy.setEmail("test@gmail.com");
+        buddySpy.setName("Anna");
+        buddySpy.setLastName("Kowalska");
+        buddySpy.setPassword("annaKowalska");
     }
 
     @Test
-    public void whenPictureSaved_thenPicturedUrlSavedToBuddy() throws IOException {
+    public void whenSavePicture_thenPictureIsSetToBuddy() throws IOException {
         //given
         MockMultipartFile mockProfilePicture = new MockMultipartFile(
                 "picture", "profilePic.jpg", "text/jpeg", "test file".getBytes());
         //when
-        final boolean isSaved = testObj.save(mockProfilePicture, buddyToSave);
+        testObj.save(mockProfilePicture, buddySpy);
         //then
-        assertTrue(isSaved);
-        assertNotNull(buddyToSave.getPictureUrl());
+        verify(buddySpy).setPicture(mockProfilePicture.getBytes());
     }
 
     @Test
-    public void whenPictureIsNull_thenPictureNotSaved() throws IOException {
+    public void whenPictureIsNull_thenPictureIsNotSetToBuddy() throws IOException {
         //when
-        final boolean isSaved = testObj.save(null, buddyToSave);
+        testObj.save(null, buddySpy);
         //then
-        assertFalse(isSaved);
-        assertNull(buddyToSave.getPictureUrl());
+        verify(buddySpy, atMost(0)).setPicture(null);
     }
 
     @Test
-    public void whenPictureIsEmpty_thenPictureNotSaved() throws IOException {
+    public void givenBuddyWithPicture_whenGetPictureBytesFromBuddy_thenBase64StringIsReturned() {
         //given
-        final MockMultipartFile mockEmptyMultipartFile = new MockMultipartFile("empty", (byte[]) null);
+        byte[] picture = "a nice profile picture".getBytes();
+        buddySpy.setPicture(picture);
+        final String expectedString = Base64.getEncoder().encodeToString(picture);
         //when
-        final boolean isSaved = testObj.save(mockEmptyMultipartFile, buddyToSave);
+        final String actualString = testObj.getPicture(buddySpy);
         //then
-        assertFalse(isSaved);
-        assertNull(buddyToSave.getPictureUrl());
+        assertThat(actualString, is(expectedString));
     }
+
 }
