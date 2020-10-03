@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class CultureBuddiesApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(CultureBuddiesApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(CultureBuddiesApplication.class, args);
+    }
 }

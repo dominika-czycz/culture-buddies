@@ -16,7 +16,9 @@ import pl.coderslab.cultureBuddies.events.EventService;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -65,4 +67,24 @@ class ProfileControllerTest {
                 .andExpect(status().is(302))
                 .andExpect(redirectedUrl("/app/board/" + username));
     }
+
+    @Test
+    public void whenGetChangePassword_thenChangePasswordView() throws Exception {
+        mockMvc.perform(get("/app/board/changePassword"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/buddy/changePassword"));
+    }
+
+    @Test
+    public void givenTheSamePasswordAndRepeatedPassword_whenPostChangePasswordUrl_thenPasswordIsUpdated() throws Exception {
+        final String password = "newPassword";
+        final String repeatedPassword = "newPassword";
+        mockMvc.perform(post("/app/board/changePassword").with(csrf())
+                .param("password", password)
+                .param("repeatedPassword", repeatedPassword))
+                .andExpect(status().is(302))
+                .andExpect(redirectedUrl("/app/board/profile/"));
+        verify(buddyServiceMock).updatePassword(password);
+    }
+
 }

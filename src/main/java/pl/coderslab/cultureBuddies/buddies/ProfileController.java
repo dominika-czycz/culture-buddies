@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.events.Event;
 import pl.coderslab.cultureBuddies.events.EventService;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -39,6 +38,41 @@ public class ProfileController {
         String username = buddyService.getPrincipalUsername();
         redirectAttributes.addAttribute("username", username);
         return "redirect:/app/board/{username}";
+    }
+
+    @GetMapping("/changePassword")
+    public String prepareChangePasswordPage() {
+        return "/buddy/changePassword";
+    }
+
+    @PostMapping("/changePassword")
+    public String changePassword(@RequestParam String password,
+                                 @RequestParam String repeatedPassword,
+                                 Model model) throws NotExistingRecordException {
+        if (!password.equals(repeatedPassword)) {
+            log.warn("Passwords are not the same: {}, {}", password, repeatedPassword);
+            model.addAttribute("passwordMessage", "Passwords must be the same!");
+            return "/buddy/changePassword";
+        }
+        buddyService.updatePassword(password);
+        return "redirect:/app/board/profile/";
+    }
+
+    @GetMapping("/changePicture")
+    public String prepareChangePicturePage() {
+        return "/buddy/changePicture";
+    }
+
+    @PostMapping("/changePicture")
+    public String processChangePicturePage(
+            @RequestParam(name = "profilePicture", required = false) MultipartFile profilePicture,
+            Model model) throws NotExistingRecordException, IOException {
+        if (!buddyService.isProperFileSize(profilePicture)) {
+            model.addAttribute("pictureMessage", "Profile picture's size must be lower than 1MB!");
+            return "/buddy/changePicture";
+        }
+        buddyService.updateProfilePicture(profilePicture);
+        return "redirect:/app/board/profile/";
     }
 
     @ModelAttribute("defaultPicture")

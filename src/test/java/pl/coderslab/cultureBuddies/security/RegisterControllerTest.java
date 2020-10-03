@@ -40,7 +40,6 @@ class RegisterControllerTest {
     @MockBean
     private EmailService emailServiceMock;
 
-
     @BeforeEach
     public void setUp() {
         unsavedBuddy = Buddy.builder()
@@ -51,6 +50,7 @@ class RegisterControllerTest {
                 .lastName("Kowalska")
                 .password("annaKowalska")
                 .build();
+        when(buddyServiceMock.isProperFileSize(null)).thenReturn(true);
     }
 
     @Test
@@ -114,6 +114,8 @@ class RegisterControllerTest {
         //given
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
         when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
+        when(buddyServiceMock.isProperFileSize(profilePicture)).thenReturn(true);
+
         //when, then
         mockMvc.perform(multipart("/register")
                 .file(profilePicture).with(csrf())

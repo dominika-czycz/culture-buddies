@@ -15,8 +15,12 @@ public class ProfilePictureServiceImpl implements PictureService {
 
     @Override
     public void save(MultipartFile profilePicture, Buddy buddy) throws IOException {
+        log.info("Preparing to save profile picture...");
         if (profilePicture != null && !profilePicture.isEmpty()) {
-            savePicture(profilePicture, buddy);
+            buddy.setPicture(profilePicture.getBytes());
+            log.debug("New profile picture has been set to buddy {}", buddy);
+        }else{
+            log.info("Profile picture is (null or empty.)");
         }
     }
 
@@ -28,11 +32,5 @@ public class ProfilePictureServiceImpl implements PictureService {
             picture = Base64.getEncoder().encodeToString(file);
         }
         return picture;
-    }
-
-    private void savePicture(MultipartFile profilePicture, Buddy buddy) throws IOException {
-        log.info("Preparing to save profile picture...");
-        buddy.setPicture(profilePicture.getBytes());
-        log.info("Saving profile picture...");
     }
 }

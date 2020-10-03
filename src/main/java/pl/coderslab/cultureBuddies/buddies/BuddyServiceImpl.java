@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,6 +36,7 @@ public class BuddyServiceImpl implements BuddyService {
     private final BuddyBookRepository buddyBookRepository;
     private final BuddyRelationRepository buddyRelationRepository;
     private final RelationStatusRepository relationStatusRepository;
+    private static final int FILE_MAX_SIZE = 1048576;
 
     @Transactional
     @Override
@@ -66,6 +68,22 @@ public class BuddyServiceImpl implements BuddyService {
         return true;
     }
 
+    @Transactional
+    @Override
+    public void updateProfilePicture(MultipartFile profilePicture) throws NotExistingRecordException, IOException {
+        final Buddy principal = getPrincipal();
+        pictureService.save(profilePicture, principal);
+        buddyRepository.save(principal);
+    }
+
+    @Transactional
+    @Override
+    public void updatePassword(String password) throws NotExistingRecordException {
+        final Buddy principal = getPrincipal();
+        setPassword(principal, password);
+        buddyRepository.save(principal);
+    }
+
     @Override
     public Buddy findByUsername(String username) throws NotExistingRecordException {
         return buddyRepository.findFirstByUsernameIgnoringCase(username)
@@ -95,15 +113,24 @@ public class BuddyServiceImpl implements BuddyService {
     @Override
     public List<Buddy> getBuddiesOfPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        final RelationStatus buddies = getStatus("buddies");
-        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, buddies.getId());
+        final RelationStatus buddiesStatus = getStatus("buddies");
+        final List<Buddy> buddies = buddyRepository
+                .findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, buddiesStatus.getId());
+        return getBuddiesWithConvertedPicture(buddies);
+    }
+
+    private List<Buddy> getBuddiesWithConvertedPicture(List<Buddy> buddies) {
+        return buddies.stream().peek(this::setProfilePicture)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Buddy> getBuddiesInvitingPrincipal() throws NotExistingRecordException {
         final Long principalId = getPrincipal().getId();
-        final RelationStatus inviting = getStatus("inviting");
-        return buddyRepository.findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, inviting.getId());
+        final RelationStatus invitingStatus = getStatus("inviting");
+        final List<Buddy> buddies = buddyRepository
+                .findAllBuddiesOfBuddyWithIdWhereRelationId(principalId, invitingStatus.getId());
+        return getBuddiesWithConvertedPicture(buddies);
     }
 
     @Transactional
@@ -115,7 +142,7 @@ public class BuddyServiceImpl implements BuddyService {
         }
         List<Buddy> results = findMatchingBuddies(username, authorsIds);
         if (results.isEmpty()) throw new NotExistingRecordException("Nothing matches to your search!");
-        return results;
+        return getBuddiesWithConvertedPicture(results);
     }
 
     @Override
@@ -130,6 +157,16 @@ public class BuddyServiceImpl implements BuddyService {
         final BuddyRelation principalDeleting = principalDeletingRel.orElseThrow(new NotExistingRecordException(message));
         buddyRelationRepository.delete(deletingPrincipal);
         buddyRelationRepository.delete(principalDeleting);
+    }
+
+    @Override
+    public boolean isProperFileSize(MultipartFile profilePicture) {
+        if (profilePicture == null) return true;
+        if (profilePicture.getSize() > FILE_MAX_SIZE) {
+            log.warn("Profile picture size {} over 10MB", profilePicture.getSize());
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -231,9 +268,14 @@ public class BuddyServiceImpl implements BuddyService {
         return buddyRepository.findNewBuddiesByAuthorsAndUsernameLike(authorsIds, username, principalId);
     }
 
+    private void setPassword(Buddy buddy, String password) {
+        buddy.setPassword(passwordEncoder.encode(password));
+    }
+
+
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {
         pictureService.save(profilePicture, buddy);
-        buddy.setPassword(passwordEncoder.encode(buddy.getPassword()));
+        setPassword(buddy, buddy.getPassword());
         buddy.addRole(roleRepository.findFirstByNameIgnoringCase("ROLE_USER"));
     }
 

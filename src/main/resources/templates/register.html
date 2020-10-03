@@ -96,7 +96,8 @@
                                 <div th:class="${#fields.hasErrors('city')}? 'errorInput'">
                                     <label for="city"></label>
                                     <select id="city" th:field="*{city}" class="lighter form-control">
-                                        <option th:each="city : ${cities}" th:value="${city.id}" th:label="${city.name}"></option>
+                                        <option th:each="city : ${cities}" th:value="${city.id}"
+                                                th:label="${city.name}"></option>
                                     </select>
                                     <small id="helpCity" class="light-font">city of culture</small>
                                     <small th:if="${#fields.hasErrors('city')}" th:text="${#fields.errors('city')}"
@@ -125,6 +126,7 @@
                                      th:text="${passwordMessage}"
                                      class="error lighter">error
                                 </div>
+
                             </div>
 
                             <div class="small-margin-bottom">
@@ -139,7 +141,6 @@
                                      class="error lighter">error
                                 </div>
                             </div>
-                            <div></div>
                             <div class="btn-group" role="group">
                                 <button type="submit" id="login" class="btn btn-success">join
                                 </button>

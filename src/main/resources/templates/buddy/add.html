@@ -35,10 +35,10 @@
                             <td>
                                 <div class="small-box">
                                     <div class="frame">
-                                        <img class="profile-small-img" th:if="${buddy.getPictureUrl()!= null}"
-                                             th:src="@{${profilePictureDir + buddy.pictureUrl}}" alt="profile picture">
-                                        <img class="profile-small-img" th:if="${buddy.getPictureUrl() == null}"
-                                             th:src="@{${profilePictureDir + defaultPicture}}" alt="profile picture">
+                                        <img class="profile-small-img" th:if="${buddy.profileImage!= null && !buddy.profileImage.isEmpty()}"
+                                             th:src="*{'data:image/png;base64,'+ buddy.profileImage}" alt="profile picture">
+                                        <img class="profile-small-img" th:if="${buddy.profileImage == null || buddy.profileImage.isEmpty()}"
+                                             th:src="@{${defaultPicture}}" alt="profile picture">
                                     </div>
                                 </div>
                             </td>

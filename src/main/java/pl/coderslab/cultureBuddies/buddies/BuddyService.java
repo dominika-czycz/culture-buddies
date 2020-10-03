@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.buddies;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
@@ -17,6 +18,10 @@ public interface BuddyService {
     BuddyBook addBookToPrincipalBuddy(Book book) throws NotExistingRecordException, RelationshipAlreadyCreatedException;
 
     boolean save(MultipartFile profilePicture, Buddy buddy) throws IOException;
+
+    void updateProfilePicture(MultipartFile profilePicture) throws NotExistingRecordException, IOException;
+
+    void updatePassword(String password) throws NotExistingRecordException;
 
     Buddy findByUsername(String username) throws NotExistingRecordException;
 
@@ -38,6 +43,8 @@ public interface BuddyService {
 
     Buddy findById(Long buddyId) throws NotExistingRecordException;
 
+    boolean isProperFileSize(MultipartFile profilePicture);
+
     void block(Long buddyId) throws NotExistingRecordException;
 
     RelationStatus getStatus(String relationName) throws NotExistingRecordException;
@@ -47,4 +54,5 @@ public interface BuddyService {
     String getPicture(Buddy buddy);
 
     void setProfilePicture(Buddy buddy);
+
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"roles", "books", "password", "buddies", "buddyOf", "events"})
+@ToString(exclude = {"roles", "books", "password", "buddies", "buddyOf", "events", "picture", "profileImage"})
 public class Buddy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -103,5 +103,4 @@ public class Buddy {
         book.getBuddies().add(buddyBook);
         return buddyBook;
     }
-
 }
