@@ -19,7 +19,7 @@ public class ProfilePictureServiceImpl implements PictureService {
         if (profilePicture != null && !profilePicture.isEmpty()) {
             buddy.setPicture(profilePicture.getBytes());
             log.debug("New profile picture has been set to buddy {}", buddy);
-        }else{
+        } else {
             log.info("Profile picture is (null or empty.)");
         }
     }

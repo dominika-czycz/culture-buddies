@@ -61,7 +61,7 @@ public class GoogleRestBookService implements RestBooksService {
         final Integer totalItems = resultsNumber.getTotalItems();
         final int maxPageNum = totalItems / RESULTS_ON_PAGE;
         final int maxPage = (totalItems % RESULTS_ON_PAGE == 0) ? maxPageNum - 1 : maxPageNum;
-        log.debug("total items: {}, max page:  {}",totalItems, maxPage);
+        log.debug("total items: {}, max page:  {}", totalItems, maxPage);
         return maxPage;
     }
 
