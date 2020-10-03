@@ -13,6 +13,17 @@
     <link rel="stylesheet" th:href="@{/style/style.css}">
 </head>
 <body>
+<div th:fragment="header">
+    <header class="jumbotron darker header-background-img">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </header>
+</div>
 <div th:fragment="dashboard">
     <div class="row">
         <div class="col-sm-10">

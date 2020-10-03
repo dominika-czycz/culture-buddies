@@ -14,16 +14,7 @@
 </head>
 <body>
 <div class="container-fluid">
-    <header class="jumbotron darker header-background-img">
-        <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <img class="logo" th:src="@{/pictures/logo1.png}" alt="logo">
-                <div class="col-sm-4"></div>
-            </div>
-        </div>
-    </header>
-
+    <div th:include="page::header"></div>
     <article class="article-background-imgEvents">
         <div class="row padding">
             <div class="col-sm-1"></div>
