@@ -58,4 +58,6 @@ public interface BuddyService {
     void setProfilePicture(Buddy buddy);
 
     void deleteAll();
+
+    Buddy getBuddyWithEvents(Buddy buddy) throws NotExistingRecordException;
 }

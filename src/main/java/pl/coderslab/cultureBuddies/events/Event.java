@@ -93,7 +93,7 @@ public class Event {
         if (buddies == null) buddies = new HashSet<>();
         if (buddy != null) {
             buddies.add(buddy);
-            buddy.getEvents().add(this);
+            buddy.addEvent(this);
         }
     }
 

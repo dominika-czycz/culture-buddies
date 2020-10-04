@@ -96,6 +96,12 @@ public class Buddy {
             roles.add(role);
         }
     }
+    public void addEvent(Event event){
+        if(events==null){
+            events = new HashSet<>();
+        }
+        events.add(event);
+    }
 
     public BuddyBook addBook(Book book) {
         BuddyBook buddyBook = new BuddyBook(this, book);

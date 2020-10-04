@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.author.AuthorRepository;
@@ -18,7 +19,7 @@ import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.city.CityRepository;
-import pl.coderslab.cultureBuddies.events.EventRepository;
+import pl.coderslab.cultureBuddies.events.*;
 import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalServiceException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.security.Role;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +38,8 @@ import java.util.Objects;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SetupDatabaseServiceImp {
+@Transactional
+public class SetupDatabaseServiceImp implements SetUpDatabaseService {
     private final BuddyService buddyService;
     private final BuddyRelationRepository buddyRelationRepository;
     private final BookService bookService;
@@ -44,15 +47,19 @@ public class SetupDatabaseServiceImp {
     private final AuthorRepository authorRepository;
     private final EventRepository eventRepository;
     private final CityRepository cityRepository;
+    private final AddressRepository addressRepository;
     private final RoleRepository roleRepository;
+    private final EventTypeRepository eventTypeRepository;
     private final RelationStatusRepository relationStatusRepository;
     private static final String RESOURCE_NAME = "static/pictures/buddyPictures";
 
+    @Override
     public void setStartingData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
         setDataUnchangedByUsers();
         setExampleUsersData();
     }
 
+    @Override
     public void restoreDatabase() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
         cleanDatabase();
         setExampleUsersData();
@@ -62,6 +69,7 @@ public class SetupDatabaseServiceImp {
         setRole();
         setCities();
         setRelationStatus();
+        setEventsTypes();
     }
 
     private void setExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
@@ -69,6 +77,7 @@ public class SetupDatabaseServiceImp {
         setBuddies();
         setBuddiesRelations();
         setBookRatings();
+        setEvents();
     }
 
     private void cleanDatabase() {
@@ -114,7 +123,7 @@ public class SetupDatabaseServiceImp {
                 "This is one of my favorite books. I can't even describe how amazed I was when I finished this book. Jelinek moves the reader from character to character, rarely telling us who we inhabit, yet unlike so many other books that abuse this device, it works.",
                 10);
         saveRating("adamski", "Mistrz i Małgorzata",
-                "Stories, stories, all is stories: political stories, religious stories, scientific stories, even stories about stories. We live inside these stories. Like this one in The Master and Margarita. The story that we can more or less agree upon we call reality.",9 );
+                "Stories, stories, all is stories: political stories, religious stories, scientific stories, even stories about stories. We live inside these stories. Like this one in The Master and Margarita. The story that we can more or less agree upon we call reality.", 9);
     }
 
     private void saveRating(String username, String bookTitle, String comment, int rate) throws NotExistingRecordException {
@@ -126,6 +135,72 @@ public class SetupDatabaseServiceImp {
         buddyBook.setBook(book);
         buddyBook.setBuddy(buddy);
         buddyBookRepository.save(buddyBook);
+    }
+
+    private void setEvents() throws NotExistingRecordException {
+        final Address address0 = getAddress("Włodkowica", "8a");
+        final Event event = getEvent(address0, LocalDate.now().plusMonths(1), "20:00",
+                "Wine and Nabokov...",
+                "annaKowal",
+                "Nabokov's most controversial books and a lot of wine...",
+                null,
+                "literature");
+        final Address address1 = getAddress("Kazimierza Wielkiego ", "19a");
+        final Event event1 = getEvent(address1, LocalDate.now().plusMonths(2), "19:00",
+                "Tarantino",
+                "annaKowal",
+                "A Tarantino movie marathon and lots of food after that...",
+                "https://www.kinonh.pl/art.s?id=1484",
+                "cinema");
+        final Address address2 = getAddress("Wystawowa", "1");
+        final Event event2 = getEvent(address2, LocalDate.now().plusDays(12), "21:00",
+                "KULT",
+                "Mazur",
+                "Orange route of Kult ",
+                "https://www.stodola.pl/en/events/kult-akustik-wroclaw-137605.html",
+                "concert");
+        final Event event3 = getEvent(address2, LocalDate.now().plusDays(23), "17:00",
+                "Understand contemporary art",
+                "Koala",
+                "Understand contemporary art...sometimes it's hard, but it's worth trying",
+                null,
+                "museum");
+        final Buddy koala = buddyService.findByUsername("koala");
+        final Buddy mazur = buddyService.findByUsername("Mazur");
+        event.addBuddy(koala);
+        event.addBuddy(mazur);
+        event1.addBuddy(koala);
+        event2.addBuddy(koala);
+        final List<Event> events = List.of(event, event1, event2, event3);
+        eventRepository.saveAll(events);
+    }
+
+    private Address getAddress(String street, String number) {
+        final Address address = Address.builder()
+                .street(street)
+                .city("Wrocław")
+                .number(number).build();
+        return addressRepository.save(address);
+    }
+
+    private Event getEvent(Address savedAddress, LocalDate plusMonths, String time, String title, String username, String desc, String link, String eventTypeName) throws NotExistingRecordException {
+        final EventType eventType = eventTypeRepository.findFirstByName(eventTypeName);
+        final Buddy buddyWithEvents = getBuddy(username);
+        final Event event = new Event();
+        event.setDate(plusMonths);
+        event.setStringTime(time);
+        event.setBuddy(buddyWithEvents);
+        event.setTitle(title);
+        event.setDescription(desc);
+        event.setEventType(eventType);
+        event.setLink(link);
+        event.setAddress(savedAddress);
+        return event;
+    }
+
+    private Buddy getBuddy(String username) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findByUsername(username);
+        return buddyService.getBuddyWithEvents(buddy);
     }
 
     private void setBuddies() throws IOException {
@@ -184,73 +259,62 @@ public class SetupDatabaseServiceImp {
     }
 
     private void setBooks() throws InvalidDataFromExternalServiceException {
-        final Book lolita = Book.builder()
-                .title("Lolita")
-                .identifier("9780141391601")
-                .thumbnailLink("http://books.google.com/books/content?id=S0lVyYcw8tsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                .authorsFullName(List.of("Michaił Bułhakow"))
-                .build();
-        final Book adaOrArdor = Book.builder()
-                .title("Ada or Ardor")
-                .identifier("9780141911304")
-                .thumbnailLink("http://books.google.com/books/content?id=SBQgSToNcUsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                .authorsFullName(List.of("Michaił Bułhakow"))
-                .build();
-        final Book beloved = Book.builder()
-                .title("Beloved")
-                .identifier("030738862X")
-                .thumbnailLink("http://books.google.com/books/content?id=sfmp6gjZGP8C&printsec=frontcover&img=1&zoom=1&source=gbs_api")
-                .authorsFullName(List.of("Toni Morrison"))
-                .build();
-        final Book theRepublicOfWine = Book.builder()
-                .title("The Republic of Wine")
-                .identifier("9781743771884")
-                .thumbnailLink("http://books.google.com/books/content?id=F8m_DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api")
-                .authorsFullName(Collections.singletonList("Mo Yan"))
-                .build();
-        final Book bigBreastsAndWideHips = Book.builder()
-                .title("Big Breasts and Wide Hips")
-                .identifier("1559706724")
-                .thumbnailLink("http://books.google.com/books/content?id=fe5wAkv1snoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                .authorsFullName(Collections.singletonList("Mo Yan"))
-                .build();
-        final Book theRoad = Book.builder()
-                .title("The Road")
-                .identifier("9781529014587")
-                .thumbnailLink("http://books.google.com/books/content?id=VcZtDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                .authorsFullName(Collections.singletonList("Cormac McCarthy"))
-                .build();
-        final Book thePianoTeacher = Book.builder()
-                .title("The Piano Teacher")
-                .identifier("9781847653062")
-                .thumbnailLink("http://books.google.com/books/content?id=d_Ady-4CHRIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
-                .authorsFullName(Collections.singletonList("Elfriede Jelinek"))
-                .build();
-        final Book mistrzIMalgorzata = Book.builder()
-                .title("Mistrz i Małgorzata")
-                .identifier("8373161503")
-                .authorsFullName(Collections.singletonList("Michaił Bułkahow"))
-                .build();
+        final Book lolita = getBook("Lolita", "9780141391601", "http://books.google.com/books/content?id=S0lVyYcw8tsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Vladimir Nabokov");
+        final Book adaOrArdor = getBook("Ada or Ardor", "9780141911304", "http://books.google.com/books/content?id=SBQgSToNcUsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Vladimir Nabokov");
+        final Book beloved = getBook("Beloved", "030738862X", "http://books.google.com/books/content?id=sfmp6gjZGP8C&printsec=frontcover&img=1&zoom=1&source=gbs_api", "Toni Morrison");
+        final Book theRepublicOfWine = getBook("The Republic of Wine", "9781743771884", "http://books.google.com/books/content?id=F8m_DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api", "Mo Yan");
+        final Book bigBreastsAndWideHips = getBook("Big Breasts and Wide Hips", "1559706724", "http://books.google.com/books/content?id=fe5wAkv1snoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Mo Yan");
+        final Book theRoad = getBook("The Road", "9781529014587", "http://books.google.com/books/content?id=VcZtDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Cormac McCarthy");
+        final Book thePianoTeacher = getBook("The Piano Teacher", "9781847653062", "http://books.google.com/books/content?id=d_Ady-4CHRIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Elfriede Jelinek");
+        final Book masterAndMargaret = getBook("Mistrz i Małgorzata", "8373161503", null, "Michaił Bułkahow");
         final List<Book> books = List.of(lolita, adaOrArdor, beloved, theRepublicOfWine, bigBreastsAndWideHips,
-                theRoad, thePianoTeacher, mistrzIMalgorzata);
+                theRoad, thePianoTeacher, masterAndMargaret);
         bookService.saveAll(books);
     }
 
+    private Book getBook(String lolita2, String s, String s2, String s3) {
+        return Book.builder()
+                .title(lolita2)
+                .identifier(s)
+                .thumbnailLink(s2)
+                .authorsFullName(Collections.singletonList(s3))
+                .build();
+    }
+
+    private void setEventsTypes() {
+        final EventType concert = getEventType("concert");
+        final EventType theatre = getEventType("theatre");
+        final EventType literature = getEventType("literature");
+        final EventType cinema = getEventType("cinema");
+        final EventType museum = getEventType("museum");
+        final EventType music = getEventType("music");
+        final EventType other = getEventType("other");
+        List<EventType> types = List.of(concert, theatre, literature, cinema, museum,
+                music, other);
+        eventTypeRepository.saveAll(types);
+    }
+
+    private EventType getEventType(String type) {
+        final EventType eventType = new EventType();
+        eventType.setName(type);
+        return eventType;
+    }
+
     private void setCities() {
-        final City city = new City();
-        city.setName("Wrocław");
-        final City city2 = new City();
-        city2.setName("Warszawa");
-        final City city3 = new City();
-        city3.setName("Kraków");
-        final City city4 = new City();
-        city4.setName("Poznań");
-        final City city5 = new City();
-        city5.setName("Łódź");
-        final City city6 = new City();
-        city6.setName("Gdańsk");
+        final City city = getCity("Wrocław");
+        final City city2 = getCity("Warszawa");
+        final City city3 = getCity("Kraków");
+        final City city4 = getCity("Poznań");
+        final City city5 = getCity("Łódź");
+        final City city6 = getCity("Gdańsk");
         List<City> cities = List.of(city, city2, city3, city4, city5, city6);
         cityRepository.saveAll(cities);
+    }
+
+    private City getCity(String cityName) {
+        final City city = new City();
+        city.setName(cityName);
+        return city;
     }
 
     private void setRole() {
@@ -260,17 +324,18 @@ public class SetupDatabaseServiceImp {
     }
 
     private void setRelationStatus() {
-        final RelationStatus inviting = new RelationStatus();
-        inviting.setName("inviting");
-        final RelationStatus invited = new RelationStatus();
-        invited.setName("invited");
-        final RelationStatus blocking = new RelationStatus();
-        blocking.setName("blocking");
-        final RelationStatus blocked = new RelationStatus();
-        blocked.setName("blocked");
-        final RelationStatus buddies = new RelationStatus();
-        buddies.setName("buddies");
+        final RelationStatus inviting = getStatus("inviting");
+        final RelationStatus invited = getStatus("invited");
+        final RelationStatus blocking = getStatus("blocking");
+        final RelationStatus blocked = getStatus("blocked");
+        final RelationStatus buddies = getStatus("buddies");
         final List<RelationStatus> statuses = List.of(inviting, invited, blocking, blocked, buddies);
         relationStatusRepository.saveAll(statuses);
+    }
+
+    private RelationStatus getStatus(String statusName) {
+        final RelationStatus inviting = new RelationStatus();
+        inviting.setName(statusName);
+        return inviting;
     }
 }
