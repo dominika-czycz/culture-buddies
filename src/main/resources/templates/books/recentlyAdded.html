@@ -24,8 +24,7 @@
                     <div class="center cookie-font bigger-font small-margin-bottom">Recently added by your friends:
                     </div>
                     <table class="table striped">
-                        <tbody>
-                        <div th:each="bookWithOpinion: ${booksWithOpinion}">
+                        <tbody th:each="bookWithOpinion: ${booksWithOpinion}">
                             <tr class="other-font">
                                 <td class="medium-font center">
                                     <span th:text="${bookWithOpinion.buddy.username}">
@@ -43,7 +42,6 @@
                                     </span>
                                 </td>
                             </tr>
-                        </div>
                         </tbody>
                     </table>
                 </div>

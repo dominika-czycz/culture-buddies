@@ -85,14 +85,14 @@ INSERT INTO `books` VALUES (1,'9780141391601','http://books.google.com/books/con
 UNLOCK TABLES;
 
 --
--- Dumping data for table `ralations_status`
+-- Dumping data for table `relations_status`
 --
 -- ORDER BY:  `id`
 
-LOCK TABLES `ralations_status` WRITE;
-/*!40000 ALTER TABLE `ralations_status` DISABLE KEYS */;
-INSERT INTO `ralations_status` VALUES (1,'inviting'),(2,'invited'),(3,'blocking'),(4,'blocked'),(5,'buddies');
-/*!40000 ALTER TABLE `ralations_status` ENABLE KEYS */;
+LOCK TABLES `relations_status` WRITE;
+/*!40000 ALTER TABLE `relations_status` DISABLE KEYS */;
+INSERT INTO `relations_status` VALUES (1,'inviting'),(2,'invited'),(3,'blocking'),(4,'blocked'),(5,'buddies');
+/*!40000 ALTER TABLE `relations_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -105,7 +105,6 @@ LOCK TABLES `author_book` WRITE;
 INSERT INTO `author_book` VALUES (1,1),(2,1),(3,2),(4,3),(5,4),(6,5),(7,6),(8,7),(9,8);
 /*!40000 ALTER TABLE `author_book` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 
 --
@@ -151,9 +150,6 @@ LOCK TABLES `buddies_roles` WRITE;
 INSERT INTO `buddies_roles` VALUES (1,1),(2,1),(3,1),(4,1);
 /*!40000 ALTER TABLE `buddies_roles` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
-
 
 --
 -- Dumping data for table `events`

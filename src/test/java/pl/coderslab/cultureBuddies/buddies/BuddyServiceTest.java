@@ -280,12 +280,9 @@ class BuddyServiceTest {
     @Test
     @WithMockUser(username = "bestBuddy")
     public void notGivenAnyKeysToSearch_whenSearchForBuddies_thenEmptyKeysException() {
-        //given
-        String username = null;
-        final ArrayList<Long> authorsIds = null;
         //when, then
         assertThrows(EmptyKeysException.class,
-                () -> testObject.findByUsernameAndAuthors(username, authorsIds));
+                () -> testObject.findByUsernameAndAuthors(null, null));
     }
 
     @Test

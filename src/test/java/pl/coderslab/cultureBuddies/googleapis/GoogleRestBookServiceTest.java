@@ -15,7 +15,6 @@ import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 import pl.coderslab.cultureBuddies.googleapis.restModel.NumberOfResults;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

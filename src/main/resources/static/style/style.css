@@ -1,14 +1,9 @@
 body {
-    background-color: rgb(45, 39, 39);
+    background-color: black;
     color: burlywood;
 }
 .error_background {
     background-color: #d1d2d4;
-}
-
-.noTopBorder {
-    border-style: none;
-
 }
 
 .link {
@@ -27,16 +22,6 @@ body {
 }
 
 .lighter-link:hover {
-    color: white;
-    text-decoration: none;
-}
-
-.yellow-link {
-    text-decoration: none;
-    color: darkgoldenrod;
-}
-
-.yellow-link:hover {
     color: white;
     text-decoration: none;
 }
@@ -74,16 +59,17 @@ body {
 .nav-item {
     display: inline;
     left: auto;
-    padding: 5px;
+    padding-left: 30px;
 }
-
-.profile-picture-card {
-    height: 50px;
+.logout-item {
+    display: inline;
+    left: auto;
 }
 
 
 .header-background-img {
     background-image: url(../pictures/yvette-de-wit-NYrVisodQ2M-unsplash.jpg);
+    margin: 0 0 10px 0;
     background-position:bottom;
     background-repeat: no-repeat;
     background-size: auto;
@@ -197,10 +183,6 @@ body {
     background-color: rgba(169, 169, 169, 0.62);
 }
 
-.errorInput {
-    background-color: rgba(246, 0, 0, 0.37);
-}
-
 
 .lighter-yellow {
     background-color: rgba(238, 175, 76, 0.29);
@@ -208,14 +190,6 @@ body {
 
 .lighter-green {
     background-color: rgba(128, 128, 0, 0.66);
-}
-
-.main-font {
-    font-style: italic;
-    font-family: "Bitstream Vera Serif", serif;
-    font-weight: bolder;
-    color: burlywood;
-    text-decoration: burlywood underline;
 }
 
 .cookie-font {
@@ -242,9 +216,8 @@ body {
 .medium-font {
     font-size: 1.2rem;
 }
-
-.smaller-font {
-    font-size: 0.6rem;
+.logout-font {
+    font-size: 1.5rem;
 }
 
 .bigger-font {
@@ -386,11 +359,6 @@ small {
     padding: 10px 10px 10px 10px;
 }
 
-.border {
-    border: 30px groove;
-    border-radius: 40px 40px 40px 40px;
-}
-
 .btn-danger {
     background-color: rgba(122, 2, 6, 0.47);
     border: #ddcaca 2px solid;
@@ -450,6 +418,3 @@ small {
     width: 200px;
 }
 
-.green-font {
-    color: darkred;
-}

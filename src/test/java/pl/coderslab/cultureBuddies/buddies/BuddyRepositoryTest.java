@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.security.Role;
 
@@ -96,14 +95,6 @@ class BuddyRepositoryTest {
     @Transactional
     public void givenBuddyWithAuthors_whenSeekingBuddyWithAuthors_thenBuddyWithAuthorsFound() {
         //given
-        final Author author = Author.builder()
-                .lastName("Kowalski")
-                .firstName("Jan")
-                .build();
-        final Author author2 = Author.builder()
-                .lastName("Nowak")
-                .firstName("Piotr")
-                .build();
         testEm.persist(validTestBuddy);
         testEm.flush();
         testEm.clear();

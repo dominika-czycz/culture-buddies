@@ -110,7 +110,7 @@ CREATE TABLE `buddies` (
   `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `picture_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `picture`   longblob,
   `username` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `city_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),

@@ -114,14 +114,6 @@ class BookServiceTest {
     }
 
     @Test
-    public void givenBuddyAndAuthor_whenSearchingBuddyBookListByAuthor_thenBooksListBeingSearched() throws NotExistingRecordException {
-        //when
-        testObj.findBooksByUsernameAndAuthorId(buddy.getUsername(), author.getId());
-        //then
-        verify(bookRepositoryMock).findByAuthorIdAndBookId(author.getId(), buddy.getId());
-    }
-
-    @Test
     public void givenAuthorIdAndBuddyUsername_whenSearchingBooksRate_thenBooksListBeingSearched() throws NotExistingRecordException {
         //given
         when(buddyBookServiceMock.getRatingsWhereAuthorIdAndBuddy(author.getId(), buddy))

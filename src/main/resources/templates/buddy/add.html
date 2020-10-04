@@ -42,8 +42,10 @@
                             </td>
                             <td>
                                 <form th:action="@{/app/myBuddies/add}" method="post" th:object="${newBuddy}">
-                                    <input type="text" hidden="hidden" name="buddyId"
-                                           th:value="${buddy.id}"/>
+                                    <label>
+                                        <input type="text" hidden="hidden" name="buddyId"
+                                               th:value="${buddy.id}"/>
+                                    </label>
                                     <button type="submit" class="btn btn-success">add</button>
                                 </form>
                             </td>

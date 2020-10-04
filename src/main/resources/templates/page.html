@@ -24,10 +24,10 @@
         </div>
     </header>
 </div>
-<div th:fragment="dashboard">
+<div th:fragment="dashboard" class="very-small-margin-bottom">
     <div class="row">
         <div class="col-sm-10">
-            <ul class="lighter-green medium-font cookie-font center">
+            <ul class="medium-font cookie-font center">
                 <li class="nav-item">
                     <a class="lighter-link" th:href="@{/app/board/profile/}">
                         <h3 class="nav-item">my profile</h3>
@@ -59,12 +59,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="link" th:href="@{/app/board/changePassword/}">
+                    <a class="lighter-link" th:href="@{/app/board/changePassword/}">
                         <h3 class="nav-item">change password</h3>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="link" th:href="@{/app/board/changePicture/}">
+                    <a class="lighter-link" th:href="@{/app/board/changePicture/}">
                         <h3 class="nav-item">change picture</h3>
                     </a>
                 </li>
@@ -72,9 +72,9 @@
         </div>
         <div class="col-sm-2">
             <ul class="medium-font cookie-font center">
-                <li class="nav-item">
-                    <form class="nav-item" th:action="@{/app/logout}" method="post">
-                        <button type="submit" class="btn btn-logout"><h3>log out</h3></button>
+                <li class="logout-item">
+                    <form th:action="@{/app/logout}" method="post">
+                        <button type="submit" class="btn btn-logout logout-font">log out</button>
                     </form>
                 </li>
             </ul>

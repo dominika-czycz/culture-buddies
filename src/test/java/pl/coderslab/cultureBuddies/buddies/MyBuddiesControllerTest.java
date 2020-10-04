@@ -110,9 +110,7 @@ class MyBuddiesControllerTest {
 
     @Test
     public void givenNoSearchKey_whenPostToSerachUlr_thenEmptyKeyExceptionAndErrorPageView() throws Exception {
-        String username = null;
-        ArrayList<Long> authorsIds = null;
-        when(buddyServiceMock.findByUsernameAndAuthors(username, authorsIds))
+        when(buddyServiceMock.findByUsernameAndAuthors(null, null))
                 .thenThrow(EmptyKeysException.class);
         mockMvc.perform(post("/app/myBuddies/search").with(csrf()))
                 .andExpect(status().isOk())

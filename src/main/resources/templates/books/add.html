@@ -31,17 +31,25 @@
                             </td>
                             <td>
                                 <form th:action="@{/app/myBooks/add}" method="post" th:object="${book}">
-                                    <input type="text" hidden="hidden" name="identifier"
-                                           th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
-                                    <input type="text" hidden="hidden" name="title"
-                                           th:value="${gBook.volumeInfo.title}"/>
-                                    <input type="text" hidden="hidden" name="thumbnailLink"
-                                           th:if="${gBook.volumeInfo.imageLinks!=null && gBook.volumeInfo.imageLinks.thumbnail!=null}"
-                                           th:value="${gBook.volumeInfo.imageLinks.thumbnail}"/>
-                                    <select hidden="hidden" name="authorsFullName" multiple="multiple">
-                                        <option th:each="author: ${gBook.volumeInfo.authors}"
-                                                th:value="${author}" selected="selected"></option>
-                                    </select>
+                                    <label>
+                                        <input type="hidden"  name="identifier"
+                                               th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
+                                    </label>
+                                    <label>
+                                        <input type="hidden"  name="title"
+                                               th:value="${gBook.volumeInfo.title}"/>
+                                    </label>
+                                    <label>
+                                        <input type="hidden" name="thumbnailLink"
+                                               th:if="${gBook.volumeInfo.imageLinks!=null && gBook.volumeInfo.imageLinks.thumbnail!=null}"
+                                               th:value="${gBook.volumeInfo.imageLinks.thumbnail}"/>
+                                    </label>
+                                    <label>
+                                        <select hidden="hidden" name="authorsFullName" multiple="multiple">
+                                            <option th:each="author: ${gBook.volumeInfo.authors}"
+                                                    th:value="${author}" selected="selected"></option>
+                                        </select>
+                                    </label>
                                     <button type="submit" class="btn btn-success">add</button>
                                 </form>
                             </td>

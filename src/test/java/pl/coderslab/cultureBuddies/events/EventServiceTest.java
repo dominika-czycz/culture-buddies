@@ -214,12 +214,11 @@ class EventServiceTest {
     public void givenUsernameTitleAndCityButAnyTypeId_whenSearchedForEvents_thenEventAreSearchedByUsernameTitleAndCity() throws EmptyKeysException, NotExistingRecordException {
         final String username = savedEvent.getBuddy().getUsername();
         final String title = savedEvent.getTitle();
-        final Long typeId = null;
         final String city = savedEvent.getAddress().getCity();
         when(eventRepositoryMock.findByUsernameTitleAndCity(username, title, city))
                 .thenReturn(expectedEvents);
         //when
-        final List<Event> actual = testObject.findByUsernameTitleTypeIdOrCity(username, title, typeId, city);
+        final List<Event> actual = testObject.findByUsernameTitleTypeIdOrCity(username, title, null, city);
         //then
         verify(eventRepositoryMock).findByUsernameTitleAndCity(username, title, city);
         assertThat(actual, is(expectedEvents));
@@ -229,10 +228,8 @@ class EventServiceTest {
     public void givenAnyKeys_whenSearchedForEvents_thenEmptyKeysException() {
         final String username = "";
         final String title = "";
-        final Long typeId = null;
-        final String city = null;
         assertThrows(EmptyKeysException.class,
-                () -> testObject.findByUsernameTitleTypeIdOrCity(username, title, typeId, city));
+                () -> testObject.findByUsernameTitleTypeIdOrCity(username, title, null, null));
     }
 
     @Test

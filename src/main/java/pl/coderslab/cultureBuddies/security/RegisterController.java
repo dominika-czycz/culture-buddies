@@ -30,7 +30,7 @@ public class RegisterController {
 
     @GetMapping
     public String prepareRegisterPage(Model model) {
-        log.info("Preparing to register");
+        log.info("Preparing to register...");
         model.addAttribute(new Buddy());
         return "register";
     }

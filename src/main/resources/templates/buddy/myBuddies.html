@@ -91,15 +91,19 @@
                             </td>
                             <td>
                                 <form th:action="@{/app/myBuddies/accept/}" method="post">
-                                    <input type="text" hidden="hidden" name="buddyId"
-                                           th:value="${buddy.id}"/>
+                                    <label>
+                                        <input type="text" hidden="hidden" name="buddyId"
+                                               th:value="${buddy.id}"/>
+                                    </label>
                                     <button type="submit" title="accept" class="btn btn-success">&#128077;</button>
                                 </form>
                             </td>
                             <td>
                                 <form th:action="@{/app/myBuddies/discard/}" method="post">
-                                    <input type="text" hidden="hidden" name="buddyId"
-                                           th:value="${buddy.id}"/>
+                                    <label>
+                                        <input type="text" hidden="hidden" name="buddyId"
+                                               th:value="${buddy.id}"/>
+                                    </label>
                                     <button type="submit" title="discard" class="btn btn-danger">&#128078;</button>
                                 </form>
                             </td>

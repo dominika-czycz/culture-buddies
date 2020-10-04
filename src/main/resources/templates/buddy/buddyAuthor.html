@@ -26,8 +26,7 @@
                         books by: <span
                                 class="buddy-font medium-font" th:text="${author.getFullName()}"></span></div>
                     <table class="table striped">
-                        <tbody>
-                        <div th:each="bookWithOpinion: ${booksRatingList}">
+                        <tbody th:each="bookWithOpinion: ${booksRatingList}">
                             <tr class="lighter-yellow other-font">
                                 <td class="other-font medium-font center">rate</td>
                                 <td class="link info-font medium-font right"><span
@@ -54,7 +53,6 @@
                                     th:text="${bookWithOpinion.comment}">comment
                                 </td>
                             </tr>
-                        </div>
                         </tbody>
                     </table>
                 </div>
