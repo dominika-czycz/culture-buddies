@@ -35,9 +35,13 @@ public interface BuddyService {
 
     void inviteBuddy(Long buddyId) throws NotExistingRecordException;
 
+    void inviteBuddy(Long activeId, Long passiveId) throws NotExistingRecordException;
+
     void acceptBuddy(Long buddyId) throws NotExistingRecordException;
 
     void deleteBuddy(Long buddyId) throws NotExistingRecordException;
+
+    void acceptBuddy(Long activeId, Long passiveId) throws NotExistingRecordException;
 
     Buddy findById(Long buddyId) throws NotExistingRecordException;
 
@@ -53,4 +57,5 @@ public interface BuddyService {
 
     void setProfilePicture(Buddy buddy);
 
+    void deleteAll();
 }

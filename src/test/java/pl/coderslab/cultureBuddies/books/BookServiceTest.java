@@ -15,7 +15,7 @@ import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
-import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
+import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalServiceException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
@@ -94,7 +94,7 @@ class BookServiceTest {
         when(bookRepositoryMock.findFirstByIdentifier(book.getIdentifier())).thenReturn(Optional.empty());
         when(bookRepositoryMock.save(book)).thenThrow(ConstraintViolationException.class);
         //when, then
-        assertThrows(InvalidDataFromExternalRestApiException.class,
+        assertThrows(InvalidDataFromExternalServiceException.class,
                 () -> testObj.addBookToBuddy(book));
     }
 
@@ -130,11 +130,11 @@ class BookServiceTest {
         //given
         when(bookRepositoryMock.save(book)).thenThrow(ConstraintViolationException.class);
         //when,then
-        assertThrows(InvalidDataFromExternalRestApiException.class, () -> testObj.addBookToBuddy(book));
+        assertThrows(InvalidDataFromExternalServiceException.class, () -> testObj.addBookToBuddy(book));
     }
 
     @Test
-    public void givenBookNotRelatedWithBuddy_whenBookAddedToBuddy_thenNewRelationCreated() throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
+    public void givenBookNotRelatedWithBuddy_whenBookAddedToBuddy_thenNewRelationCreated() throws InvalidDataFromExternalServiceException, NotExistingRecordException, RelationshipAlreadyCreatedException {
         //given
         when(bookRepositoryMock.findFirstByIdentifier(book.getIdentifier())).thenReturn(Optional.ofNullable(book));
         when(buddyServiceMock.addBookToPrincipalBuddy(book)).thenReturn(buddyBook);

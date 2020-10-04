@@ -11,7 +11,7 @@ import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
-import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
+import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalServiceException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.RestBooksService;
@@ -55,6 +55,26 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public void saveAll(List<Book> books) throws InvalidDataFromExternalServiceException {
+        for (Book book : books) {
+            saveBook(book);
+        }
+    }
+
+    @Override
+    public Book findByTitle(String bookTitle) throws NotExistingRecordException {
+        return bookRepository.findFirstByTitle(bookTitle)
+                .orElseThrow(new NotExistingRecordException("Book with title " + bookTitle +
+                        "does not exist in database!"));
+
+    }
+
+    @Override
+    public void deleteAll(){
+        bookRepository.deleteAll();
+    }
+
+    @Override
     public List<BookFromGoogle> getBooksFromExternalApi(String title, String author, int pageNo) throws NotExistingRecordException, BadHttpRequest {
         return restBooksService.getGoogleBooksList(title, author, pageNo);
     }
@@ -65,7 +85,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BuddyBook addBookToBuddy(Book book) throws InvalidDataFromExternalRestApiException, NotExistingRecordException, RelationshipAlreadyCreatedException {
+    public BuddyBook addBookToBuddy(Book book) throws InvalidDataFromExternalServiceException, NotExistingRecordException, RelationshipAlreadyCreatedException {
         final Optional<Book> bookFromDb = bookRepository.findFirstByIdentifier(book.getIdentifier());
         if (bookFromDb.isPresent()) {
             return buddyService.addBookToPrincipalBuddy(bookFromDb.get());
@@ -75,11 +95,8 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    private Book saveBook(Book book) throws InvalidDataFromExternalRestApiException {
-        final List<String> authorsFullName = book.getAuthorsFullName();
-        if (authorsFullName == null || authorsFullName.isEmpty()) {
-            throw new InvalidDataFromExternalRestApiException("Data obtained from external service are invalid!");
-        }
+    private Book saveBook(Book book) throws InvalidDataFromExternalServiceException {
+        final List<String> authorsFullName = checkAuthors(book);
         addAuthorsToBook(book, authorsFullName);
         log.debug("Saving entity {}...", book);
         try {
@@ -87,10 +104,18 @@ public class BookServiceImpl implements BookService {
             log.debug("Entity {} has been saved", book);
             return savedBook;
         } catch (ConstraintViolationException | org.hibernate.exception.ConstraintViolationException ex) {
-            log.warn("Book from google fails validation: {}", book);
+            log.warn("Book fails validation: {}", book);
             log.warn("{}", ex.getMessage());
-            throw new InvalidDataFromExternalRestApiException("Data obtained from external service are invalid!");
+            throw new InvalidDataFromExternalServiceException("Data obtained from external service are invalid!");
         }
+    }
+
+    private List<String> checkAuthors(Book book) throws InvalidDataFromExternalServiceException {
+        final List<String> authorsFullName = book.getAuthorsFullName();
+        if (authorsFullName == null || authorsFullName.isEmpty()) {
+            throw new InvalidDataFromExternalServiceException("Data obtained from external service are invalid!");
+        }
+        return authorsFullName;
     }
 
     private void addAuthorsToBook(Book book, List<String> authors) {

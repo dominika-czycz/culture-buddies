@@ -10,4 +10,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "SELECT b FROM Book b JOIN FETCH b.authors where b.id = ?1")
     Book findByIdWithAuthors(Long bookId);
+
+    Optional<Book> findFirstByTitle(String title);
 }

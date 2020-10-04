@@ -183,8 +183,21 @@ public class BuddyServiceImpl implements BuddyService {
 
     @Override
     @Transactional
+    public void inviteBuddy(Long activeId, Long passiveId) throws NotExistingRecordException {
+        saveBuddyBuddyRelations(activeId, passiveId, "inviting", "invited");
+    }
+
+
+    @Override
+    @Transactional
     public void acceptBuddy(Long buddyId) throws NotExistingRecordException {
         savePrincipalBuddyRelations(buddyId, "buddies", "buddies");
+    }
+
+    @Override
+    @Transactional
+    public void acceptBuddy(Long activeId, Long passiveId) throws NotExistingRecordException {
+        saveBuddyBuddyRelations(activeId, passiveId, "buddies", "buddies");
     }
 
     @Override
@@ -215,12 +228,22 @@ public class BuddyServiceImpl implements BuddyService {
         buddy.setProfileImage(getPicture(buddy));
     }
 
+    @Override
+    public void deleteAll(){
+        buddyRepository.deleteAll();
+    }
+
     private void savePrincipalBuddyRelations(Long buddyId, String principalIsDoing, String buddyIsDone) throws NotExistingRecordException {
-        final Buddy otherBuddy = getBuddy(buddyId);
         final Buddy principal = getPrincipal();
-        final BuddyRelation savedBlocking = saveBuddyRelation(principal, otherBuddy, principalIsDoing);
-        final BuddyRelation savedBlocked = saveBuddyRelation(otherBuddy, principal, buddyIsDone);
-        log.debug("Entities {}, {} have been saved.", savedBlocking, savedBlocked);
+        saveBuddyBuddyRelations(principal.getId(), buddyId, principalIsDoing, buddyIsDone);
+    }
+
+    private void saveBuddyBuddyRelations(Long actionBuddyId, Long passiveBuddyId, String activeIsDoing, String passiveIsDone) throws NotExistingRecordException {
+        final Buddy passiveBuddy = getBuddy(passiveBuddyId);
+        final Buddy actionBuddy = getBuddy(actionBuddyId);
+        final BuddyRelation savedActiveRel = saveBuddyRelation(actionBuddy, passiveBuddy, activeIsDoing);
+        final BuddyRelation savedPassiveRel = saveBuddyRelation(passiveBuddy, actionBuddy, passiveIsDone);
+        log.debug("Entities {}, {} have been saved.", savedActiveRel, savedPassiveRel);
     }
 
     private Buddy getBuddy(Long buddyId) throws NotExistingRecordException {

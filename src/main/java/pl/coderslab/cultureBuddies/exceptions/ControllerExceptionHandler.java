@@ -26,7 +26,7 @@ import java.net.BindException;
 @ControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {
-    @ExceptionHandler(value = {InvalidDataFromExternalRestApiException.class,
+    @ExceptionHandler(value = {InvalidDataFromExternalServiceException.class,
             EmptyKeysException.class, NotExistingRecordException.class, RelationshipAlreadyCreatedException.class})
     public ModelAndView handleConflict(HttpServletRequest request,
                                        Exception ex) {

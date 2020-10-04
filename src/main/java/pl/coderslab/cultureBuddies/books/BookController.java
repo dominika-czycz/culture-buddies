@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookService;
-import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalRestApiException;
+import pl.coderslab.cultureBuddies.exceptions.InvalidDataFromExternalServiceException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
@@ -85,7 +85,7 @@ public class BookController {
 
     @PostMapping("/add")
     public String processAddPage(Book book, Model model)
-            throws NotExistingRecordException, InvalidDataFromExternalRestApiException,
+            throws NotExistingRecordException, InvalidDataFromExternalServiceException,
             RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  {} and principal...", book);
         return addBookToBuddy(model, book);
@@ -93,7 +93,7 @@ public class BookController {
 
     @PostMapping("/addFromBuddy")
     public String processAddBookFromBuddy(@RequestParam Long bookId, Model model)
-            throws NotExistingRecordException, InvalidDataFromExternalRestApiException,
+            throws NotExistingRecordException, InvalidDataFromExternalServiceException,
             RelationshipAlreadyCreatedException {
         log.debug("Preparing to add relation between  book with id {} and principal...", bookId);
         final Book book = bookService.findById(bookId);
@@ -101,7 +101,7 @@ public class BookController {
     }
 
     private String addBookToBuddy(Model model, Book book)
-            throws InvalidDataFromExternalRestApiException, NotExistingRecordException,
+            throws InvalidDataFromExternalServiceException, NotExistingRecordException,
             RelationshipAlreadyCreatedException {
         final BuddyBook buddyBook = bookService.addBookToBuddy(book);
         log.debug("BuddyBook {}", buddyBook);
