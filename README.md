@@ -34,6 +34,8 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 
 ### Ready
 
+#### Restoring database
+
 #### User (Buddy)
 * Login 
 * User registration with optional addition of a profile photo
@@ -45,7 +47,7 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 ##### books
 * My books page ([fig. 2](#fig-2-my-books-page))
 * Author page ([fig. 3](#fig-3-author-page))
-* Searching for a new book using Google Books Api ([fig. 4](#fig-4-searching-for-a-new-book) and [fig. 5](#fig-5-searching-for-a-new-book))
+* Searching for a new book using Google Books Api with paging ([fig. 4](#fig-4-searching-for-a-new-book) and [fig. 5](#fig-5-searching-for-a-new-book))
 * Adding and rating a new book ([fig. 6](#fig-6-adding-and-rating-a-new-book))
 * Removing a book with confirmation ([fig. 7](#fig-7-removing-a-book-with-confirmation))
 * Editing a rate of a book
@@ -54,7 +56,7 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 
 ##### events
 * My events page ([fig. 9](#fig-9-my-events-page))
-* Buddy's events page ([fig. 10](#fig-10-buddys-events-page))
+* Buddy's events page 
 * Event info page with localization using Google Places Api
 * Searching for an event to join by: title, username, type, city 
 * Adding new event
@@ -66,8 +68,8 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 * List of events recently added by buddies  
 
 ##### buddies
-* My buddies page ([fig. 11](#fig-11-my-buddies-page))
-* My buddy page with buddy books and events([fig. 12](#fig-12-my-buddy-page))
+* My buddies page ([fig. 10](#fig-10-my-buddies-page))
+* My buddy page with buddy books and events([fig. 11](#fig-11-my-buddy-page))
 * Searching for a new buddy by a username, interests
 * Inviting a new buddy
 * Accepting invitations from other buddies,
@@ -91,19 +93,30 @@ Created by [@dominika-czycz](https://github.com/dominika-czycz)
 ## Database structure
 
 ## Figures
+![loging](/demoViews/login.png)
+###### Fig. 0 Login page 
+![profile](/demoViews/profile.png)
 ###### Fig. 1 Profile page 
+![myBooks](/demoViews/myBooks.png)
 ###### Fig. 2 My books page
+![authorPage](/demoViews/myAuthor.png)
 ###### Fig. 3 Author page 
+![searchingForBook](/demoViews/searchBook1.png)
 ###### Fig. 4 Searching for a new book 
+![serchingForBook2](/demoViews/searchBook2.png)
 ###### Fig. 5 Searching for a new book 
-
+![ratingBook](/demoViews/rateBook.png)
 ###### Fig. 6 Adding and rating a new book 
+![removingBook](/demoViews/removeBook.png)
 ###### Fig. 7 Removing a book with confirmation 
+![ratingsBookList](/demoViews/ratingsList.png)
 ###### Fig. 8 List of buddies' opinions about the book 
+![eventPage](/demoViews/myEvents.png)
 ###### Fig. 9 My events page 
-###### Fig. 10 Buddy's events page 
-###### Fig. 11 My buddies page 
-###### Fig .12 My buddy page 
+![myBuddiesPage](/demoViews/myBuddies.png)
+###### Fig. 10 My buddies page 
+![myBuddyPage](/demoViews/buddyPage.png)
+###### Fig .11 My buddy page 
 
 ## Source
 ### profile pictures sources:

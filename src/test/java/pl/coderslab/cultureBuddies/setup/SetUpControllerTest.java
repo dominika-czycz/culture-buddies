@@ -41,5 +41,4 @@ class SetUpControllerTest {
                 .andExpect(redirectedUrl("/"));
         verify(setUpDatabaseServiceMock).restoreDatabase();
     }
-
 }
