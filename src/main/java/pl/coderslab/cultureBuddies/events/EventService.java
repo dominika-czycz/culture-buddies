@@ -20,6 +20,8 @@ public interface EventService {
 
     Event findEventByIdWithBuddies(Long eventId) throws NotExistingRecordException;
 
+    void setExampleEvents() throws NotExistingRecordException;
+
     Event findEventById(Long eventId) throws NotExistingRecordException;
 
     void updateEvent(Event event) throws NotExistingRecordException;

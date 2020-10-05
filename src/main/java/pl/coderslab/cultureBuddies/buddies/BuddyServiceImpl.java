@@ -2,11 +2,13 @@ package pl.coderslab.cultureBuddies.buddies;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
@@ -14,14 +16,21 @@ import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyBuddyId;
 import pl.coderslab.cultureBuddies.buddyBuddy.BuddyRelation;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
+import pl.coderslab.cultureBuddies.city.City;
+import pl.coderslab.cultureBuddies.city.CityRepository;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 import pl.coderslab.cultureBuddies.security.RoleRepository;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +45,7 @@ public class BuddyServiceImpl implements BuddyService {
     private final BuddyBookRepository buddyBookRepository;
     private final BuddyRelationRepository buddyRelationRepository;
     private final RelationStatusRepository relationStatusRepository;
+    private final CityRepository cityRepository;
     private static final int FILE_MAX_SIZE = 1048576;
 
     @Transactional
@@ -229,7 +239,7 @@ public class BuddyServiceImpl implements BuddyService {
     }
 
     @Override
-    public void deleteAll(){
+    public void deleteAll() {
         buddyRepository.deleteAll();
     }
 
@@ -258,11 +268,72 @@ public class BuddyServiceImpl implements BuddyService {
         buddyRelation.setStatus(relationStatus);
         return buddyRelationRepository.save(buddyRelation);
     }
+
     @Override
     public Buddy getBuddyWithEvents(Buddy buddy) throws NotExistingRecordException {
         final Optional<Buddy> buddyWithEvents = buddyRepository.findByIdWithEvents(buddy.getId());
         return buddyWithEvents.orElseThrow(
                 new NotExistingRecordException("Buddy with id " + buddy.getId() + " does not exist!"));
+    }
+
+    @Override
+    @Transactional
+    public void setExampleBuddies() throws IOException {
+        saveExampleBuddy("barbora-polednova-dY7Q-sl77L4-unsplash.jpg",
+                "Anna", "Kowalska", "annaKowal");
+        saveExampleBuddy("eric-weber-nQOQVJW7EY8-unsplash.jpg",
+                "Piotr", "Mazur", "Mazur");
+        saveExampleBuddy("gabriel-silverio-u3WmDyKGsrY-unsplash.jpg",
+                "Ola", "Wojciechowska", "koala");
+        saveExampleBuddy("meric-tuna-lIvALCu6T8Q-unsplash.jpg",
+                "Adam", "Adamski", "adamski");
+    }
+
+    private void saveExampleBuddy(String fileName, String name, String lastName, String userName) throws IOException {
+        City city = cityRepository.findFirstByName("Wrocław");
+        MultipartFile kowalFile = getExampleMultipartFile(fileName);
+        final Buddy annaKowal = Buddy.builder()
+                .name(name)
+                .lastName(lastName)
+                .username(userName)
+                .email("dominika.czycz@gmail.com")
+                .password(userName)
+                .city(city).build();
+        save(kowalFile, annaKowal);
+    }
+
+    @Override
+    @Transactional
+    public void setBuddiesRelations() throws NotExistingRecordException {
+        final Long koalaId = findByUsername("koala").getId();
+        final Long mazurId = findByUsername("Mazur").getId();
+        final Long adamskiId = findByUsername("adamski").getId();
+        final Long annaKowalId = findByUsername("annaKowal").getId();
+        inviteBuddy(koalaId, mazurId);
+        inviteBuddy(koalaId, annaKowalId);
+        inviteBuddy(mazurId, annaKowalId);
+        inviteBuddy(adamskiId, annaKowalId);
+        acceptBuddy(annaKowalId, koalaId);
+        acceptBuddy(annaKowalId, mazurId);
+    }
+
+    private MultipartFile getExampleMultipartFile(String fileName) throws IOException {
+        final Path pathToPicture = getPathToPicture(fileName);
+        final byte[] bytes = Files.readAllBytes(pathToPicture);
+        return new MockMultipartFile(fileName, bytes);
+    }
+
+    private String getPathToDirectory() {
+        final String RESOURCE_NAME = "static/pictures/buddyPictures";
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(RESOURCE_NAME)).getFile());
+        return file.getAbsolutePath();
+    }
+
+    private Path getPathToPicture(String fileName) {
+        final String file = StringUtils.cleanPath(fileName);
+        String dir = getPathToDirectory();
+        return Paths.get(dir + "/" + file);
     }
 
     private Optional<BuddyRelation> getBuddyRelationFromDb(Buddy who, Buddy whom) {
@@ -294,7 +365,6 @@ public class BuddyServiceImpl implements BuddyService {
     private void setPassword(Buddy buddy, String password) {
         buddy.setPassword(passwordEncoder.encode(password));
     }
-
 
     private void prepareBuddy(MultipartFile profilePicture, Buddy buddy) throws IOException {
         pictureService.save(profilePicture, buddy);

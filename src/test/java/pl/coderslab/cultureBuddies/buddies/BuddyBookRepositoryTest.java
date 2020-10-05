@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBook;
 import pl.coderslab.cultureBuddies.buddyBook.BuddyBookRepository;
 import pl.coderslab.cultureBuddies.city.City;
+import pl.coderslab.cultureBuddies.setup.SetUpDatabaseService;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,6 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Slf4j
+@ActiveProfiles("test")
 class BuddyBookRepositoryTest {
     @Autowired
     private BuddyBookRepository testObject;
@@ -32,6 +36,9 @@ class BuddyBookRepositoryTest {
 
     @Test
     public void givenBuddyAndBook_whenBookAddedToBuddy_thenShouldBeAdded() {
+        final City city = new City();
+        city.setName("New York");
+        final City savedCity = testEm.persist(city);
         Author author = Author.builder()
                 .firstName("Jan")
                 .lastName("Kowalski")
@@ -46,7 +53,7 @@ class BuddyBookRepositoryTest {
                 .email("test@gmail.com")
                 .name("Anna")
                 .lastName("Kowalska")
-                .city(new City(1L, "Wrocław"))
+                .city(savedCity)
                 .password("annaKowalska")
                 .books(new HashSet<>())
                 .build();

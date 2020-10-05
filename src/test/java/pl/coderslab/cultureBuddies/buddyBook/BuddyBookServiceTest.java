@@ -2,18 +2,22 @@ package pl.coderslab.cultureBuddies.buddyBook;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.books.Book;
 import pl.coderslab.cultureBuddies.buddies.Buddy;
 import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddies.RelationStatusRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
+import pl.coderslab.cultureBuddies.setup.SetUpDatabaseService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@ExtendWith(SpringExtension.class)
 class BuddyBookServiceTest {
     @Autowired
     private BuddyBookService testObject;

@@ -12,12 +12,11 @@ import java.io.IOException;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class SetupController {
-    private final SetupDatabaseServiceImp setupDatabaseService;
+public class SetUpController {
+    private final SetUpDatabaseService setupDatabaseService;
 
-    @RequestMapping("/restart_db")
+    @RequestMapping("/restoreDatabase")
     public String restartDbToDefault() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
-        log.debug("Restart database");
         setupDatabaseService.restoreDatabase();
         return "redirect:/";
     }

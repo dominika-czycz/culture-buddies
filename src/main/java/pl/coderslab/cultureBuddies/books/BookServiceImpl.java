@@ -19,6 +19,7 @@ import pl.coderslab.cultureBuddies.googleapis.restModel.BookFromGoogle;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotBlank;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +71,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteAll(){
+    public void deleteAll() {
         bookRepository.deleteAll();
     }
 
@@ -93,6 +94,81 @@ public class BookServiceImpl implements BookService {
             final Book newlySavedBook = saveBook(book);
             return buddyService.addBookToPrincipalBuddy(newlySavedBook);
         }
+    }
+
+    @Override
+    @Transactional
+    public void setExampleBookRatings() throws NotExistingRecordException {
+        saveExampleRating("annaKowal", "lolita",
+                "Pushing the boundaries of what acceptable literature can actually be, Lolita is very much a piece of art. For many years I kept hearing about this book, the content sounding disturbing and perhaps even slightly fascinating. ",
+                10);
+        saveExampleRating("Mazur", "lolita",
+                "Sick, twisted and beautiful. Love this.",
+                9);
+        saveExampleRating("annaKowal", "Ada or Ardor",
+                "“Maybe the only thing that hints at a sense of Time is rhythm; not the recurrent beats of the rhythm but the gap between two such beats, the gray gap between black beats: the Tender Interval.” ",
+                10);
+        saveExampleRating("koala", "Beloved",
+                "Just love it ",
+                10);
+        saveExampleRating("annaKowal", "Beloved",
+                "The brutal truth, brilliantly written. A mother hanging from a tree, the vile debasement of a nursing mother, scars so deep from whipping that they make a design of a tree on a woman’s back.",
+                9);
+        saveExampleRating("Mazur", "Big Breasts and Wide Hips",
+                "I loved the homage to the female- mother, nurturer, life giver, sacrificial lamb. Yan is brilliant in his use of allegories in the tale of the Shangguan family (specifically Mother and Jintong) from a China (Motherland) violated by war, suffering famine.",
+                10);
+        saveExampleRating("koala", "The Road",
+                "The Road is a truly disturbing book; it is absorbing, mystifying and completely harrowing. Simply because it shows us how man could act given the right circumstances; it’s a terrifying concept because it could also be a true one.",
+                10);
+        saveExampleRating("Mazur", "The Piano Teacher",
+                "AMAZING THINGS: I can literally feel new wrinkles spreading across the surface of my brain when I read this guy. He's so wicked smart that there's no chance he's completely sane. His adjectives and descriptions are 100% PERFECT, and yet entirely nonsensic",
+                10);
+        saveExampleRating("koala", "The Piano Teacher",
+                "good", 7);
+        saveExampleRating("annaKowal", "The Piano Teacher",
+                "Love it",
+                10);
+        saveExampleRating("adamski", "The Piano Teacher",
+                "This is one of my favorite books. I can't even describe how amazed I was when I finished this book. Jelinek moves the reader from character to character, rarely telling us who we inhabit, yet unlike so many other books that abuse this device, it works.",
+                10);
+        saveExampleRating("adamski", "Mistrz i Małgorzata",
+                "Stories, stories, all is stories: political stories, religious stories, scientific stories, even stories about stories. We live inside these stories. Like this one in The Master and Margarita. The story that we can more or less agree upon we call reality.", 9);
+    }
+
+    @Override
+    @Transactional
+    public void setExampleBooks() throws InvalidDataFromExternalServiceException {
+        final Book lolita = getBook("Lolita", "9780141391601", "http://books.google.com/books/content?id=S0lVyYcw8tsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Vladimir Nabokov");
+        final Book adaOrArdor = getBook("Ada or Ardor", "9780141911304", "http://books.google.com/books/content?id=SBQgSToNcUsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Vladimir Nabokov");
+        final Book beloved = getBook("Beloved", "030738862X", "http://books.google.com/books/content?id=sfmp6gjZGP8C&printsec=frontcover&img=1&zoom=1&source=gbs_api", "Toni Morrison");
+        final Book theRepublicOfWine = getBook("The Republic of Wine", "9781743771884", "http://books.google.com/books/content?id=F8m_DAAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api", "Mo Yan");
+        final Book bigBreastsAndWideHips = getBook("Big Breasts and Wide Hips", "1559706724", "http://books.google.com/books/content?id=fe5wAkv1snoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Mo Yan");
+        final Book theRoad = getBook("The Road", "9781529014587", "http://books.google.com/books/content?id=VcZtDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Cormac McCarthy");
+        final Book thePianoTeacher = getBook("The Piano Teacher", "9781847653062", "http://books.google.com/books/content?id=d_Ady-4CHRIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", "Elfriede Jelinek");
+        final Book masterAndMargaret = getBook("Mistrz i Małgorzata", "8373161503", null, "Michaił Bułkahow");
+        final List<Book> books = List.of(lolita, adaOrArdor, beloved, theRepublicOfWine, bigBreastsAndWideHips,
+                theRoad, thePianoTeacher, masterAndMargaret);
+        saveAll(books);
+    }
+
+    private Book getBook(String lolita2, String s, String s2, String s3) {
+        return Book.builder()
+                .title(lolita2)
+                .identifier(s)
+                .thumbnailLink(s2)
+                .authorsFullName(Collections.singletonList(s3))
+                .build();
+    }
+
+    private void saveExampleRating(String username, String bookTitle, String comment, int rate) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findByUsername(username);
+        Book book = findByTitle(bookTitle);
+        final BuddyBook buddyBook = new BuddyBook();
+        buddyBook.setComment(comment);
+        buddyBook.setRate(rate);
+        buddyBook.setBook(book);
+        buddyBook.setBuddy(buddy);
+        buddyBookService.save(buddyBook);
     }
 
     private Book saveBook(Book book) throws InvalidDataFromExternalServiceException {

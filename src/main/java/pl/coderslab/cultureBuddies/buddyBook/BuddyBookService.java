@@ -21,4 +21,5 @@ public interface BuddyBookService {
 
     double countRating(List<BuddyBook> ratings) throws NotExistingRecordException;
 
+    void save(BuddyBook buddyBook);
 }

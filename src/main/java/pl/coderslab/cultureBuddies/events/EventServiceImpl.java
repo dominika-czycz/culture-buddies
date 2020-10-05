@@ -11,6 +11,7 @@ import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -143,6 +144,74 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(new NotExistingRecordException("Event with id " + eventId + " does not exist"));
         convertBuddiesPictures(eventWithBuddies);
         return eventWithBuddies;
+    }
+
+    @Override
+    @Transactional
+    public void setExampleEvents() throws NotExistingRecordException {
+        final Address address0 = getAddress("Włodkowica", "8a");
+        final Event event = getEvent(address0, LocalDate.now().plusMonths(1), "20:00",
+                "Wine and Nabokov...",
+                "annaKowal",
+                "Nabokov's most controversial books and a lot of wine...",
+                null,
+                "literature");
+        final Address address1 = getAddress("Kazimierza Wielkiego ", "19a");
+        final Event event1 = getEvent(address1, LocalDate.now().plusMonths(2), "19:00",
+                "Tarantino",
+                "annaKowal",
+                "A Tarantino movie marathon and lots of food after that...",
+                "https://www.kinonh.pl/art.s?id=1484",
+                "cinema");
+        final Address address2 = getAddress("Wystawowa", "1");
+        final Event event2 = getEvent(address2, LocalDate.now().plusDays(12), "21:00",
+                "KULT",
+                "Mazur",
+                "Orange route of Kult ",
+                "https://www.stodola.pl/en/events/kult-akustik-wroclaw-137605.html",
+                "concert");
+        final Event event3 = getEvent(address2, LocalDate.now().plusDays(23), "17:00",
+                "Understand contemporary art",
+                "Koala",
+                "Understand contemporary art...sometimes it's hard, but it's worth trying",
+                null,
+                "museum");
+        final Buddy koala = buddyService.findByUsername("koala");
+        final Buddy mazur = buddyService.findByUsername("Mazur");
+        event.addBuddy(koala);
+        event.addBuddy(mazur);
+        event1.addBuddy(koala);
+        event2.addBuddy(koala);
+        final List<Event> events = List.of(event, event1, event2, event3);
+        eventRepository.saveAll(events);
+    }
+
+    private Address getAddress(String street, String number) {
+        final Address address = Address.builder()
+                .street(street)
+                .city("Wrocław")
+                .number(number).build();
+        return addressRepository.save(address);
+    }
+
+    private Event getEvent(Address savedAddress, LocalDate plusMonths, String time, String title, String username, String desc, String link, String eventTypeName) throws NotExistingRecordException {
+        final EventType eventType = eventTypeRepository.findFirstByName(eventTypeName);
+        final Buddy buddyWithEvents = getBuddy(username);
+        final Event event = new Event();
+        event.setDate(plusMonths);
+        event.setStringTime(time);
+        event.setBuddy(buddyWithEvents);
+        event.setTitle(title);
+        event.setDescription(desc);
+        event.setEventType(eventType);
+        event.setLink(link);
+        event.setAddress(savedAddress);
+        return event;
+    }
+
+    private Buddy getBuddy(String username) throws NotExistingRecordException {
+        final Buddy buddy = buddyService.findByUsername(username);
+        return buddyService.getBuddyWithEvents(buddy);
     }
 
     private void convertBuddiesPictures(Event eventWithBuddies) {

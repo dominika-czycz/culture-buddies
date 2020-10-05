@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 import pl.coderslab.cultureBuddies.books.Book;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 class BuddyServiceTest {
     @MockBean
     private BuddyRepository buddyRepositoryMock;
@@ -93,6 +95,7 @@ class BuddyServiceTest {
         when(buddyRepositoryMock.save(unsavedBuddy)).thenReturn(savedBuddy);
         when(buddyRepositoryMock.findFirstByUsernameIgnoringCase("bestBuddy"))
                 .thenReturn(Optional.ofNullable(savedBuddy));
+        when(buddyRepositoryMock.findById(savedBuddy.getId())).thenReturn(Optional.ofNullable(savedBuddy));
         when(buddyRepositoryMock.findById(someBuddy.getId()))
                 .thenReturn(Optional.ofNullable(someBuddy));
 
@@ -315,6 +318,7 @@ class BuddyServiceTest {
                 .thenReturn(principalSomeBuddyRelation);
         when(buddyRelationRepositoryMock.save(someBuddyPrincipalRelation))
                 .thenReturn(someBuddyPrincipalRelation);
+        when(buddyRepositoryMock.findById(someBuddy.getId())).thenReturn(Optional.ofNullable(someBuddy));
         //when
         testObject.block(someBuddy.getId());
         //then

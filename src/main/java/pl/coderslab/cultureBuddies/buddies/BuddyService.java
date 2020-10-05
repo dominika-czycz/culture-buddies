@@ -60,4 +60,8 @@ public interface BuddyService {
     void deleteAll();
 
     Buddy getBuddyWithEvents(Buddy buddy) throws NotExistingRecordException;
+
+    void setExampleBuddies() throws IOException;
+
+    void setBuddiesRelations() throws NotExistingRecordException;
 }

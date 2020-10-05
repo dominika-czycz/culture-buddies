@@ -9,4 +9,10 @@ public interface SetUpDatabaseService {
     void setStartingData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException;
 
     void restoreDatabase() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException;
+
+    void setDataUnchangedByUsers();
+
+    void setExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException;
+
+    void cleanDatabase();
 }

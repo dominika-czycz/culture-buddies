@@ -47,6 +47,12 @@ public class BuddyBookServiceImpl implements BuddyBookService {
 
     @Override
     @Transactional
+    public void save(BuddyBook buddyBook) {
+        buddyBookRepository.save(buddyBook);
+    }
+
+    @Override
+    @Transactional
     public List<BuddyBook> findRecentlyAddedByBuddies(int limit) throws NotExistingRecordException {
         final Buddy principal = buddyService.getPrincipal();
         RelationStatus relationStatus = relationStatusRepository.findFirstByName("buddies")

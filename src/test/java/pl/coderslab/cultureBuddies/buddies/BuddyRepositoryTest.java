@@ -1,5 +1,6 @@
 package pl.coderslab.cultureBuddies.buddies;
 
+import com.fasterxml.jackson.databind.Module;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.cultureBuddies.city.City;
 import pl.coderslab.cultureBuddies.security.Role;
+import pl.coderslab.cultureBuddies.setup.SetUpDatabaseService;
 
 import javax.validation.ConstraintViolationException;
 import java.util.HashSet;
@@ -29,14 +32,19 @@ class BuddyRepositoryTest {
     private TestEntityManager testEm;
     @Autowired
     private BuddyRepository testObject;
+    @MockBean
+    private SetUpDatabaseService setUpDatabaseServiceMock;
 
     @BeforeEach
     public void setup() {
+        final City city = new City();
+        city.setName("Wrocław");
+        final City savedCity = testEm.persist(city);
         validTestBuddy = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")
                 .name("Anna")
-                .city(new City(1L, "Wrocław"))
+                .city(savedCity)
                 .lastName("Kowalska")
                 .password("annaKowalska")
                 .books(new HashSet<>())
@@ -89,7 +97,6 @@ class BuddyRepositoryTest {
         //then
         assertThat(savedBuddy.getRoles(), is(validTestBuddy.getRoles()));
     }
-
 
     @Test
     @Transactional

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @EqualsAndHashCode(of = "id")
+@ToString(of = {"id", "status", "added"})
 public class BuddyRelation {
     @EmbeddedId
     private BuddyBuddyId id = new BuddyBuddyId();

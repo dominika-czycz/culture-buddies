@@ -21,6 +21,10 @@ public interface BookService {
 
     BuddyBook addBookToBuddy(Book book) throws InvalidDataFromExternalServiceException, NotExistingRecordException, RelationshipAlreadyCreatedException;
 
+    void setExampleBookRatings() throws NotExistingRecordException;
+
+    void setExampleBooks() throws InvalidDataFromExternalServiceException;
+
     List<BuddyBook> findBooksRateOfPrincipalByAuthorId(Long authorId) throws NotExistingRecordException;
 
     Book findById(Long id) throws NotExistingRecordException;
