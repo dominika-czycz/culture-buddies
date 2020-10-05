@@ -37,7 +37,7 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 #### Restoring database
 
 #### User (Buddy)
-* Login 
+* Login ([fig. 0](#fig-0-login-page))
 * User registration with optional addition of a profile photo
 * Sending a welcome message to the user's email address
 * Profile page ([fig. 1](#fig-1-profile-page))
