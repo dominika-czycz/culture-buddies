@@ -34,7 +34,7 @@ class SetUpControllerTest {
     private BuddyConverter buddyConverter;
 
     @Test
-    public void whenGetRestartDatabase_thenDatabaseIsRestartedAndRedirectHome() throws Exception {
+    void whenGetRestartDatabase_thenDatabaseIsRestartedAndRedirectHome() throws Exception {
         //when, then
         mockMvc.perform(get("/restoreDatabase"))
                 .andExpect(status().is(302))

@@ -11,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderslab.cultureBuddies.author.Author;
 
 import javax.validation.ConstraintViolationException;
-
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,7 @@ class BookRepositoryTest {
 
     @BeforeEach
     public void setup() {
-      Author  author = Author.builder()
+        Author author = Author.builder()
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .id(10L).build();

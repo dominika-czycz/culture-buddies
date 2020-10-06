@@ -9,6 +9,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest
 class CultureBuddiesApplicationTest {
     @Test
-    public void contextShouldLoad() {
+    void contextShouldLoad() {
     }
 }

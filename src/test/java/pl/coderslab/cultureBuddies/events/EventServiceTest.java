@@ -14,8 +14,6 @@ import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.exceptions.EmptyKeysException;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
 import pl.coderslab.cultureBuddies.exceptions.RelationshipAlreadyCreatedException;
-import pl.coderslab.cultureBuddies.setup.SetUpDatabaseService;
-import pl.coderslab.cultureBuddies.setup.SetUpDatabaseServiceImpl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -100,7 +98,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void whenGetEventsOfPrincipal_thenEventsOfPrincipalAreGotten() throws NotExistingRecordException {
+    void whenGetEventsOfPrincipal_thenEventsOfPrincipalAreGotten() throws NotExistingRecordException {
         //given
         when(eventRepositoryMock.findAllByBuddy(principal)).thenReturn(expectedEvents);
         //when
@@ -112,7 +110,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void whenGetJoinedEvents_thenJoinedEventsAreGotten() throws NotExistingRecordException {
+    void whenGetJoinedEvents_thenJoinedEventsAreGotten() throws NotExistingRecordException {
         //given
         when(eventRepositoryMock.findAllByBuddiesContains(principal))
                 .thenReturn(expectedEvents);
@@ -125,7 +123,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void whenFindAllEventsTypes_thenAllEventsTypesAreFound() {
+    void whenFindAllEventsTypes_thenAllEventsTypesAreFound() {
         //given
         final List<EventType> expectedTypes = List.of(typeMusic, typeCinema);
         when(eventTypeRepositoryMock.findAll()).thenReturn(expectedTypes);
@@ -137,7 +135,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEvent_whenSaveEvent_thenEventAndAddressAreSaved() throws NotExistingRecordException {
+    void givenEvent_whenSaveEvent_thenEventAndAddressAreSaved() throws NotExistingRecordException {
         //given
         when(addressRepositoryMock.findFirstByCityAndStreetAndNumberAndFlatNumber(
                 addressToSave.getCity(), addressToSave.getStreet(), addressToSave.getNumber(), addressToSave.getFlatNumber()))
@@ -152,7 +150,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEventWithUpdatedTitle_whenUpdateEvent_thenEventFromDbIsUpdated() throws NotExistingRecordException {
+    void givenEventWithUpdatedTitle_whenUpdateEvent_thenEventFromDbIsUpdated() throws NotExistingRecordException {
         //given
         final Event eventWithUpdatedData = savedEvent.toBuilder().title("new Title").build();
         when(eventRepositoryMock.findById(eventWithUpdatedData.getId()))
@@ -172,7 +170,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEventId_whenRemoveEvent_thenEventIsRemoved() throws NotExistingRecordException {
+    void givenEventId_whenRemoveEvent_thenEventIsRemoved() throws NotExistingRecordException {
         //given
         final Long eventToDeleteId = savedEvent.getId();
         when(eventRepositoryMock.findById(eventToDeleteId))
@@ -184,7 +182,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEventId_whenLeaveEvent_thenEventIsLeft() throws NotExistingRecordException {
+    void givenEventId_whenLeaveEvent_thenEventIsLeft() throws NotExistingRecordException {
         //given
         savedEventWithBuddiesSpy.addBuddy(principalSpy);
         final Long eventToLeaveId = savedEventWithBuddiesSpy.getId();
@@ -199,7 +197,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenUsernameTitleCityAndEventTypeId_whenSearchedForEvents_thenEventAreSearchedByAllGivenData() throws EmptyKeysException, NotExistingRecordException {
+    void givenUsernameTitleCityAndEventTypeId_whenSearchedForEvents_thenEventAreSearchedByAllGivenData() throws EmptyKeysException, NotExistingRecordException {
         final String username = savedEvent.getBuddy().getUsername();
         final String title = savedEvent.getTitle();
         final Long typeId = savedEvent.getEventType().getId();
@@ -214,7 +212,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenUsernameTitleAndCityButAnyTypeId_whenSearchedForEvents_thenEventAreSearchedByUsernameTitleAndCity() throws EmptyKeysException, NotExistingRecordException {
+    void givenUsernameTitleAndCityButAnyTypeId_whenSearchedForEvents_thenEventAreSearchedByUsernameTitleAndCity() throws EmptyKeysException, NotExistingRecordException {
         final String username = savedEvent.getBuddy().getUsername();
         final String title = savedEvent.getTitle();
         final String city = savedEvent.getAddress().getCity();
@@ -228,7 +226,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenAnyKeys_whenSearchedForEvents_thenEmptyKeysException() {
+    void givenAnyKeys_whenSearchedForEvents_thenEmptyKeysException() {
         final String username = "";
         final String title = "";
         assertThrows(EmptyKeysException.class,
@@ -236,7 +234,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEventId_whenJoinEvent_thenEventIsJoined() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
+    void givenEventId_whenJoinEvent_thenEventIsJoined() throws NotExistingRecordException, RelationshipAlreadyCreatedException {
         //given
         final Long eventToJoinId = savedEventWithBuddiesSpy.getId();
         when(eventRepositoryMock.findEventByBuddies(principalSpy, eventToJoinId))
@@ -254,7 +252,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenAlreadyJoinedEventId_whenJoinEvent_thenAlreadyJoinedExceptionIsThrown()
+    void givenAlreadyJoinedEventId_whenJoinEvent_thenAlreadyJoinedExceptionIsThrown()
             throws NotExistingRecordException {
         //given
         final Long eventToJoinId = savedEventWithBuddiesSpy.getId();
@@ -267,7 +265,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenLimitPrincipalBuddy_whenFindRecentlyAddedByBuddies_thenEventsOfBuddiesAreSearched() throws NotExistingRecordException {
+    void givenLimitPrincipalBuddy_whenFindRecentlyAddedByBuddies_thenEventsOfBuddiesAreSearched() throws NotExistingRecordException {
         //given
         when(eventRepositoryMock.findRecentlyAddedEventsWithBuddies(principal.getId(), LIMIT)).thenReturn(expectedEvents);
         //when
@@ -279,7 +277,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void whenFindRecentEvents_thenAllRecentEventsAreFound() {
+    void whenFindRecentEvents_thenAllRecentEventsAreFound() {
         //given
         when(eventRepositoryMock.findFirst20ByOrderByDateDesc()).thenReturn(expectedEvents);
         //when
@@ -290,7 +288,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenBuddyId_whenFindRecentEventsOfBuddy_thenRecentEventsOfBuddyAreFound() {
+    void givenBuddyId_whenFindRecentEventsOfBuddy_thenRecentEventsOfBuddyAreFound() {
         //given
         final Long someBuddyId = someBuddy.getId();
         when(eventRepositoryMock.findRecentWhereBuddyId(someBuddyId, LIMIT)).thenReturn(expectedEventsOfSomeBuddy);
@@ -302,7 +300,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenBuddy_whenFindAllOfBuddy_thenAllOfBuddyAreFound() {
+    void givenBuddy_whenFindAllOfBuddy_thenAllOfBuddyAreFound() {
         //given
         when(eventRepositoryMock.findAllByBuddy(someBuddy))
                 .thenReturn(expectedEventsOfSomeBuddy);
@@ -314,7 +312,7 @@ class EventServiceTest {
     }
 
     @Test
-    public void givenEventId_whenSearchForEventFetchedWithBuddies_thenEventWithBuddiesAreSearched() throws NotExistingRecordException {
+    void givenEventId_whenSearchForEventFetchedWithBuddies_thenEventWithBuddiesAreSearched() throws NotExistingRecordException {
         final Long eventToFindId = someBuddyEvent.getId();
         principal.setEvents(new HashSet<>());
         someBuddy.setEvents(new HashSet<>());

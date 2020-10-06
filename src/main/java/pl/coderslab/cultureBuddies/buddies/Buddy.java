@@ -96,8 +96,9 @@ public class Buddy {
             roles.add(role);
         }
     }
-    public void addEvent(Event event){
-        if(events==null){
+
+    public void addEvent(Event event) {
+        if (events == null) {
             events = new HashSet<>();
         }
         events.add(event);

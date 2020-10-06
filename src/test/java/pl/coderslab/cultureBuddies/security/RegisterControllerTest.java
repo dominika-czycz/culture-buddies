@@ -41,7 +41,7 @@ class RegisterControllerTest {
     private EmailService emailServiceMock;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         unsavedBuddy = Buddy.builder()
                 .username("bestBuddy")
                 .email("test@gmail.com")
@@ -54,7 +54,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenRegisterUrl_thenRegisterView() throws Exception {
+    void whenRegisterUrl_thenRegisterView() throws Exception {
         //when, then
         mockMvc.perform(get("/register"))
                 .andExpect(status().isOk())
@@ -63,7 +63,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenPostValidBuddy_thenSaved() throws Exception {
+    void whenPostValidBuddy_thenSaved() throws Exception {
         //when, then
         when(buddyServiceMock.save(null, unsavedBuddy)).thenReturn(true);
         mockMvc.perform(post("/register").with(csrf())
@@ -76,7 +76,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenPostEmptyBuddy_thenValidationFails() throws Exception {
+    void whenPostEmptyBuddy_thenValidationFails() throws Exception {
         //given
         final Buddy emptyBuddy = new Buddy();
         //when, then
@@ -94,7 +94,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenPostBuddyWithInvalidEmail_thenValidationFails() throws Exception {
+    void whenPostBuddyWithInvalidEmail_thenValidationFails() throws Exception {
         //given
         final Buddy unsavedWithInvalidEmail = unsavedBuddy.toBuilder().email("nonExistingEmail").build();
         //when, then
@@ -110,7 +110,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenPostProfilePicture_thenBuddyWithProfilePictureSaved() throws Exception {
+    void whenPostProfilePicture_thenBuddyWithProfilePictureSaved() throws Exception {
         //given
         MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "myPicture.jpg", "image/jpeg", "some profile picture".getBytes());
         when(buddyServiceMock.save(profilePicture, unsavedBuddy)).thenReturn(true);
@@ -127,7 +127,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    public void whenNotUniqueUsername_thenErrorMessageInModel() throws Exception {
+    void whenNotUniqueUsername_thenErrorMessageInModel() throws Exception {
         String notUniqueUsername = "notUniqueUsername";
         final Buddy notUniqueBuddy = unsavedBuddy.toBuilder().username(notUniqueUsername).build();
         when(buddyServiceMock.save(null, notUniqueBuddy)).thenReturn(false);

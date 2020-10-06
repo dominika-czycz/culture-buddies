@@ -9,15 +9,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ConstraintViolationException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RoleRepositoryTest {
     @Autowired
     private RoleRepository testObject;
+
     @Test
-    public void whenSavingBlankRole_thenConstraintViolationException() {
+    void whenSavingBlankRole_thenConstraintViolationException() {
         final Role emptyRole = Role.builder().build();
         assertThrows(ConstraintViolationException.class, () -> testObject.save(emptyRole));
         assertNull(emptyRole.getId());

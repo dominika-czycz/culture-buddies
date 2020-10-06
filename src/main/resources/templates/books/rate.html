@@ -24,7 +24,8 @@
                         <div class="other-font medium-font small-margin-top">
                             <span th:text="${book.title}">Book title </span> by:
                             <span th:each="author: ${book.authorsFullName}"
-                                  th:text="${author}">Author full name</span>, </div>
+                                  th:text="${author}">Author full name</span>,
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-3"></div>

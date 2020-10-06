@@ -17,7 +17,6 @@ import pl.coderslab.cultureBuddies.buddies.BuddyService;
 import pl.coderslab.cultureBuddies.buddies.RelationStatusRepository;
 import pl.coderslab.cultureBuddies.buddyBuddy.RelationStatus;
 import pl.coderslab.cultureBuddies.exceptions.NotExistingRecordException;
-import pl.coderslab.cultureBuddies.setup.SetUpDatabaseService;
 
 import java.util.ArrayList;
 import java.util.List;

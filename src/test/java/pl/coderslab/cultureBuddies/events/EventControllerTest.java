@@ -85,7 +85,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void whenAppMyEventsUrl_thenEventsView() throws Exception {
+    void whenAppMyEventsUrl_thenEventsView() throws Exception {
         mockMvc.perform(get("/app/myEvents/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/events/events"))
@@ -100,7 +100,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void whenGetAdd_thenAddView() throws Exception {
+    void whenGetAdd_thenAddView() throws Exception {
         mockMvc.perform(get("/app/myEvents/add"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/events/add"))
@@ -112,7 +112,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenValidEvent_whenPostAdd_thenEventSave() throws Exception {
+    void givenValidEvent_whenPostAdd_thenEventSave() throws Exception {
         mockMvc.perform(post("/app/myEvents/add").with(csrf())
                 .flashAttr("event", unsavedValidEvent))
                 .andExpect(status().is(302))
@@ -123,7 +123,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenGetEdit_thenEditView() throws Exception {
+    void givenEventId_whenGetEdit_thenEditView() throws Exception {
         mockMvc.perform(get("/app/myEvents/edit/" + savedEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("event", savedEvent))
@@ -132,7 +132,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenPostEdit_thenUpdateEvent() throws Exception {
+    void givenEventId_whenPostEdit_thenUpdateEvent() throws Exception {
         mockMvc.perform(post("/app/myEvents/edit/").with(csrf())
                 .flashAttr("event", savedEvent))
                 .andExpect(status().is(302))
@@ -141,7 +141,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenGetDelete_thenDeleteView() throws Exception {
+    void givenEventId_whenGetDelete_thenDeleteView() throws Exception {
         mockMvc.perform(get("/app/myEvents/delete/" + savedEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("event", savedEvent))
@@ -150,7 +150,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenPostDelete_thenDeleteEvent() throws Exception {
+    void givenEventId_whenPostDelete_thenDeleteEvent() throws Exception {
         mockMvc.perform(post("/app/myEvents/delete/").with(csrf())
                 .param("eventId", savedEvent.getId().toString()))
                 .andExpect(status().is(302))
@@ -159,7 +159,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenGetCancel_thenCancelView() throws Exception {
+    void givenEventId_whenGetCancel_thenCancelView() throws Exception {
         mockMvc.perform(get("/app/myEvents/cancel/" + savedEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("event", savedEvent))
@@ -168,7 +168,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenPostCancel_thenLeaveEvent() throws Exception {
+    void givenEventId_whenPostCancel_thenLeaveEvent() throws Exception {
         mockMvc.perform(post("/app/myEvents/cancel/").with(csrf())
                 .param("eventId", savedEvent.getId().toString()))
                 .andExpect(status().is(302))
@@ -177,7 +177,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenPostJoin_thenJoinEvent() throws Exception {
+    void givenEventId_whenPostJoin_thenJoinEvent() throws Exception {
         mockMvc.perform(post("/app/myEvents/join/").with(csrf())
                 .param("eventId", savedEvent.getId().toString()))
                 .andExpect(status().is(302))
@@ -186,7 +186,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenEventId_whenGetInfo_thenInfoView() throws Exception {
+    void givenEventId_whenGetInfo_thenInfoView() throws Exception {
         mockMvc.perform(get("/app/myEvents/info/" + savedEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("event", savedEvent))
@@ -195,7 +195,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenUsernameTitleEventTypeIdAndCity_whenPostSearch_thenEventBeingSearched() throws Exception {
+    void givenUsernameTitleEventTypeIdAndCity_whenPostSearch_thenEventBeingSearched() throws Exception {
         //given
         Long typeId = 9L;
         String title = savedEvent.getTitle();
@@ -218,7 +218,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void whenGetRecentlyAdded_thenRecentlyAddedView() throws Exception {
+    void whenGetRecentlyAdded_thenRecentlyAddedView() throws Exception {
         List<Event> recentEvents = List.of(savedEvent);
         when(eventServiceMock.findRecentlyAddedByBuddies(RECENTLY_LIMIT))
                 .thenReturn(recentEvents);
@@ -230,7 +230,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenBuddyId_whenGetRecentOfBuddy_thenBuddyEventsView() throws Exception {
+    void givenBuddyId_whenGetRecentOfBuddy_thenBuddyEventsView() throws Exception {
         List<Event> buddyEvents = List.of(savedEvent);
         when(buddyServiceMock.findById(buddy.getId())).thenReturn(buddy);
         when(eventServiceMock.findRecentOfBuddy(buddy.getId(), RECENTLY_LIMIT))
@@ -243,7 +243,7 @@ class EventControllerTest {
     }
 
     @Test
-    public void givenBuddyId_whenGetBuddy_thenBuddyEventsView() throws Exception {
+    void givenBuddyId_whenGetBuddy_thenBuddyEventsView() throws Exception {
         List<Event> buddyEvents = List.of(savedEvent);
         when(buddyServiceMock.findById(buddy.getId())).thenReturn(buddy);
         when(eventServiceMock.findAllOfBuddy(buddy))

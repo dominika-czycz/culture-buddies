@@ -27,32 +27,32 @@
                                 class="buddy-font medium-font" th:text="${author.getFullName()}"></span></div>
                     <table class="table striped">
                         <tbody th:each="bookWithOpinion: ${booksRatingList}">
-                            <tr class="lighter-yellow other-font">
-                                <td class="other-font medium-font center">rate</td>
-                                <td class="link info-font medium-font right"><span
-                                        th:text="${bookWithOpinion.book.title}">Title</span>
-                                </td>
-                                <td class="right">
-                                    <form th:action="@{/app/myBooks/addFromBuddy}" method="post">
-                                        <input type="hidden" name="bookId" th:value="${bookWithOpinion.id.bookId}">
-                                        <button type="submit" class="btn btn-success">add</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="center title-font">
+                        <tr class="lighter-yellow other-font">
+                            <td class="other-font medium-font center">rate</td>
+                            <td class="link info-font medium-font right"><span
+                                    th:text="${bookWithOpinion.book.title}">Title</span>
+                            </td>
+                            <td class="right">
+                                <form th:action="@{/app/myBooks/addFromBuddy}" method="post">
+                                    <input type="hidden" name="bookId" th:value="${bookWithOpinion.id.bookId}">
+                                    <button type="submit" class="btn btn-success">add</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="center title-font">
                                     <span th:if="${bookWithOpinion.rate !=null}">
                                         <span th:text="${bookWithOpinion.rate}">rate </span>
                                         <span class="bigger-font">&#129304;</span>
                                     </span>
-                                    <span th:if="${bookWithOpinion.rate ==null}">
+                                <span th:if="${bookWithOpinion.rate ==null}">
                                         <span class="bigger-font"> 	&#129300;</span>
                                     </span>
-                                </td>
-                                <td colspan="2" class="other-font left medium-font"
-                                    th:text="${bookWithOpinion.comment}">comment
-                                </td>
-                            </tr>
+                            </td>
+                            <td colspan="2" class="other-font left medium-font"
+                                th:text="${bookWithOpinion.comment}">comment
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

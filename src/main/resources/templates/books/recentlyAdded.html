@@ -25,23 +25,23 @@
                     </div>
                     <table class="table striped">
                         <tbody th:each="bookWithOpinion: ${booksWithOpinion}">
-                            <tr class="other-font">
-                                <td class="medium-font center">
+                        <tr class="other-font">
+                            <td class="medium-font center">
                                     <span th:text="${bookWithOpinion.buddy.username}">
                                         username
                                     </span>:
-                                </td>
-                                <td class="right"><a class="red-link"
-                                                     th:href="@{/app/myBooks/infoRecently/__${bookWithOpinion.id.bookId}__}"
-                                                     th:text="${bookWithOpinion.book.title}">Title</a>
-                                </td>
-                                <td>by
-                                    <span th:each="author: ${bookWithOpinion.book.authors}">
+                            </td>
+                            <td class="right"><a class="red-link"
+                                                 th:href="@{/app/myBooks/infoRecently/__${bookWithOpinion.id.bookId}__}"
+                                                 th:text="${bookWithOpinion.book.title}">Title</a>
+                            </td>
+                            <td>by
+                                <span th:each="author: ${bookWithOpinion.book.authors}">
                                         <span th:text="${author.fullName}">
                                         </span>,
                                     </span>
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

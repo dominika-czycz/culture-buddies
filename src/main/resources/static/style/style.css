@@ -2,6 +2,7 @@ body {
     background-color: black;
     color: burlywood;
 }
+
 .error_background {
     background-color: #d1d2d4;
 }
@@ -45,12 +46,14 @@ body {
     color: red;
     text-decoration: none;
 }
+
 .red-link-cookie {
     font: 400 130px/0.8rem 'Cookie', Helvetica, sans-serif;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
     text-decoration: none;
     color: darkred;
 }
+
 .red-link-cookie:hover {
     color: red;
     text-decoration: none;
@@ -61,6 +64,7 @@ body {
     left: auto;
     padding-left: 30px;
 }
+
 .logout-item {
     display: inline;
     left: auto;
@@ -70,7 +74,7 @@ body {
 .header-background-img {
     background-image: url(../pictures/yvette-de-wit-NYrVisodQ2M-unsplash.jpg);
     margin: 0 0 10px 0;
-    background-position:bottom;
+    background-position: bottom;
     background-repeat: no-repeat;
     background-size: auto;
     height: 250px;
@@ -101,6 +105,7 @@ body {
     height: auto;
     min-height: 800px;
 }
+
 .article-background-imgBuddies {
     background-image: url(../pictures/daniel-cheung-B7N0IjiIJYo-unsplash.jpg);
     background-position: right bottom, left top;
@@ -112,10 +117,10 @@ body {
 
 .article-background-imgProfile {
     background-image: url(../pictures/henry-co-M3KfixgdCko-unsplash.jpg);
-    background-position:  bottom;
+    background-position: bottom;
     background-repeat: no-repeat;
     background-size: cover;
-    height:auto;
+    height: auto;
 }
 
 .article-background-error {
@@ -125,8 +130,9 @@ body {
     background-size: auto;
     height: 625px;
 }
-.google-frame{
-    width:600px;
+
+.google-frame {
+    width: 600px;
     height: 450px;
     border: 0;
 }
@@ -153,25 +159,26 @@ body {
     height: 200px;
     border: 5px;
 }
-.small-box{
+
+.small-box {
     width: 100%;
     height: 60px;
     border: 5px;
 }
 
 .profile-img {
-    outline: 5px solid rgba(2,9,13,0.82);
+    outline: 5px solid rgba(2, 9, 13, 0.82);
     outline-offset: 7px;
     max-height: 300px;
     max-width: 100%;
 }
+
 .profile-small-img {
-    outline: 1px solid rgba(2,9,13,0.82);
+    outline: 1px solid rgba(2, 9, 13, 0.82);
     outline-offset: 2px;
     max-height: 50px;
     max-width: 100%;
 }
-
 
 
 .book-img {
@@ -216,6 +223,7 @@ body {
 .medium-font {
     font-size: 1.2rem;
 }
+
 .logout-font {
     font-size: 1.5rem;
 }
@@ -229,7 +237,7 @@ body {
 }
 
 .left {
-   text-align: left ;
+    text-align: left;
 
 }
 
@@ -240,6 +248,7 @@ body {
 .bold-font {
     font-weight: bold;
 }
+
 .normal-weight-font {
     font-weight: normal;
 }
@@ -250,6 +259,7 @@ body {
     font-style: italic;
     text-align: center;
 }
+
 .buddy-font {
     font-family: "Source Code Pro", serif;
     color: black;
@@ -278,6 +288,7 @@ body {
 .error {
     color: darkred;
 }
+
 .light-error {
     color: lightcoral;
 }
@@ -308,7 +319,8 @@ small {
     margin-bottom: 100px;
     margin-top: 50px;
 }
-.small-margin-top{
+
+.small-margin-top {
     margin-top: 30px;
 }
 
@@ -398,10 +410,12 @@ small {
     font-weight: bold;
     text-transform: uppercase;
 }
+
 .btn-logout {
     color: wheat;
     width: fit-content;
 }
+
 .btn-logout:hover {
     color: red;
     width: fit-content;
@@ -414,6 +428,7 @@ small {
 .narrow {
     width: 50px;
 }
+
 .medium-input {
     width: 200px;
 }

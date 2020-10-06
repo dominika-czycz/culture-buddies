@@ -1,6 +1,5 @@
 package pl.coderslab.cultureBuddies.buddies;
 
-import com.fasterxml.jackson.databind.Module;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

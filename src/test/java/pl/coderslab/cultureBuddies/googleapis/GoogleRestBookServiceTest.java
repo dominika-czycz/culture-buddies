@@ -40,7 +40,7 @@ class GoogleRestBookServiceTest {
 
 
     @Test
-    public void givenBookTitle_whenLookingForBookWithTitle_thenBooksAreFound() throws NotExistingRecordException, BadHttpRequest {
+    void givenBookTitle_whenLookingForBookWithTitle_thenBooksAreFound() throws NotExistingRecordException, BadHttpRequest {
         //when
         final List<BookFromGoogle> googleBooksListByTitle = testObj.getGoogleBooksList(EXISTING_TITLE, "", 0);
 
@@ -50,7 +50,7 @@ class GoogleRestBookServiceTest {
     }
 
     @Test
-    public void givenNotExistingTitle_whenLookingForBook_thenNonExistingRecordExceptionIsThrown() {
+    void givenNotExistingTitle_whenLookingForBook_thenNonExistingRecordExceptionIsThrown() {
         //when, then
         assertThrows(NotExistingRecordException.class,
                 () -> testObj.getGoogleBooksList(NOT_EXISTING_TITLE, "", 0));
@@ -58,7 +58,7 @@ class GoogleRestBookServiceTest {
 
     @ParameterizedTest
     @MethodSource("prepareDataForCountingMaxPage")
-    public void givenTitleAndAuthor_whenSearchingMaxNumResultsPage_thenMaxNumIsFound(
+    void givenTitleAndAuthor_whenSearchingMaxNumResultsPage_thenMaxNumIsFound(
             int totalItems, int expected)
             throws NotExistingRecordException {
         //given

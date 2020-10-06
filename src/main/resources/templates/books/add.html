@@ -32,11 +32,11 @@
                             <td>
                                 <form th:action="@{/app/myBooks/add}" method="post" th:object="${book}">
                                     <label>
-                                        <input type="hidden"  name="identifier"
+                                        <input type="hidden" name="identifier"
                                                th:value="${gBook.volumeInfo.industryIdentifiers[0].identifier}"/>
                                     </label>
                                     <label>
-                                        <input type="hidden"  name="title"
+                                        <input type="hidden" name="title"
                                                th:value="${gBook.volumeInfo.title}"/>
                                     </label>
                                     <label>

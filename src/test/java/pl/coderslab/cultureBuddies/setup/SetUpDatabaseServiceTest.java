@@ -53,15 +53,16 @@ class SetUpDatabaseServiceTest {
     private RelationStatusRepository relationStatusRepository;
 
     @Test
-    public void whenStartApplication_thenSetExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
+    void whenStartApplication_thenSetExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
         verify(bookService).setExampleBooks();
         verify(buddyService).setExampleBuddies();
         verify(buddyService).setBuddiesRelations();
         verify(bookService).setExampleBookRatings();
         verify(eventService).setExampleEvents();
     }
+
     @Test
-    public void whenRestartApplication_thenCleanDatabaseAndSetExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
+    void whenRestartApplication_thenCleanDatabaseAndSetExampleUsersData() throws InvalidDataFromExternalServiceException, IOException, NotExistingRecordException {
         //when
         testObject.restoreDatabase();
         //then

@@ -87,11 +87,10 @@ Project is: _in progress_
 ## Contact
 Created by [@dominika-czycz](https://github.com/dominika-czycz)
  
- [dominika-czycz@gmail.com](dominika.czycz@gmail.com) _feel free to contact!_
-
+[dominika-czycz@gmail.com](dominika.czycz@gmail.com) _feel free to contact!_
 
 ## Database structure
-
+![database](culture_buddies.png)
 ## Figures
 ![loging](/demoViews/login.png)
 ###### Fig. 0 Login page 

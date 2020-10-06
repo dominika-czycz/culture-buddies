@@ -26,7 +26,7 @@ class EmailServiceTest {
     private JavaMailSender mailSender;
 
     @Test
-    public void whenMailSend_ThenNoErrors() throws Exception {
+    void whenMailSend_ThenNoErrors() throws Exception {
         //given
         String email = "email@test";
         String username = "BestBuddy";
