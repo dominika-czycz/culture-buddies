@@ -23,7 +23,7 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 * Spring boot 2.3.3
 * Spring data
 * Spring Security
-* Junit 6 
+* Junit 5
 * Hibernate
 * MySQl
 * Thymeleaf
