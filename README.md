@@ -25,7 +25,7 @@ about read books, invite buddies, accept invitations from other buddies, remove 
 * Spring Security
 * Junit 5
 * Hibernate
-* MySQl
+* MySQL
 * Thymeleaf
 * REST API : Google Books Api, Google Places Api
 ## Demo version
